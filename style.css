@@ -676,8 +676,8 @@ video {
   right: 0;
   bottom: 0;
   border-radius: 20px;
-  padding: 2px;
-  background: linear-gradient(135deg, var(--secondary), var(--primary), var(--accent));
+  padding: 1px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
@@ -686,14 +686,14 @@ video {
 }
 
 .channel:hover::before {
-  opacity: 0.55;
+  opacity: 0.45;
 }
 
 .channel:hover {
   transform: scale(1.05) translateY(-3px);
   background: var(--bg-card-hover);
   border-color: transparent;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 242, 254, 0.15);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 0, 127, 0.12);
 }
 
 .channel img {
@@ -751,7 +751,7 @@ video {
 }
 
 .channel.active::before {
-  opacity: 1;
+  opacity: 0.8;
 }
 
 .channel.active img {
