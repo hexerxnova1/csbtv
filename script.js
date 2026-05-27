@@ -1,5 +1,5 @@
 /* VARIABLES */
-const playlist = "https://raw.githubusercontent.com/Rakib49/Rakibiptv/refs/heads/main/aynaott.m3u";
+const playlist = "https://raw.githubusercontent.com/Shariar-Ahamed/online-tv-streaming-platform/main/channels.m3u";
 
 let channels = [];
 let filteredChannels = [];
