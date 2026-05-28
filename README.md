@@ -18,7 +18,8 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/license/Shariar-Ahamed/online-tv-streaming-platform">
+  <img src="https://img.shields.io/github/license/Shariar-Ahamed/online-tv-streaming-platform?style=flat-square" alt="License">
+  <!---  <img src="https://img.shields.io/github/license/Shariar-Ahamed/online-tv-streaming-platform"> --->
   <img src="https://img.shields.io/github/repo-size/Shariar-Ahamed/online-tv-streaming-platform">
   <img src="https://img.shields.io/github/last-commit/Shariar-Ahamed/online-tv-streaming-platform">
 </p>
