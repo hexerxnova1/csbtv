@@ -166,7 +166,7 @@
 
 # 📂 Project Structure
 
-```txt
+```bash
 online-tv-streaming-platform/
 │
 ├── 📄 channels.m3u
@@ -174,6 +174,9 @@ online-tv-streaming-platform/
 │
 ├── 🌐 index.html
 │   └── Main application structure
+│
+├── 📄 LICENSE
+│   └──  MIT License file (permissions & usage terms)
 │
 ├── 🎨 style.css
 │   └── Glassmorphic cyber-dark styling
@@ -183,7 +186,7 @@ online-tv-streaming-platform/
 │
 └── 📝 README.md
     └── Project documentation
-````
+```
 
 ---
 
@@ -204,7 +207,7 @@ online-tv-streaming-platform/
 
 ```bash
 git clone https://github.com/Shariar-Ahamed/online-tv-streaming-platform.git
-````
+```
 
 ---
 
