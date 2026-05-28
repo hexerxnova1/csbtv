@@ -63,7 +63,7 @@
 ## 📱 Mobile View
 
 <p align="center">
-  <img src="https://i.postimg.cc/N0gm09mY/Galaxy-Note20-Ultra.png" width="300" alt="Mobile Preview">
+  <img src="https://i.postimg.cc/N0gm09mY/Galaxy-Note20-Ultra.png" width="250" alt="Mobile Preview">
 </p>
 
 <p align="center">
@@ -75,7 +75,7 @@
 ## 📲 Tablet View
 
 <p align="center">
-  <img src="https://i.postimg.cc/mg48QrCV/Galaxy-Tab-S7.png" alt="Tablet Preview">
+  <img src="https://i.postimg.cc/mg48QrCV/Galaxy-Tab-S7.png" width="400" alt="Tablet Preview">
 </p>
 
 <p align="center">
@@ -264,7 +264,7 @@ http://127.0.0.1:5500
 
 ---
 
-# 🌐 Useful Links
+<!-- # 🌐 Useful Links
 
 ## 🔗 Repository
 
@@ -272,7 +272,7 @@ https://github.com/Shariar-Ahamed/online-tv-streaming-platform
 
 ## 🚀 Live Website
 
-https://shariar-ahamed.github.io/online-tv-streaming-platform/
+https://shariar-ahamed.github.io/online-tv-streaming-platform/ -->
 
 ---
 
