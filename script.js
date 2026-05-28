@@ -153,7 +153,8 @@ function loadPlaylist() {
       filterAndSearch();
 
       if (filteredChannels.length > 0) {
-        playChannel(0);
+        const defaultIndex = filteredChannels.findIndex(c => c.name.toLowerCase() === "channel i");
+        playChannel(defaultIndex !== -1 ? defaultIndex : 0);
       }
     })
     .catch(err => {
@@ -280,6 +281,8 @@ function playChannel(index) {
 
   // Show loader overlay
   loader.classList.remove("hidden");
+  const spinner = loader.querySelector(".spinner");
+  if (spinner) spinner.classList.remove("hidden");
   loader.querySelector("span").innerText = "Buffering stream...";
 
   // Destroy existing HLS instance
@@ -297,13 +300,20 @@ function playChannel(index) {
     currentHls.attachMedia(video);
 
     currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
-      video.play().catch(err => console.log("Autoplay blocked:", err));
+      video.play().catch(err => {
+        console.log("Autoplay blocked:", err);
+        loader.querySelector("span").innerHTML = 'Stream paused. Click Play to watch!<br><span class="paused-play-icon" onclick="togglePlay()">▶</span>';
+        const spinner = loader.querySelector(".spinner");
+        if (spinner) spinner.classList.add("hidden");
+      });
     });
 
     currentHls.on(Hls.Events.ERROR, (event, data) => {
       if (data.fatal) {
         console.warn("HLS fatal error, recovering...", data);
         loader.querySelector("span").innerText = "Re-connecting stream...";
+        const spinner = loader.querySelector(".spinner");
+        if (spinner) spinner.classList.remove("hidden");
         switch (data.type) {
           case Hls.ErrorTypes.NETWORK_ERROR:
             currentHls.startLoad();
@@ -320,7 +330,12 @@ function playChannel(index) {
   } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
     video.src = channel.url;
     video.addEventListener("loadedmetadata", () => {
-      video.play().catch(err => console.log("Autoplay blocked:", err));
+      video.play().catch(err => {
+        console.log("Autoplay blocked:", err);
+        loader.querySelector("span").innerHTML = 'Stream paused. Click Play to watch!<br><span class="paused-play-icon" onclick="togglePlay()">▶</span>';
+        const spinner = loader.querySelector(".spinner");
+        if (spinner) spinner.classList.add("hidden");
+      });
     });
   } else {
     loader.querySelector("span").innerText = "HLS stream format not supported";
@@ -330,9 +345,13 @@ function playChannel(index) {
   // Hook playing events to handle loaders
   video.onplaying = () => {
     loader.classList.add("hidden");
+    const spinner = loader.querySelector(".spinner");
+    if (spinner) spinner.classList.remove("hidden");
   };
 
   video.onwaiting = () => {
+    const spinner = loader.querySelector(".spinner");
+    if (spinner) spinner.classList.remove("hidden");
     loader.querySelector("span").innerText = "Buffering stream...";
     loader.classList.remove("hidden");
   };
