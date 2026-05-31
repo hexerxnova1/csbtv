@@ -9,6 +9,51 @@ let searchKeyword = "";
 let currentHls = null;
 let controlsTimeout;
 
+const proxyBaseUrl = "https://lingering-hat-17c9.sharier0ahmed111.workers.dev/";
+let activeStreamBaseUrl = "";
+
+// Custom proxy loader to load HTTP streams on HTTPS sites (bypass mixed content & CORS)
+let ProxyLoader;
+if (typeof Hls !== "undefined" && Hls.DefaultConfig && Hls.DefaultConfig.loader) {
+  ProxyLoader = class extends Hls.DefaultConfig.loader {
+    constructor(config) {
+      super(config);
+    }
+
+    load(context, config, callbacks) {
+      let url = context.url;
+
+      // Handle relative URLs resolved relative to the proxy root incorrectly
+      if (url.startsWith(proxyBaseUrl)) {
+        try {
+          const urlObj = new URL(url);
+          const targetUrlParam = urlObj.searchParams.get("url");
+          
+          if (targetUrlParam) {
+            url = targetUrlParam;
+          } else {
+            const filename = urlObj.pathname.substring(1);
+            if (filename && !filename.startsWith("http://") && !filename.startsWith("https://")) {
+              url = activeStreamBaseUrl + filename + urlObj.search;
+            }
+          }
+        } catch (e) {
+          console.error("Error parsing proxy URL in loader:", e);
+        }
+      }
+
+      // If URL is insecure HTTP, route it through your Cloudflare Worker proxy
+      if (url.startsWith("http://")) {
+        context.url = proxyBaseUrl + "?url=" + encodeURIComponent(url);
+      } else {
+        context.url = url;
+      }
+
+      super.load(context, config, callbacks);
+    }
+  };
+}
+
 /* ON INITIALIZATION */
 document.addEventListener("DOMContentLoaded", () => {
   setupPlayerSync();
@@ -266,6 +311,12 @@ function playChannel(index) {
   const channel = filteredChannels[index];
   currentChannel = channel;
 
+  // Set activeStreamBaseUrl for proxying relative segment paths
+  if (channel.url) {
+    const lastSlash = channel.url.lastIndexOf("/");
+    activeStreamBaseUrl = lastSlash !== -1 ? channel.url.substring(0, lastSlash + 1) : "";
+  }
+
   // Show loader overlay
   loader.classList.remove("hidden");
   const spinner = loader.querySelector(".spinner");
@@ -279,10 +330,15 @@ function playChannel(index) {
   }
 
   if (Hls.isSupported()) {
-    currentHls = new Hls({
+    const hlsConfig = {
       maxMaxBufferLength: 10,
       enableWorker: true
-    });
+    };
+    if (typeof ProxyLoader !== "undefined") {
+      hlsConfig.pLoader = ProxyLoader;
+      hlsConfig.fLoader = ProxyLoader;
+    }
+    currentHls = new Hls(hlsConfig);
     currentHls.loadSource(channel.url);
     currentHls.attachMedia(video);
 
@@ -315,7 +371,11 @@ function playChannel(index) {
       }
     });
   } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-    video.src = channel.url;
+    let playUrl = channel.url;
+    if (playUrl.startsWith("http://")) {
+      playUrl = proxyBaseUrl + "?url=" + encodeURIComponent(playUrl);
+    }
+    video.src = playUrl;
     video.addEventListener("loadedmetadata", () => {
       video.play().catch(err => {
         console.log("Autoplay blocked:", err);
