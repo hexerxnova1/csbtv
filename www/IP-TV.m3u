@@ -1,6 +1,10 @@
 #EXTM3U
 #EXTINF:-1 ,STAR SPORTS2
 http://198.195.239.50:8095/StarSports2/index.m3u8
+
+----
+>>>>
+
 #EXTINF:-1 ,STAR SPORTS SELECT1 HD
 http://198.195.239.50:8095/StarSportsSelect1/index.m3u8
 #EXTINF:-1 ,STAR SPORTS SELECT2 HD
@@ -13,6 +17,10 @@ http://198.195.239.50:8095/SonyTenSports5/index.m3u8
 http://198.195.239.50:8095/Eurosport/index.m3u8
 #EXTINF:-1 ,NAGORIK
 http://198.195.239.50:8095/nagorik/index.m3u8
+
+<<<
+-------
+
 #EXTINF:-1 ,NEWS24 HD
 http://198.195.239.50:8095/News24/index.m3u8
 #EXTINF:-1 ,Jalsha Movies HD
@@ -23,64 +31,100 @@ http://198.195.239.50:8095/ZeeBanglaCinema/index.m3u8
 http://198.195.239.50:8095/ColorsBanglaChinema/index.m3u8
 #EXTINF:-1 ,SONY AATH
 http://198.195.239.50:8095/SonyAath/index.m3u8
+
+----
+>>>>>>>
 #EXTINF:-1 ,SONY MAX HD
 http://198.195.239.50:8095/SonyMAX/index.m3u8
+
 #EXTINF:-1 ,SONY TV HD
 http://198.195.239.50:8095/SonyTv/index.m3u8
+
 #EXTINF:-1 ,STAR PLUS HD
 http://198.195.239.50:8095/StarPlus/index.m3u8
+
 #EXTINF:-1 ,STAR GOLD HD
 http://198.195.239.50:8095/StarGold/index.m3u8
-#EXTINF:-1 ,ZEE TV HD
+
+#EXTINF:-1 ,ZEE TV HD !!!
 http://198.195.239.50:8095/ZeeTV/index.m3u8
+
 #EXTINF:-1 ,DISCOVERY HD
 http://198.195.239.50:8095/Discovery/index.m3u8
+
 #EXTINF:-1 ,NATIONAL GEOGRAPHIC HD
 http://198.195.239.50:8095/NationalGeographic/index.m3u8
+
 #EXTINF:-1 ,CARTOON NETWORK HD
 http://198.195.239.50:8095/CartoonNetwork/index.m3u8
+
 #EXTINF:-1 ,DISCOVERY KIDS HD
 http://198.195.239.50:8095/DiscoveryKids/index.m3u8
-#EXTINF:-1 ,Art Sport 1 HD
+
+
+===
+#EXTINF:-1 ,Art Sport 1 HD  !!!!!!!!
 http://79.127.207.193:80/ArtSport1HD/playlist.m3u8
+
 #EXTINF:-1 ,Art Sport 2 HD
 http://79.127.207.193:80/ArtSport2/playlist.m3u8
+
 #EXTINF:-1 ,Art Sport 3 HD
 http://79.127.207.193:80/ArtSport3/playlist.m3u8
+
 #EXTINF:-1 ,Art Sport 4 HD
 http://79.127.207.193:80/ArtSport4/playlist.m3u8
+
 #EXTINF:-1 ,Art Sport 5 HD
 http://79.127.207.193:80/ArtSport5/playlist.m3u8
+
 #EXTINF:-1 ,Art Sport 6 HD
 http://79.127.207.193:80/ArtSport6/playlist.m3u8
+
 #EXTINF:-1 ,5 SPORT 🇮🇱
 http://185.132.134.159:80/sport5/index.m3u8
+
 #EXTINF:-1 ,МАТЧ! ФУТБOЛ 2HD 🇷🇺
 http://193.25.8.59:8000/fut2
+
 #EXTINF:-1 ,SCTV 22 - SSPORT 1 🇻🇳
 https://liveh34.vtvprime.vn/hls/SCTV22/04.m3u8
+===
+
+
 #EXTINF:-1 ,SKY SPORT LALIGA 🇲🇽
 http://179.60.224.196:8000/play/a0i7/index.m3u8
-#EXTINF:-1 ,LIG 🇪🇸
+----
+#EXTINF:-1 ,LIG 🇪🇸 !!!!!!!!
 http://200.115.120.1:8000/play/ca124/index.m3u8
-#EXTINF:-1 ,SCTV 22 - SSPORT 1 🇻🇳
+
+#EXTINF:-1 ,SCTV 22 - SSPORT 1 🇻🇳   !!!
 https://liveh34.vtvprime.vn/hls/SCTV22/03.m3u8
-#EXTINF:-1 ,МАТЧ! ФУТБOЛ 2HD 🇷🇺
+
+#EXTINF:-1 ,МАТЧ! ФУТБOЛ 2HD 🇷🇺  !!!
 http://cdntv.online/low/9mlxywika2/56.m3u8
+
 #EXTINF:-1 ,TDM Desporto 🇲🇴
 http://cdn6.163189.xyz/163189/amty
-#EXTINF:-1 ,MAX SPORT 4 🇧🇬
+
+#EXTINF:-1 ,MAX SPORT 4 🇧🇬  !!!
 http://77.46.130.252:99/maxsport4
-#EXTINF:-1 ,SKY SPORT LALIGA 🇲🇽
+
+#EXTINF:-1 ,SKY SPORT LALIGA 🇲🇽  !!!
 http://190.92.10.66:4000/play/a001/index.m3u8
-#EXTINF:-1 ,SKY SPORT LALIGA 🇲🇽
+
+#EXTINF:-1 ,SKY SPORT LALIGA 🇲🇽   !!!
 http://181.78.109.48:9998/play/a06r/index.m3u8
-#EXTINF:-1 ,OTT CLUB 🇷🇺
+
+#EXTINF:-1 ,OTT CLUB 🇷🇺 !!! 
 http://czrb8vng.ottclub.xyz/iptv/AHMQNVLWUTM5PW/6554/index.m3u8
-#EXTINF:-1 ,Digi Sport 2 🇷🇴
+
+#EXTINF:-1 ,Digi Sport 2 🇷🇴 !!!
 http://91.201.172.14:35006/
-#EXTINF:-1 ,Беларусь 5 🇧🇾
+
+#EXTINF:-1 ,Беларусь 5 🇧🇾  !!! 
 http://cdntv.online/low/9mlxywika2/778.m3u8
+
 #EXTINF:-1 ,Матч! 🇷🇺
 http://catchup.videoline.ru/match/tracks-v1a1/mono.m3u8
 #EXTINF:-1 ,Матч! 🇷🇺

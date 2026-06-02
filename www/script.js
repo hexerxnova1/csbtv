@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupCategoryScrolling();
   loadPlaylist();
   setupLiveStats();
+  setupOrientationExitFullscreen();
 });
 
 /* DETECT NATIVE FULLSCREEN EXIT TO UNLOCK ORIENTATION */
@@ -33,6 +34,25 @@ function setupFullscreenChange() {
         unlockOrientation();
       }
     });
+  });
+}
+
+/* EXIT FULLSCREEN ON PORTRAIT ROTATION */
+function setupOrientationExitFullscreen() {
+  window.addEventListener("resize", () => {
+    if (window.innerHeight > window.innerWidth) {
+      const isFullscreen = document.fullscreenElement || 
+                           document.webkitFullscreenElement || 
+                           document.mozFullScreenElement || 
+                           document.msFullscreenElement;
+      if (isFullscreen) {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+    }
   });
 }
 
