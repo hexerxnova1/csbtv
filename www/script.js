@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadPlaylist();
   setupLiveStats();
   setupOrientationExitFullscreen();
+  setupExternalLinks();
 });
 
 /* DETECT NATIVE FULLSCREEN EXIT TO UNLOCK ORIENTATION */
@@ -54,6 +55,33 @@ function setupOrientationExitFullscreen() {
       }
     }
   });
+}
+
+/* OPEN EXTERNAL LINKS IN IN-APP BROWSER OVERLAY */
+function setupExternalLinks() {
+  document.addEventListener("click", (e) => {
+    const anchor = e.target.closest("a.social-btn, a.developer-name");
+    if (anchor) {
+      const url = anchor.getAttribute("href");
+      if (url && url.startsWith("http")) {
+        e.preventDefault();
+        openExternalUrl(url);
+      }
+    }
+  });
+}
+
+function openExternalUrl(url) {
+  const cap = window.Capacitor;
+  if (cap && cap.Plugins && cap.Plugins.Browser) {
+    cap.Plugins.Browser.open({ url: url })
+      .catch(err => {
+        console.error("Failed to open URL in browser plugin, falling back...", err);
+        window.open(url, "_blank");
+      });
+  } else {
+    window.open(url, "_blank");
+  }
 }
 
 /* SYNC VIDEO STATE WITH PLAY/PAUSE BUTTON */
