@@ -1110,7 +1110,7 @@ video {
 .player-wrapper:-webkit-full-screen video {
   width: 100% !important;
   height: 100% !important;
-  object-fit: contain !important;
+  object-fit: cover !important;
   background: #000 !important;
 }
 

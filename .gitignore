@@ -4,4 +4,5 @@ www/
 local.properties
 *.apk
 C:\\Users\\User\\.gemini\\antigravity-ide\\brain\\*
-*.log
+*.bak
+scratch/

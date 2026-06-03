@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupExternalLinks();
 });
 
-/* DETECT NATIVE FULLSCREEN EXIT TO UNLOCK ORIENTATION */
+/* DETECT NATIVE FULLSCREEN EXIT TO UNLOCK ORIENTATION & HANDLE BACK BUTTON */
 function setupFullscreenChange() {
   const events = ["fullscreenchange", "webkitfullscreenchange", "mozfullscreenchange", "MSFullscreenChange"];
   events.forEach(event => {
@@ -31,10 +31,37 @@ function setupFullscreenChange() {
                            document.webkitFullscreenElement || 
                            document.mozFullScreenElement || 
                            document.msFullscreenElement;
-      if (!isFullscreen) {
+      if (isFullscreen) {
+        // Push state to history for back button handling if not already pushed
+        if (!history.state || !history.state.fullscreen) {
+          history.pushState({ fullscreen: true }, "");
+        }
+      } else {
         unlockOrientation();
+        // If we exited manually (e.g. exit button), go back in history to clean up
+        if (history.state && history.state.fullscreen) {
+          history.back();
+        }
       }
     });
+  });
+
+  // Listen to browser/hardware back button popstate
+  window.addEventListener("popstate", (event) => {
+    const isFullscreen = document.fullscreenElement || 
+                         document.webkitFullscreenElement || 
+                         document.mozFullScreenElement || 
+                         document.msFullscreenElement;
+    if (isFullscreen) {
+      // Exit fullscreen
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+    }
   });
 }
 
@@ -222,19 +249,34 @@ function renderCategories() {
 
   const categories = Object.keys(categoryCounts);
 
-  // Sort: Bangla first, news/sports next, rest alphabetical
+  // Sort categories by user defined custom order
   categories.sort((a, b) => {
-    const primaryCats = ["bangla", "sports", "news"];
-    const aLower = a.toLowerCase();
-    const bLower = b.toLowerCase();
+    const customOrder = [
+      "bangla",
+      "sports",
+      "news",
+      "kids",
+      "indian bangla",
+      "entertainment",
+      "movies",
+      "english",
+      "religious",
+      "hindi",
+      "infotainment",
+      "musics",
+      "drama",
+      "weather",
+      "other"
+    ];
+    const aIndex = customOrder.indexOf(a.toLowerCase().trim());
+    const bIndex = customOrder.indexOf(b.toLowerCase().trim());
     
-    const aIndex = primaryCats.indexOf(aLower);
-    const bIndex = primaryCats.indexOf(bLower);
+    const aVal = aIndex !== -1 ? aIndex : 999;
+    const bVal = bIndex !== -1 ? bIndex : 999;
     
-    if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
-    if (aIndex !== -1) return -1;
-    if (bIndex !== -1) return 1;
-    
+    if (aVal !== bVal) {
+      return aVal - bVal;
+    }
     return a.localeCompare(b);
   });
 
