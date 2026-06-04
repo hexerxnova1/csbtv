@@ -20,6 +20,8 @@ document.addEventListener("DOMContentLoaded", () => {
   setupLiveStats();
   setupOrientationExitFullscreen();
   setupExternalLinks();
+  setupBackToTop();
+  setupFooterFeatures();
 });
 
 /* DETECT NATIVE FULLSCREEN EXIT TO UNLOCK ORIENTATION & HANDLE BACK BUTTON */
@@ -776,3 +778,138 @@ function setupLiveStats() {
     }
   }, 4000);
 }
+
+/* BACK TO TOP BUTTON LOGIC */
+function setupBackToTop() {
+  const btn = document.getElementById("backToTopBtn");
+  if (!btn) return;
+
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 400) {
+      btn.classList.remove("hidden");
+    } else {
+      btn.classList.add("hidden");
+    }
+  });
+
+  btn.addEventListener("click", () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  });
+}
+
+/* FOOTER INTERACTIVE FEATURES */
+function setupFooterFeatures() {
+  // Handle TV Category clicks from Footer
+  document.querySelectorAll(".footer-cat-link").forEach(link => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      const cat = link.getAttribute("data-category");
+      filterCategory(cat);
+      
+      // Scroll smoothly to channels section
+      const section = document.querySelector(".channels-section");
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth" });
+      }
+    });
+  });
+}
+
+/* SMOOTH SCROLL NAVIGATION HELPERS */
+function scrollToPlayer(event) {
+  if (event) event.preventDefault();
+  const player = document.querySelector(".player-section");
+  if (player) {
+    player.scrollIntoView({ behavior: "smooth" });
+  }
+}
+
+function scrollToCategories(event) {
+  if (event) event.preventDefault();
+  
+  // Clear search input and search keyword
+  const searchInput = document.getElementById("search");
+  if (searchInput) searchInput.value = "";
+  searchKeyword = "";
+  const clearBtn = document.getElementById("clearSearch");
+  if (clearBtn) clearBtn.style.display = "none";
+  
+  // Reset category filter to 'All'
+  filterCategory('All');
+  
+  const categories = document.querySelector(".search-filter-sticky");
+  if (categories) {
+    categories.scrollIntoView({ behavior: "smooth" });
+  }
+}
+
+function resetToDefaultApp(event) {
+  if (event) event.preventDefault();
+  
+  // Clear search input and search keyword
+  const searchInput = document.getElementById("search");
+  if (searchInput) searchInput.value = "";
+  searchKeyword = "";
+  const clearBtn = document.getElementById("clearSearch");
+  if (clearBtn) clearBtn.style.display = "none";
+  
+  // Reset category filter to 'All'
+  filterCategory('All');
+  
+  // Play the default channel
+  if (channels.length > 0) {
+    const defaultIndex = channels.findIndex(c => c.name.toLowerCase().includes("channel i"));
+    playChannel(defaultIndex !== -1 ? defaultIndex : 0);
+  }
+  
+  // Scroll smoothly to player
+  const player = document.querySelector(".player-section");
+  if (player) {
+    player.scrollIntoView({ behavior: "smooth" });
+  }
+}
+
+/* PRIVACY POLICY & TERMS MODAL CUSTOM DIALOG */
+function showTermsModal(type, event) {
+  if (event) event.preventDefault();
+  
+  const title = type === "privacy" ? "Privacy Policy" : "Terms of Service";
+  const text = type === "privacy" 
+    ? "At Alpha TV, we value your privacy. We do not collect or store any personal data. All streams are sourced from third-party public playlists and played locally in your browser or application. Your preferences are saved only on your local device."
+    : "Welcome to Alpha TV! Our services are provided free of charge for streaming live channels. We do not host any of the video content; all streams are sourced from publicly available public playlists. By using this app, you agree to comply with your local copyright and streaming laws.";
+  
+  const modal = document.getElementById("infoModal");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalText = document.getElementById("modalText");
+  
+  if (modal && modalTitle && modalText) {
+    modalTitle.textContent = title;
+    modalText.textContent = text;
+    modal.classList.remove("hidden");
+    modal.setAttribute("aria-hidden", "false");
+    
+    // Disable body scroll when modal is open
+    document.body.style.overflow = "hidden";
+  }
+}
+
+function closeInfoModal() {
+  const modal = document.getElementById("infoModal");
+  if (modal) {
+    modal.classList.add("hidden");
+    modal.setAttribute("aria-hidden", "true");
+    
+    // Restore body scroll
+    document.body.style.overflow = "";
+  }
+}
+
+// Close modal on Escape key press
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    closeInfoModal();
+  }
+});

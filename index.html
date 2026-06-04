@@ -1,24 +1,33 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
     <title>Alpha TV - Premium Live Streaming</title>
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="logo/Logo-PNG.png" />
-    
+
     <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
     <!-- HLS Player Library -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    
+
     <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-    
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+
     <!-- Custom Style -->
     <link rel="stylesheet" href="style.css" />
   </head>
@@ -32,15 +41,18 @@
     </div>
 
     <div class="app-container">
-      
       <!-- LEFT SECTION: PLAYER & METADATA -->
       <aside class="player-section">
         <header class="header">
           <div class="logo-container">
-            <img src="logo/Logo-PNG.png" alt="Alpha TV Logo" class="brand-logo" />
+            <img
+              src="logo/Logo-PNG.png"
+              alt="Alpha TV Logo"
+              class="brand-logo"
+            />
             <h1 class="logo">Alpha <span>TV</span></h1>
           </div>
-          
+
           <!-- Mini Live Counter (Visible on mobile only) -->
           <div class="header-live-badge">
             <div class="header-stat-item">
@@ -59,7 +71,7 @@
         <div class="player-wrapper">
           <div class="video-container">
             <video id="video" autoplay playsinline></video>
-            
+
             <!-- Neon Loading Spinner -->
             <div id="playerLoader" class="player-loader hidden">
               <div class="spinner"></div>
@@ -69,18 +81,49 @@
 
           <!-- Custom Control Bar Overlay -->
           <div class="custom-controls" id="customControls">
-            <button class="control-btn" onclick="prevChannel()" title="Previous Channel"><i class="fa-solid fa-backward-step"></i></button>
-            <button class="control-btn play-pause-btn" onclick="togglePlay()" title="Play/Pause"><i class="fa-solid fa-play"></i></button>
-            <button class="control-btn" onclick="nextChannel()" title="Next Channel"><i class="fa-solid fa-forward-step"></i></button>
-            <button class="control-btn" onclick="toggleFullscreen()" title="Fullscreen"><i class="fa-solid fa-expand"></i></button>
+            <button
+              class="control-btn"
+              onclick="prevChannel()"
+              title="Previous Channel"
+            >
+              <i class="fa-solid fa-backward-step"></i>
+            </button>
+            <button
+              class="control-btn play-pause-btn"
+              onclick="togglePlay()"
+              title="Play/Pause"
+            >
+              <i class="fa-solid fa-play"></i>
+            </button>
+            <button
+              class="control-btn"
+              onclick="nextChannel()"
+              title="Next Channel"
+            >
+              <i class="fa-solid fa-forward-step"></i>
+            </button>
+            <button
+              class="control-btn"
+              onclick="toggleFullscreen()"
+              title="Fullscreen"
+            >
+              <i class="fa-solid fa-expand"></i>
+            </button>
           </div>
         </div>
 
         <!-- Current Channel Info Card -->
         <div class="current-channel-card" id="currentChannelCard">
           <div class="current-channel-logo-container">
-            <div id="currentChannelFallback" class="fallback-avatar hidden">N</div>
-            <img id="currentChannelLogo" src="" alt="" onerror="handleCurrentLogoError()">
+            <div id="currentChannelFallback" class="fallback-avatar hidden">
+              N
+            </div>
+            <img
+              id="currentChannelLogo"
+              src=""
+              alt=""
+              onerror="handleCurrentLogoError()"
+            />
           </div>
           <div class="current-channel-details">
             <span class="live-badge">
@@ -103,9 +146,9 @@
               <span class="stat-desc">Live Watching</span>
             </div>
           </div>
-          
+
           <div class="stat-divider"></div>
-          
+
           <div class="stat-item">
             <div class="stat-icon-container total">
               <i class="fa-solid fa-users"></i>
@@ -127,29 +170,53 @@
         <!-- Search & Control Header -->
         <div class="search-filter-sticky">
           <div class="search-wrapper">
-            <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+            <span class="search-icon"
+              ><i class="fa-solid fa-magnifying-glass"></i
+            ></span>
             <input
               type="text"
               id="search"
               placeholder="Search among all channels..."
               onkeyup="searchChannels()"
             />
-            <button class="clear-search-btn" id="clearSearch" onclick="clearSearchInput()" style="display: none;"><i class="fa-solid fa-xmark"></i></button>
+            <button
+              class="clear-search-btn"
+              id="clearSearch"
+              onclick="clearSearchInput()"
+              style="display: none"
+            >
+              <i class="fa-solid fa-xmark"></i>
+            </button>
           </div>
 
           <!-- Category Pill Filter List -->
           <div class="categories-wrapper">
             <div class="categories-container" id="categoriesContainer">
               <div class="category-list" id="categoryList">
-                <button class="category-pill active" onclick="filterCategory('All')">All Channels</button>
+                <button
+                  class="category-pill active"
+                  onclick="filterCategory('All')"
+                >
+                  All Channels
+                </button>
                 <!-- Dynamic category pills will be inserted here -->
               </div>
             </div>
             <!-- Scroll indicators -->
-            <button class="scroll-indicator scroll-left hidden" id="scrollLeftBtn" onclick="scrollCategories('left')" title="Scroll Left">
+            <button
+              class="scroll-indicator scroll-left hidden"
+              id="scrollLeftBtn"
+              onclick="scrollCategories('left')"
+              title="Scroll Left"
+            >
               <i class="fa-solid fa-chevron-left"></i>
             </button>
-            <button class="scroll-indicator scroll-right" id="scrollRightBtn" onclick="scrollCategories('right')" title="Scroll Right">
+            <button
+              class="scroll-indicator scroll-right"
+              id="scrollRightBtn"
+              onclick="scrollCategories('right')"
+              title="Scroll Right"
+            >
               <i class="fa-solid fa-chevron-right"></i>
             </button>
           </div>
@@ -167,41 +234,256 @@
 
           <!-- Main Footer -->
           <footer class="main-footer">
-            <div class="footer-content">
-              <div class="footer-info">
-                <span class="logo footer-logo">Alpha <span>TV</span></span>
-                <p class="developed-by">Website developed by <a href="https://github.com/Shariar-Ahamed" target="_blank" class="developer-name">Shariar Ahamed</a></p>
+            <div class="footer-grid">
+              <!-- Column 1: About Section -->
+              <div class="footer-col footer-about">
+                <div class="footer-logo-container">
+                  <img
+                    src="logo/Logo-PNG.png"
+                    alt="Alpha TV Logo"
+                    class="footer-brand-logo"
+                  />
+                  <span class="logo footer-logo">Alpha <span>TV</span></span>
+                </div>
+                <p class="footer-desc">
+                  Alpha TV is your premium online streaming destination,
+                  bringing you live channels from around the world. Stream your
+                  favorite news, sports, movies, and entertainment anywhere,
+                  anytime.
+                </p>
+                <div class="footer-socials">
+                  <a
+                    href="https://www.facebook.com/shahriar.thebrowncat"
+                    target="_blank"
+                    title="Facebook"
+                    class="social-btn facebook"
+                  >
+                    <i class="fa-brands fa-facebook"></i>
+                  </a>
+                  <a
+                    href="https://t.me/Shariar_Ahamed"
+                    target="_blank"
+                    title="Telegram"
+                    class="social-btn telegram"
+                  >
+                    <i class="fa-brands fa-telegram"></i>
+                  </a>
+                  <a
+                    href="https://instagram.com/shahriar_thebrowncat"
+                    target="_blank"
+                    title="Instagram"
+                    class="social-btn instagram"
+                  >
+                    <i class="fa-brands fa-instagram"></i>
+                  </a>
+                  <a
+                    href="https://twitter.com/ShariarAlways"
+                    target="_blank"
+                    title="Twitter"
+                    class="social-btn twitter"
+                  >
+                    <i class="fa-brands fa-twitter"></i>
+                  </a>
+                  <a
+                    href="https://linkedin.com/in/shariarahamed"
+                    target="_blank"
+                    title="LinkedIn"
+                    class="social-btn linkedin"
+                  >
+                    <i class="fa-brands fa-linkedin"></i>
+                  </a>
+                  <a
+                    href="https://github.com/Shariar-Ahamed"
+                    target="_blank"
+                    title="GitHub"
+                    class="social-btn github"
+                  >
+                    <i class="fa-brands fa-github"></i>
+                  </a>
+                </div>
               </div>
-              
-              <div class="footer-socials">
-                <a href="https://www.facebook.com/shahriar.thebrowncat" target="_blank" title="Facebook" class="social-btn">
-                  <i class="fa-brands fa-facebook-f"></i>
-                </a>
-                <a href="https://instagram.com/shahriar_thebrowncat" target="_blank" title="Instagram" class="social-btn">
-                  <i class="fa-brands fa-instagram"></i>
-                </a>
-                <a href="https://linkedin.com/in/shariarahamed" target="_blank" title="LinkedIn" class="social-btn">
-                  <i class="fa-brands fa-linkedin-in"></i>
-                </a>
-                <a href="https://twitter.com/ShariarAlways" target="_blank" title="Twitter" class="social-btn">
-                  <i class="fa-brands fa-x-twitter"></i>
-                </a>
-                <a href="mailto:shariaralways@gmail.com" title="Email" class="social-btn">
-                  <i class="fa-solid fa-envelope"></i>
-                </a>
-                <a href="https://www.ripon.engineer/" target="_blank" title="Website" class="social-btn">
-                  <i class="fa-solid fa-globe"></i>
-                </a>
+
+              <!-- Column 2: Quick Links -->
+              <div class="footer-col">
+                <h3 class="footer-col-title">Quick Links</h3>
+                <ul class="footer-links">
+                  <li>
+                    <a
+                      href="#"
+                      class="footer-link"
+                      onclick="location.reload(); return false;"
+                      ><i class="fa-solid fa-chevron-right"></i> Home</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="footer-link"
+                      onclick="resetToDefaultApp(event)"
+                      ><i class="fa-solid fa-chevron-right"></i> Live TV</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="footer-link"
+                      onclick="scrollToCategories(event)"
+                      ><i class="fa-solid fa-chevron-right"></i> Categories</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="footer-link"
+                      onclick="showTermsModal('privacy', event)"
+                      ><i class="fa-solid fa-chevron-right"></i> Privacy
+                      Policy</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="footer-link"
+                      onclick="showTermsModal('terms', event)"
+                      ><i class="fa-solid fa-chevron-right"></i> Terms of
+                      Service</a
+                    >
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Column 3: TV Categories -->
+              <div class="footer-col">
+                <h3 class="footer-col-title">TV Categories</h3>
+                <ul class="footer-links">
+                  <li>
+                    <a
+                      href="#"
+                      class="footer-link footer-cat-link"
+                      data-category="News"
+                      ><i class="fa-solid fa-tv"></i> News</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="footer-link footer-cat-link"
+                      data-category="Entertainment"
+                      ><i class="fa-solid fa-tv"></i> Entertainment</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="footer-link footer-cat-link"
+                      data-category="Sports"
+                      ><i class="fa-solid fa-tv"></i> Sports</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="footer-link footer-cat-link"
+                      data-category="Movies"
+                      ><i class="fa-solid fa-tv"></i> Movies</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="footer-link footer-cat-link"
+                      data-category="Musics"
+                      ><i class="fa-solid fa-tv"></i> Music</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="footer-link footer-cat-link"
+                      data-category="Kids"
+                      ><i class="fa-solid fa-tv"></i> Kids</a
+                    >
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Column 4: Contact Information -->
+              <div class="footer-col">
+                <h3 class="footer-col-title">Contact Info</h3>
+                <ul class="footer-contact-list">
+                  <li>
+                    <i class="fa-solid fa-envelope"></i>
+                    <div>
+                      <span>Email Support</span>
+                      <a href="mailto:shariaralways@gmail.com"
+                        >shariaralways@gmail.com</a
+                      >
+                    </div>
+                  </li>
+                  <li>
+                    <i class="fa-solid fa-globe"></i>
+                    <div>
+                      <span>Official Website</span>
+                      <a href="https://www.ripon.engineer/" target="_blank"
+                        >www.ripon.engineer</a
+                      >
+                    </div>
+                  </li>
+                  <li>
+                    <i class="fa-brands fa-telegram"></i>
+                    <div>
+                      <span>Telegram Support</span>
+                      <a href="https://t.me/Shariar_Ahamed" target="_blank"
+                        >@Shariar_Ahamed</a
+                      >
+                    </div>
+                  </li>
+                </ul>
               </div>
             </div>
-            
-            <div class="footer-copyright">
-              © 2026 Alpha TV. All rights reserved.
+
+            <div class="footer-bottom">
+              <div class="footer-copyright">
+                © 2026 <span class="accent-text">Alpha TV</span>. All rights
+                reserved.
+              </div>
+              <div class="footer-developer">
+                Designed & Developed by
+                <a
+                  href="https://github.com/Shariar-Ahamed"
+                  target="_blank"
+                  class="developer-name"
+                  >Shariar Ahamed</a
+                >
+              </div>
             </div>
           </footer>
         </div>
       </main>
+    </div>
 
+    <!-- Back to Top Button -->
+    <button id="backToTopBtn" class="back-to-top hidden" title="Back to Top">
+      <i class="fa-solid fa-chevron-up"></i>
+    </button>
+
+    <!-- Custom Popup Modal -->
+    <div id="infoModal" class="custom-modal hidden" aria-hidden="true">
+      <div class="custom-modal-overlay" onclick="closeInfoModal()"></div>
+      <div class="custom-modal-card">
+        <button class="custom-modal-close-btn" onclick="closeInfoModal()" aria-label="Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="custom-modal-header">
+          <h2 id="modalTitle">Privacy Policy</h2>
+        </div>
+        <div class="custom-modal-content">
+          <p id="modalText">Content goes here...</p>
+        </div>
+        <div class="custom-modal-footer">
+          <button class="custom-modal-btn" onclick="closeInfoModal()">Got It</button>
+        </div>
+      </div>
     </div>
 
     <!-- Custom Logic -->
