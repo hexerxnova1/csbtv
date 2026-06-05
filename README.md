@@ -44,10 +44,10 @@ Below are the technical specifications of the native Android application package
 
 | Specification | Details |
 |---|---|
-| 📦 **App Name** | `AlphaTV-v1.0.2.apk` |
+| 📦 **App Name** | `AlphaTV-v1.0.3.apk` |
 | 🆔 **Package Name** | `com.alphatv.app` |
-| 🏷️ **Current Version** | `1.0.2` (Build Code `3`) |
-| 📂 **App Size** | ~3.5 MB |
+| 🏷️ **Current Version** | `1.0.3` (Build Code `4`) |
+| 📂 **App Size** | ~31.1 MB |
 | ⚙️ **Minimum OS Support** | Android 7.0 (Nougat - API Level 24) or higher |
 | 🎯 **Target SDK** | Android 15 / 16 (API Level 36) |
 | 🎮 **Category** | Entertainment / Live TV Streaming |
