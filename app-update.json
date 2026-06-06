@@ -1,6 +1,6 @@
 {
-  "latestVersion": "1.0.4",
-  "buildCode": 5,
-  "changelog": "১. ব্রাউজার সংস্করণ নিরাপত্তা সতর্কতা মোডাল যোগ করা হয়েছে।\n২. সরাসরি ডাউনলোডের জন্য ওয়ান-ক্লিক APK ডাউনলোড সিস্টেম চালু করা হয়েছে।",
-  "downloadUrl": "https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases/download/v1.0.4/AlphaTV-v1.0.4.apk"
+  "latestVersion": "1.0.5",
+  "buildCode": 6,
+  "changelog": "১. স্পোর্টস ক্যাটাগরি থেকে TDM Desporto চ্যানেলটি বাদ দেওয়া হয়েছে।",
+  "downloadUrl": "https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases/download/v1.0.5/AlphaTV-v1.0.5.apk"
 }
