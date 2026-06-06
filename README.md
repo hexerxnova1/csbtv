@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://i.postimg.cc/bwR0VvDz/Done1.png" alt="Alpha TV Cover Page" width="100%" style="border-radius: 12px; margin-bottom: 20px;">
+  <img src="assets/Readme.md-cover.png" alt="Alpha TV Cover Page" width="100%" style="border-radius: 12px; margin-bottom: 20px;">
 </p>
 
 # 📺 Alpha TV - Premium Live Streaming Platform
@@ -95,14 +95,14 @@ Below are the technical specifications of the native Android application package
 
 ### 💻 Laptop & Desktop View
 <p align="center">
-  <img src="https://i.postimg.cc/Dz267Gkc/laptop.png" alt="Laptop Preview" width="80%" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.5);">
+  <img src="assets/laptop-view.png" alt="Laptop Preview" width="80%" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.5);">
 </p>
 
 ### 📲 Tablet & Mobile View
 <p align="center">
-  <img src="https://i.postimg.cc/3xhVDd5P/tab.png" width="45%" alt="Tablet Preview" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.5);">
+  <img src="assets/tab-view.png" width="45%" alt="Tablet Preview" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.5);">
   &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="https://i.postimg.cc/7LVBzVM2/phone.png" width="28%" alt="Mobile Preview" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.5);">
+  <img src="assets/phone-view.png" width="28%" alt="Mobile Preview" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.5);">
 </p>
 
 ---
