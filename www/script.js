@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupViewModeToggle();
   setupMobileAppBanner();
   checkForUpdates();
+  checkDisclaimer();
 });
 
 /* DETECT NATIVE FULLSCREEN EXIT TO UNLOCK ORIENTATION & HANDLE BACK BUTTON */
@@ -1131,7 +1132,7 @@ function closeAppBanner() {
 }
 
 /* IN-APP UPDATE CHECKER (ANDROID APP ONLY) */
-const currentBuildCode = 9; // Matches version 1.0.8 build code
+const currentBuildCode = 10; // Matches version 1.0.9 build code
 
 function checkForUpdates() {
   if (!window.Capacitor) return;
@@ -1251,5 +1252,42 @@ function handleUpdateDownload(event) {
     });
   } else {
     window.open(url, "_blank");
+  }
+}
+
+/* DISCLAIMER POPUP MODAL LOGIC */
+function checkDisclaimer() {
+  const accepted = localStorage.getItem("alpha_tv_disclaimer_accepted");
+  if (!accepted) {
+    const modal = document.getElementById("disclaimerModal");
+    if (modal) {
+      modal.classList.remove("hidden");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    }
+  }
+}
+
+function acceptDisclaimer() {
+  localStorage.setItem("alpha_tv_disclaimer_accepted", "true");
+  closeDisclaimerModal();
+}
+
+function showDisclaimerModal(event) {
+  if (event) event.preventDefault();
+  const modal = document.getElementById("disclaimerModal");
+  if (modal) {
+    modal.classList.remove("hidden");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+  }
+}
+
+function closeDisclaimerModal() {
+  const modal = document.getElementById("disclaimerModal");
+  if (modal) {
+    modal.classList.add("hidden");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
   }
 }

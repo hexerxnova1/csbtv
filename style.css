@@ -2712,15 +2712,108 @@ video {
 }
 
 .mode-3d .fav-btn.is-favorite {
-  background: rgba(255, 204, 0, 0.08) !important;
+  background: rgba(255, 204, 0, 0.15) !important;
+  border: 1px solid rgba(255, 204, 0, 0.4) !important;
   color: #ffcc00 !important;
-  box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.8), inset -3px -3px 6px rgba(255, 255, 255, 0.02), 0 0 8px rgba(255, 204, 0, 0.25) !important;
+  box-shadow: 0 0 10px rgba(255, 204, 0, 0.45) !important;
+}
+
+.mode-3d .fav-btn.is-favorite:active {
+  box-shadow: 0 0 15px rgba(255, 204, 0, 0.6) !important;
+  transform: scale(0.95);
 }
 
 /* Empty State / Custom No Results design */
 .no-results-msg .empty-icon {
   margin-bottom: 12px;
   display: block;
+}
+
+/* DISCLAIMER POPUP MODAL STYLES */
+.disclaimer-card {
+  max-width: 500px !important;
+  border: 1px solid rgba(155, 81, 224, 0.22) !important;
+}
+
+.disclaimer-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 14px;
+  margin-bottom: 20px;
+}
+
+.disclaimer-icon {
+  font-size: 24px;
+  color: #9b51e0;
+  animation: warningPulse 1.5s infinite alternate;
+  flex-shrink: 0;
+}
+
+.disclaimer-header h2 {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.disclaimer-content {
+  margin-top: 0;
+}
+
+.disclaimer-text {
+  display: block !important;
+  margin: 0 0 14px 0 !important;
+  font-size: 14.5px !important;
+  font-weight: 400 !important;
+  color: #ffffff !important;
+  line-height: 1.6 !important;
+}
+
+.disclaimer-text strong {
+  color: #b388ff !important;
+  font-weight: 600 !important;
+}
+
+.disclaimer-subtext {
+  display: block !important;
+  margin: 0 !important;
+  font-size: 13px !important;
+  color: var(--text-secondary) !important;
+  line-height: 1.5 !important;
+}
+
+.disclaimer-accept-btn {
+  background: #9b51e0 !important;
+  color: white !important;
+  width: 100%;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 20px !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 15px rgba(155, 81, 224, 0.25) !important;
+  transition: all var(--transition-fast) !important;
+  cursor: pointer;
+  border: none;
+}
+
+.disclaimer-accept-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(155, 81, 224, 0.4) !important;
+  background: #a662e6 !important;
+}
+
+/* 3D Neumorphic Override for Disclaimer Modal */
+.mode-3d .disclaimer-card {
+  box-shadow: 12px 12px 30px rgba(0, 0, 0, 0.8), -12px -12px 30px rgba(255, 255, 255, 0.04) !important;
+  border: none !important;
+}
+
+.mode-3d .disclaimer-accept-btn {
+  box-shadow: 5px 5px 12px rgba(0, 0, 0, 0.65), -5px -5px 12px rgba(255, 255, 255, 0.06) !important;
+  background: #9b51e0 !important;
 }
 
 

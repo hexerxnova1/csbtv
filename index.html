@@ -366,6 +366,14 @@
                       Service</a
                     >
                   </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="footer-link"
+                      onclick="showDisclaimerModal(event)"
+                      ><i class="fa-solid fa-chevron-right"></i> Disclaimer</a
+                    >
+                  </li>
                 </ul>
               </div>
 
@@ -571,6 +579,31 @@
             <i class="fa-brands fa-android"></i> Update Now
           </a>
           <button class="custom-modal-btn update-later-btn" onclick="closeUpdateModal()">Later</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Disclaimer Modal -->
+    <div id="disclaimerModal" class="custom-modal hidden" aria-hidden="true">
+      <div class="custom-modal-overlay" onclick="closeDisclaimerModal()"></div>
+      <div class="custom-modal-card disclaimer-card">
+        <button class="custom-modal-close-btn" onclick="closeDisclaimerModal()" aria-label="Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="custom-modal-header disclaimer-header">
+          <i class="fa-solid fa-triangle-exclamation disclaimer-icon"></i>
+          <h2>দ্রষ্টব্য / Disclaimer</h2>
+        </div>
+        <div class="custom-modal-content disclaimer-content">
+          <p class="disclaimer-text">
+            এই প্ল্যাটফর্মের সকল স্ট্রিম লিংক ও সোর্স ইন্টারনেটে <strong>পাবলিকভাবে উপলব্ধ</strong> জায়গা থেকে সংগ্রহ করা হয়েছে। আমরা কোনো কন্টেন্ট <strong>হোস্ট, আপলোড বা মালিকানা দাবি করি না</strong> — শুধু পাবলিক লিংকগুলো একত্র ও যাচাই করি।
+          </p>
+          <p class="disclaimer-subtext">
+            কোনো স্ট্রিম বা কন্টেন্টে কপিরাইট সংক্রান্ত আপত্তি থাকলে সরাসরি মূল সোর্সের সাথে যোগাযোগ করার জন্য অনুরোধ করা হলো। এই প্ল্যাটফর্মটি শুধুমাত্র ইন্টারনেটে থাকা পাবলিক লিঙ্কগুলো সহজে উপভোগ করার জন্য তৈরি করা হয়েছে।
+          </p>
+        </div>
+        <div class="custom-modal-footer disclaimer-footer">
+          <button class="custom-modal-btn disclaimer-accept-btn" onclick="acceptDisclaimer()">আমি বুঝেছি</button>
         </div>
       </div>
     </div>

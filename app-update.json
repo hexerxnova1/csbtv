@@ -1,6 +1,6 @@
 {
-  "latestVersion": "1.0.8",
-  "buildCode": 9,
-  "changelog": "১. পছন্দের চ্যানেল তালিকা (Favorites Feature) যুক্ত করা হয়েছে।\n২. ক্যাটাগরি ক্রম পরিবর্তন করা হয়েছে (Favorites ➔ All Channels ➔ Sports ➔ Bangla)।\n৩. ২ডি এবং ৩ডি নিউমরফিক মোডে চমৎকার গোল্ডেন স্টার ডিজাইন এবং রিয়েল-টাইম টগল যুক্ত করা হয়েছে।\n৪. অ্যাপের পারফরম্যান্স ও স্টেবিলিটি উন্নত করা হয়েছে।",
-  "downloadUrl": "https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases/download/v1.0.8/AlphaTV-v1.0.8.apk"
+  "latestVersion": "1.0.9",
+  "buildCode": 10,
+  "changelog": "১. প্রথমবার ভিজিটকারীদের জন্য ডিসক্লেমার পপআপ মডাল যুক্ত করা হয়েছে (localStorage ট্র্যাকিং সহ)।\n২. প্রাইভেসি পলিসি মডালের সাথে মিল রেখে ডিসক্লেমার মডালের সাইজ ও ব্যাকগ্রাউন্ড অ্যাডজাস্ট করা হয়েছে।\n৩. ফুটার সেকশনে ডিসক্লেমার রি-ভিউ করার জন্য নতুন ম্যানুয়াল লিংক যুক্ত করা হয়েছে।\n৪. ২ডি এবং ৩ডি থিম লেআউট ও রেসপন্সিভনেস আরও উন্নত করা হয়েছে।",
+  "downloadUrl": "https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases/download/v1.0.9/AlphaTV-v1.0.9.apk"
 }
