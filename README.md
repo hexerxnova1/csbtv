@@ -5,14 +5,14 @@
 # 📺 Alpha TV - Premium Live Streaming Platform
 
 <p align="center">
-  <a href="https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases"><img src="https://img.shields.io/badge/Download-AlphaTV--v1.0.9.apk-brightgreen?style=for-the-badge&logo=android&logoColor=white" alt="Download APK"></a>
+  <a href="https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases"><img src="https://img.shields.io/badge/Download-AlphaTV--v1.1.0.apk-brightgreen?style=for-the-badge&logo=android&logoColor=white" alt="Download APK"></a>
   <a href="https://shariar-ahamed.github.io/online-tv-streaming-platform/"><img src="https://img.shields.io/badge/Live-Web%20Demo-ff007f?style=for-the-badge&logo=livewire&logoColor=white" alt="Live Demo"></a>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Platform-Android%20%7C%20Web-blue?style=flat-square&logo=capacitor&logoColor=white">
   <img src="https://img.shields.io/badge/UI-Neumorphic%20%2F%20Glassmorphism-violet?style=flat-square">
-  <img src="https://img.shields.io/badge/Version-v1.0.9-brightgreen?style=flat-square">
+  <img src="https://img.shields.io/badge/Version-v1.1.0-brightgreen?style=flat-square">
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square">
 </p>
 
@@ -44,9 +44,9 @@ Below are the technical specifications of the native Android application package
 
 | Specification                  | Details                                                                                    |
 | ------------------------------ | ------------------------------------------------------------------------------------------ |
-| 📦 **App Name**                | `AlphaTV-v1.0.9.apk`                                                                       |
+| 📦 **App Name**                | `AlphaTV-v1.1.0.apk`                                                                       |
 | 🆔 **Package Name**            | `com.alphatv.app`                                                                          |
-| 🏷️ **Current Version**         | `1.0.9` (Build Code `10`)                                                                  |
+| 🏷️ **Current Version**         | `1.1.0` (Build Code `11`)                                                                  |
 | 📂 **App Size**                | ~31.1 MB                                                                                   |
 | ⚙️ **Minimum OS Support**      | Android 7.0 (Nougat - API Level 24) or higher                                              |
 | 🎯 **Target SDK**              | Android 15 / 16 (API Level 36)                                                             |
@@ -181,7 +181,13 @@ npx cap open android
 
 ## 📋 Release History & Changelog
 
-### 🚀 v1.0.9 (Current Release) - Build Code `10`
+### 🚀 v1.1.0 (Current Release) - Build Code `11`
+* **Global Synchronized Stats & Real-Time Fluctuations:**
+  * Implemented a deterministic time-based visitor calculator. Now, all active users see the exact same "Total Visits" and "Live Watching" counts in real-time.
+  * Live Watching fluctuates dynamically up and down using a slow 1-hour sine wave (+/- 25 watchers) and a fast 20-second noise (+/- 4 watchers) to simulate real traffic fluctuations.
+  * Total Visits grows steadily over time (1 new visit every 90 seconds) based on time elapsed since a fixed benchmark date.
+
+### 🚀 v1.0.9 - Build Code `10`
 * **First-Time Visitor Disclaimer Modal:**
   * Implemented an overlay popup modal to display streaming/liability disclaimers for first-time visitors.
   * Integrated `localStorage` visitor tracking (`alpha_tv_disclaimer_accepted`) so the popup appears only once per browser/app installation.
@@ -199,7 +205,7 @@ npx cap open android
 
 ## 🔗 Useful Links
 
-- **Latest APK Release:** [Download AlphaTV-v1.0.9.apk](https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases)
+- **Latest APK Release:** [Download AlphaTV-v1.1.0.apk](https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases)
 - **Live Web App:** [Alpha TV Live Web App](https://shariar-ahamed.github.io/online-tv-streaming-platform/)
 - **Source Code Repository:** [GitHub Repository](https://github.com/Shariar-Ahamed/online-tv-streaming-platform)
 

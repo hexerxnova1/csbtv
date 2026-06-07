@@ -865,44 +865,52 @@ function setupLiveStats() {
     if (headerTotalCountEl) headerTotalCountEl.innerText = val.toLocaleString();
   };
 
-  // 1. Total Visits Logic (Persist using localStorage)
-  const baseVisits = 9850; // Started around 10k as requested
-  let storedVisits = localStorage.getItem("alpha_tv_total_visits_v2");
-  
-  if (!storedVisits) {
-    storedVisits = baseVisits;
-  } else {
-    storedVisits = parseInt(storedVisits, 10);
-  }
-  
-  // Increment visit by 1 for current session/page load
-  storedVisits += 1;
-  localStorage.setItem("alpha_tv_total_visits_v2", storedVisits);
-  updateTotalUI(storedVisits);
+  // 1. Total Visits (Deterministic time-based growth - identical for all users)
+  const baseVisits = 9850;
+  const baseTime = new Date("2026-06-05T00:00:00Z").getTime(); // Fixed start date
+  const visitIntervalMs = 90000; // 1 visit every 90 seconds (1.5 minutes)
 
-  // 2. Live Watching Logic (Simulate realistic fluctuations)
-  // Start with a random number between 85 and 145
-  let liveCount = Math.floor(Math.random() * (145 - 85 + 1)) + 85;
-  updateLiveUI(liveCount);
+  const calculateTotalVisits = () => {
+    const elapsed = Date.now() - baseTime;
+    return baseVisits + Math.max(0, Math.floor(elapsed / visitIntervalMs));
+  };
+  
+  let currentTotalVisits = calculateTotalVisits();
+  updateTotalUI(currentTotalVisits);
 
-  // Update live watching stats every 4 seconds (fluctuate between -3 and +3)
+  // 2. Live Watching (Deterministic wave fluctuations - identical for all users)
+  const baseLive = 110;
+  
+  const calculateLiveWatching = () => {
+    const timeMs = Date.now();
+    // Slow wave: completes a full cycle every ~62.8 minutes, fluctuates +/- 25
+    const slowWave = Math.sin(timeMs / 600000) * 25;
+    // Fast wave (noise): completes a cycle every 20 seconds, fluctuates +/- 4
+    const fastNoise = Math.sin(timeMs / 3183) * 4; 
+    
+    let count = Math.round(baseLive + slowWave + fastNoise);
+    if (count < 70) count = 70;
+    if (count > 160) count = 160;
+    return count;
+  };
+
+  let currentLiveCount = calculateLiveWatching();
+  updateLiveUI(currentLiveCount);
+
+  // Update UI values dynamically every 3 seconds
   setInterval(() => {
-    const change = Math.floor(Math.random() * 7) - 3; // -3, -2, -1, 0, 1, 2, 3
-    liveCount += change;
-    
-    // Keep count in a realistic active range (e.g. 70 to 180)
-    if (liveCount < 70) liveCount = 70;
-    if (liveCount > 180) liveCount = 180;
-    
-    updateLiveUI(liveCount);
-
-    // Occasional global visit increment simulation (e.g. 35% chance every 4s)
-    if (Math.random() < 0.35) {
-      storedVisits += 1;
-      localStorage.setItem("alpha_tv_total_visits_v2", storedVisits);
-      updateTotalUI(storedVisits);
+    const newTotalVisits = calculateTotalVisits();
+    if (newTotalVisits !== currentTotalVisits) {
+      currentTotalVisits = newTotalVisits;
+      updateTotalUI(currentTotalVisits);
     }
-  }, 4000);
+
+    const newLiveCount = calculateLiveWatching();
+    if (newLiveCount !== currentLiveCount) {
+      currentLiveCount = newLiveCount;
+      updateLiveUI(currentLiveCount);
+    }
+  }, 3000);
 }
 
 /* BACK TO TOP BUTTON LOGIC */
@@ -1132,7 +1140,7 @@ function closeAppBanner() {
 }
 
 /* IN-APP UPDATE CHECKER (ANDROID APP ONLY) */
-const currentBuildCode = 10; // Matches version 1.0.9 build code
+const currentBuildCode = 11; // Matches version 1.1.0 build code
 
 function checkForUpdates() {
   if (!window.Capacitor) return;
