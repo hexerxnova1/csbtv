@@ -35,6 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupMobileAppBanner();
   checkForUpdates();
   checkDisclaimer();
+  setupPictureInPicture();
 });
 
 /* DETECT NATIVE FULLSCREEN EXIT TO UNLOCK ORIENTATION & HANDLE BACK BUTTON */
@@ -133,13 +134,22 @@ function setupPlayerSync() {
 
   video.addEventListener("play", () => {
     playPauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+    if (window.AndroidPiP) {
+      window.AndroidPiP.setVideoPlaying(true);
+    }
   });
 
   video.addEventListener("pause", () => {
     playPauseBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+    if (window.AndroidPiP) {
+      window.AndroidPiP.setVideoPlaying(false);
+    }
   });
   
   video.addEventListener("ended", () => {
+    if (window.AndroidPiP) {
+      window.AndroidPiP.setVideoPlaying(false);
+    }
     nextChannel();
   });
 }
@@ -1298,4 +1308,30 @@ function closeDisclaimerModal() {
     modal.setAttribute("aria-hidden", "true");
     document.body.style.overflow = "";
   }
+}
+
+/* AUTOMATIC PICTURE-IN-PICTURE (PIP) MODE SYNC */
+function setupPictureInPicture() {
+  const video = document.getElementById("video");
+
+  // Web Browser native PiP event listeners
+  video.addEventListener("enterpictureinpicture", () => {
+    console.log("Web PiP Entered");
+    document.body.classList.add("pip-active");
+  });
+
+  video.addEventListener("leavepictureinpicture", () => {
+    console.log("Web PiP Exited");
+    document.body.classList.remove("pip-active");
+  });
+
+  // Android capacitor wrapper callback
+  window.onPiPModeChanged = function(isInPiP) {
+    console.log("Android PiP Changed:", isInPiP);
+    if (isInPiP) {
+      document.body.classList.add("pip-active");
+    } else {
+      document.body.classList.remove("pip-active");
+    }
+  };
 }

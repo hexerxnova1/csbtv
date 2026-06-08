@@ -1,8 +1,10 @@
 package com.alphatv.app;
 
+import android.app.PictureInPictureParams;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Rational;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
@@ -10,6 +12,8 @@ import android.view.WindowManager;
 import com.getcapacitor.BridgeActivity;
 
 public class MainActivity extends BridgeActivity {
+
+    private boolean isVideoPlaying = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +26,16 @@ public class MainActivity extends BridgeActivity {
         }
 
         applySystemUiVisibility(getResources().getConfiguration().orientation);
+
+        // Add Javascript Interface for PiP state tracking
+        if (bridge != null && bridge.getWebView() != null) {
+            bridge.getWebView().addJavascriptInterface(new Object() {
+                @android.webkit.JavascriptInterface
+                public void setVideoPlaying(boolean playing) {
+                    isVideoPlaying = playing;
+                }
+            }, "AndroidPiP");
+        }
     }
 
     @Override
@@ -39,6 +53,22 @@ public class MainActivity extends BridgeActivity {
     }
 
     @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        if (isVideoPlaying && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            try {
+                Rational aspectRatio = new Rational(16, 9);
+                PictureInPictureParams params = new PictureInPictureParams.Builder()
+                    .setAspectRatio(aspectRatio)
+                    .build();
+                enterPictureInPictureMode(params);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             // Force orientation back to portrait to exit fullscreen
@@ -51,8 +81,35 @@ public class MainActivity extends BridgeActivity {
                     setRequestedOrientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
                 }
             }, 1000);
+        } else if (isVideoPlaying && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            try {
+                Rational aspectRatio = new Rational(16, 9);
+                PictureInPictureParams params = new PictureInPictureParams.Builder()
+                    .setAspectRatio(aspectRatio)
+                    .build();
+                enterPictureInPictureMode(params);
+            } catch (Exception e) {
+                e.printStackTrace();
+                super.onBackPressed();
+            }
         } else {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onPictureInPictureModeChanged(final boolean isInPictureInPictureMode, Configuration newConfig) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
+        if (bridge != null && bridge.getWebView() != null) {
+            bridge.getWebView().post(new Runnable() {
+                @Override
+                public void run() {
+                    bridge.getWebView().evaluateJavascript(
+                        "if(window.onPiPModeChanged){window.onPiPModeChanged(" + isInPictureInPictureMode + ");}", 
+                        null
+                    );
+                }
+            });
         }
     }
 

@@ -2816,4 +2816,65 @@ video {
   background: #9b51e0 !important;
 }
 
+/* PICTURE-IN-PICTURE (PIP) CUSTOM STYLING */
+body.pip-active {
+  background: #000000 !important;
+  overflow: hidden !important;
+}
+
+body.pip-active .bg-mesh,
+body.pip-active header,
+body.pip-active #customControls,
+body.pip-active .current-channel-card,
+body.pip-active .stats-card,
+body.pip-active footer.footer,
+body.pip-active main.channels-section {
+  display: none !important;
+}
+
+body.pip-active .app-container {
+  display: block !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  max-width: 100% !important;
+}
+
+body.pip-active .player-section {
+  width: 100vw !important;
+  height: 100vh !important;
+  min-width: 100vw !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  background: #000000 !important;
+  display: block !important;
+  position: static !important;
+}
+
+body.pip-active .player-wrapper {
+  width: 100vw !important;
+  height: 100vh !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+body.pip-active .video-container {
+  width: 100vw !important;
+  height: 100vh !important;
+  aspect-ratio: auto !important;
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+body.pip-active video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
+
+
 

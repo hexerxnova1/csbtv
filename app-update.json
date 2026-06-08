@@ -1,6 +1,6 @@
 {
-  "latestVersion": "1.1.1",
-  "buildCode": 12,
-  "changelog": "১. লাইভ প্লেলিস্ট সিঙ্ক: এখন গিটহাবে চ্যানেল আপডেট করলে সাথে সাথে অ্যাপেও আপডেট হয়ে যাবে (ক্যাশে বাইপাস)।\n২. কিছু ডুপ্লিকেট চ্যানেল ফিক্স করা হয়েছে।",
-  "downloadUrl": "https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases/download/v1.1.1/AlphaTV-v1.1.1.apk"
+  "latestVersion": "1.1.2",
+  "buildCode": 13,
+  "changelog": "১. পিকচার-ইন-পিকচার (PiP) মোড: ভিডিও চলাকালীন হোম বা ব্যাক বাটন প্রেস করলে লাইভ টিভি বন্ধ না হয়ে স্ক্রিনে ভাসমান ছোট উইন্ডো হয়ে থাকবে।",
+  "downloadUrl": "https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases/download/v1.1.2/AlphaTV-v1.1.2.apk"
 }
