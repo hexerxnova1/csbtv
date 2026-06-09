@@ -15,6 +15,8 @@ https://tvsen5.aynaott.com/RtvHD/index.m3u8?e=1779283751&u=78be6644-0a65-48ec-81
 https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/channel1bd.stream/tracks-v1a1/mono.m3u8
 #EXTINF:-1 tvg-id="98000" tvg-name="Somoy TV" tvg-logo="https://tstatic.akash-go.com/cms-ui/images/custom-content/1735560559088.png" group-title="News, Bangla",Somoy TV
 https://owrcovcrpy.gpcdn.net/bpk-tv/1702/output/index.m3u8
+#EXTINF:-1 tvg-name="Somoy TV" tvg-logo="https://tstatic.akash-go.com/cms-ui/images/custom-content/1735560559088.png" group-title="News, Bangla",Somoy TV
+https://owrcovcrpy.gpcdn.net/bpk-tv/1702/output/1702-audio_113322_eng=113200-video=2202800.m3u8
 #EXTINF:-1 tvg-id="100000" tvg-name="Bangla Vision" tvg-logo="https://tstatic.akash-go.com/cms-ui/images/custom-content/1735561344354.png" group-title="Entertainment, Bangla",Bangla Vision
 https://owrcovcrpy.gpcdn.net/bpk-tv/1715/output/index.m3u8
 #EXTINF:-1 tvg-id="229000" tvg-name="Maasranga TV" tvg-logo="https://s3.aynaott.com/storage/1b5cb8c7901739cd7d201a38d2ab4737" group-title="Entertainment, Bangla",Maasranga TV
@@ -127,10 +129,12 @@ http://198.195.239.50:8095/JalshaMovies/index.m3u8
 https://tvsen6.aynaott.com/kolkatatv/index.m3u8?e=1779283837&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=8cc8bac4fecb91a1f2e5443bbc180545
 #EXTINF:-1 tvg-logo="https://i.postimg.cc/KYXsFJwR/IMG-20260529-210059.png" group-title="Kids, Bangla",Rongeen TV
 https://server.thelegitpro.in/rongeentv/rongeentv/tracks-v1a1/mono.m3u8
+#EXTINF:-1 tvg-id="1345" tvg-name="Sonic Bangla" tvg-logo="https://jiotvimages.cdn.jio.com/dare_images/images/Sonic_Bangla.png" group-title="Kids, Bangla",Sonic Bangla
+http://103.204.43.87:8080/live/1/1/274.m3u8
 #EXTINF:-1 group-title=" Bangla" tvg-logo="https://i.postimg.cc/t7Gn9VtZ/abpananda.png",ABP Ananda
 https://amg01448-samsungin-abpananda-samsungin-ad-pw.amagi.tv/playlist/amg01448-samsungin-abpananda-samsungin/playlist.m3u8
 #EXTINF:-1 tvg-logo="https://tvassets.roarzone.net/images/34.png" group-title="Indian Bangla, Bangla",ZEE BANGLA
-https://redbooks.site/gt.php?url=https://tv.roarzone.net/player.php?stream=edge3/zee_bangla
+https://tvsen6.aynaott.com/ZeeBangla/index.m3u8
 #EXTINF:-1 tvg-logo="https://s3.aynaott.com/storage/7b93f6be496c9fd25769b09970180c4c" group-title="News, Bangla",TV9 Bangla
 https://dyjmyiv3bp2ez.cloudfront.net/pub-iotv9banaen8yq/liveabr/playlist.m3u8
 #EXTINF:-1 tvg-id="191000" tvg-name="Star News" tvg-logo="https://tstatic.akash-go.com/cms-ui/images/custom-content/1770189826301.png" group-title="News, Bangla",Star News
@@ -251,8 +255,6 @@ https://tvsen7.aynaott.com/sspts1/tracks-v1a1/mono.ts.m3u8
 https://tvsen7.aynaott.com/sspts1/index.m3u8
 #EXTINF:-1 tvg-logo="https://i.postimg.cc/BbxBhn29/images.jpg" group-title="Sports",Star Sports 1 HD
 http://41.205.93.154/STARSPORTS1/index.m3u8
-#EXTINF:-1 tvg-logo="https://i.postimg.cc/BbxBhn29/images.jpg" group-title="Sports",STAR SPORTS KHEL
-http://103.175.73.12:8080/live/151/151_0.m3u8
 #EXTINF:-1 tvg-name="A Sports" tvg-logo="https://i.postimg.cc/GmnPDqjT/download.jpg" group-title="Sports",A Sports
 http://198.195.239.50:8095/Eurosport/index.m3u8
 #EXTINF:-1 tvg-name="REAL MADRID TV" tvg-logo="https://i.postimg.cc/yxfPT7rC/172735216318-logo-vertical-negativo-1.jpg" group-title="Sports",REAL MADRID TV
@@ -389,6 +391,8 @@ https://dfhsahpa45kk2.cloudfront.net/scheduler/scheduleMaster/476.m3u8
 https://streams2.sofast.tv/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/eea68b79-bfe2-451e-a227-d637a5b9548a/manifest.m3u8
 #EXTINF:-1 tvg-logo="https://s3.aynaott.com/storage/1a580ee2636a0c4761e623bc131ba7a6" group-title="Sports",WOF 1
 https://mainstreammedia-worldoffreesportsintl-rakuten.amagi.tv/hls/amagi_hls_data_rakutenAA-mainstreammediafreesportsintl-rakuten/CDN/master.m3u8
+#EXTINF:-1 tvg-logo="https://i.postimg.cc/BbxBhn29/images.jpg" group-title="Sports",STAR SPORTS KHEL
+http://103.175.73.12:8080/live/151/151_0.m3u8
 #EXTINF:-1 tvg-logo="https://s3.aynaott.com/storage/4d343b446b1e7164bb7239bbe822a570" group-title="Other",MovieSphere
 https://moviesphereuk-samsunguk.amagi.tv/playlist.m3u8
 #EXTINF:-1 tvg-logo="https://s3.aynaott.com/storage/22af43810a37af9a151f1e0a23adde63" group-title="Other",Rakuten Movies
