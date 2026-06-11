@@ -398,9 +398,9 @@ video {
 }
 
 .control-btn:hover {
-  background: #b388ff;
-  border-color: #b388ff;
-  box-shadow: 0 0 15px rgba(179, 136, 255, 0.45);
+  background: #ff6d00;
+  border-color: #ff6d00;
+  box-shadow: 0 0 15px rgba(255, 109, 0, 0.45);
   transform: scale(1.15);
 }
 
@@ -413,10 +413,10 @@ video {
 }
 
 .control-btn.play-pause-btn:hover {
-  background: var(--secondary);
-  color: var(--bg-dark);
-  border-color: var(--secondary);
-  box-shadow: 0 0 20px var(--secondary);
+  background: #ff6d00;
+  color: #ffffff;
+  border-color: #ff6d00;
+  box-shadow: 0 0 20px rgba(255, 109, 0, 0.65);
 }
 
 /* CURRENT CHANNEL INFO CARD */
@@ -1463,7 +1463,7 @@ video {
   text-shadow: 0 0 8px rgba(234, 67, 53, 0.5);
 }
 
-.footer-contact-list li div a[href*="ripon.engineer"]:hover {
+.footer-contact-list li div a[href*="shariarahamed.me"]:hover {
   color: #00A2FF;
   text-shadow: 0 0 8px rgba(0, 162, 255, 0.5);
 }
