@@ -20,13 +20,21 @@
     />
 
     <!-- HLS Player Library -->
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="hls.js"></script>
 
-    <!-- FontAwesome Icons -->
+    <!-- FontAwesome Icons (Loaded asynchronously to prevent blocking startup paint) -->
     <link
-      rel="stylesheet"
+      rel="preload"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
     />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      />
+    </noscript>
 
     <!-- Custom Style -->
     <link rel="stylesheet" href="style.css" />
