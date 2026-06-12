@@ -1144,8 +1144,8 @@ function showTermsModal(type, event) {
   
   const title = type === "privacy" ? "Privacy Policy" : "Terms of Service";
   const text = type === "privacy" 
-    ? "At Alpha TV, we value your privacy. We do not collect or store any personal data. All streams are sourced from third-party public playlists and played locally in your browser or application. Your preferences are saved only on your local device."
-    : "Welcome to Alpha TV! Our services are provided free of charge for streaming live channels. We do not host any of the video content; all streams are sourced from publicly available public playlists. By using this app, you agree to comply with your local copyright and streaming laws.";
+    ? "At CSB TV, we value your privacy. We do not collect or store any personal data. All streams are sourced from third-party public playlists and played locally in your browser or application. Your preferences are saved only on your local device."
+    : "Welcome to CSB TV! Our services are provided free of charge for streaming live channels. We do not host any of the video content; all streams are sourced from publicly available public playlists. By using this app, you agree to comply with your local copyright and streaming laws.";
   
   const modal = document.getElementById("infoModal");
   const modalTitle = document.getElementById("modalTitle");
