@@ -301,7 +301,6 @@
                   >
                     <i class="fa-brands fa-telegram"></i>
                   </a>
-                  <a
                 </div>
               </div>
 
@@ -496,40 +495,6 @@
       </div>
     </div>
 
-    <!-- Custom Warning Popup Modal -->
-    <div id="warningModal" class="custom-modal hidden" aria-hidden="true">
-      <div class="custom-modal-overlay" onclick="closeWarningModal()"></div>
-      <div class="custom-modal-card warning-modal-card">
-        <button class="custom-modal-close-btn" onclick="closeWarningModal()" aria-label="Close">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-        <div class="custom-modal-header warning-modal-header">
-          <i class="fa-solid fa-triangle-exclamation warning-modal-icon"></i>
-          <h2 id="warningModalTitle">নিরাপত্তা সতর্কতা</h2>
-        </div>
-        <div class="custom-modal-content warning-modal-content">
-          <p class="warning-main-text">এই চ্যানেলটি HTTP স্ট্রিম ব্যবহার করে, যা আপনার ব্রাউজারের নিরাপত্তা নীতির কারণে এখানে চালানো সম্ভব নয়।</p>
-          <div class="warning-methods">
-            <p class="methods-title">চ্যানেলটি দেখতে নিচের যেকোনো একটি পদ্ধতি অনুসরণ করুন:</p>
-            <div class="method-item">
-              <span class="method-number">পদ্ধতি ১:</span>
-              <span class="method-desc">Browser Settings ➜ Site Settings ➜ Insecure Content ➜ Allow করে পেজটি পুনরায় লোড করুন।</span>
-            </div>
-            <div class="method-item">
-              <span class="method-number">পদ্ধতি ২:</span>
-              <span class="method-desc">আরও ভালো অভিজ্ঞতার জন্য আমাদের Android App ব্যবহার করুন।</span>
-            </div>
-          </div>
-        </div>
-        <div class="custom-modal-footer warning-modal-footer">
-          <a href="https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases" class="custom-modal-btn warning-app-download-btn download-apk-link" target="_blank">
-            <i class="fa-brands fa-android"></i> Download Android App
-          </a>
-          <button class="custom-modal-btn warning-modal-btn" onclick="closeWarningModal()">Got It</button>
-        </div>
-      </div>
-    </div>
-
     <!-- In-App Update Modal (Android Only) -->
     <div id="updateModal" class="custom-modal hidden" aria-hidden="true">
       <div class="custom-modal-overlay" onclick="closeUpdateModal()"></div>
@@ -548,12 +513,12 @@
           <div class="update-note-box">
             <i class="fa-solid fa-circle-info update-note-icon"></i>
             <p class="update-note-text">
-              <strong>💡 অনুরোধ:</strong> ইনস্টলেশন সংক্রান্ত সমস্যা এড়াতে, নতুন সংস্করণটি ইনস্টল করার পূর্বে আপনার ফোনে থাকা আগের অ্যাপটি অনুগ্রহ করে আনইনস্টল (Uninstall) করে নিন।
+              <strong>💡 অনুরোধ:</strong> ইনস্টলেশন সংক্রান্ত সমস্যা এড়াতে, নতুন সংস্করণটি ইনস্টল করার পূর্বে আপনার ফোনে থাকা আগের অ্যাপটি অনুগ্রহ করে আনইনস্টল (Uninstall) করে নিন।
             </p>
           </div>
 
           <div class="update-changelog-container">
-            <p class="changelog-title">নতুন সংস্করণে কী কী পরিবর্তন করা হয়েছে:</p>
+            <p class="changelog-title">নতুন সংস্করণে কী কী পরিবর্তন করা হয়েছে:</p>
             <div id="updateChangelog" class="update-changelog">
               <!-- Changelog details will be dynamically injected here -->
             </div>
@@ -584,7 +549,7 @@
             এই প্ল্যাটফর্মের সকল স্ট্রিম লিংক ও সোর্স ইন্টারনেটে <strong>পাবলিকভাবে উপলব্ধ</strong> জায়গা থেকে সংগ্রহ করা হয়েছে। আমরা কোনো কন্টেন্ট <strong>হোস্ট, আপলোড বা মালিকানা দাবি করি না</strong> — শুধু পাবলিক লিংকগুলো একত্র ও যাচাই করি।
           </p>
           <p class="disclaimer-subtext">
-            কোনো স্ট্রিম বা কন্টেন্টে কপিরাইট সংক্রান্ত আপত্তি থাকলে সরাসরি মূল সোর্সের সাথে যোগাযোগ করার জন্য অনুরোধ করা হলো। এই প্ল্যাটফর্মটি শুধুমাত্র ইন্টারনেটে থাকা পাবলিক লিঙ্কগুলো সহজে উপভোগ করার জন্য তৈরি করা হয়েছে।
+            কোনো স্ট্রিম বা কন্টেন্টে কপিরাইট সংক্রান্ত আপত্তি থাকলে সরাসরি মূল সোর্সের সাথে যোগাযোগ করার জন্য অনুরোধ করা হলো। এই প্ল্যাটফর্মটি শুধুমাত্র ইন্টারনেটে থাকা পাবলিক লিঙ্কগুলো সহজে উপভোগ করার জন্য তৈরি করা হয়েছে।
           </p>
         </div>
         <div class="custom-modal-footer disclaimer-footer">
@@ -602,7 +567,7 @@
         <img src="logo/Logo-PNG.png" alt="CSB TV Logo" class="banner-logo" />
         <div class="banner-text">
           <h4>CSB TV Android App</h4>
-          <p>সেরা পারফরম্যান্স ও লাইভ চ্যানেল দেখতে অ্যাপ ডাউনলোড করুন।</p>
+          <p>সেরা পারফরম্যান্স ও লাইভ চ্যানেল দেখতে অ্যাপ ডাউনলোড করুন.</p>
         </div>
       </div>
       <a href="https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases" class="banner-download-btn download-apk-link" target="_blank">
