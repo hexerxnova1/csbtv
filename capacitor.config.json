@@ -1,6 +1,6 @@
 {
-  "appId": "com.alphatv.app",
-  "appName": "Alpha TV",
+  "appId": "com.csbtv.app",
+  "appName": "Csb TV",
   "webDir": "www",
   "server": {
     "allowNavigation": [
