@@ -1,5 +1,5 @@
 {
-  "name": "alpha-tv",
+  "name": "csb-tv",
   "version": "1.1.3",
   "scripts": {
     "build": "node build.js",
