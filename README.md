@@ -2,7 +2,7 @@
   <img src="assets/Readme.md-cover.png" alt="Alpha TV Cover Page" width="100%" style="border-radius: 12px; margin-bottom: 20px;">
 </p>
 
-# 📺 Alpha TV - Premium Live Streaming Platform
+# 📺 CSB TV - Premium Live Streaming Platform
 
 <p align="center">
   <a href="https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases"><img src="https://img.shields.io/badge/Download-AlphaTV--v1.1.3.apk-brightgreen?style=for-the-badge&logo=android&logoColor=white" alt="Download APK"></a>
