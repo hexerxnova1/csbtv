@@ -1,16 +1,18 @@
 #EXTM3U
-#EXTINF:-1 tvg-name="Somoy TV" tvg-logo="https://tstatic.akash-go.com/cms-ui/images/custom-content/1735560559088.png" group-title="Bangla, FIFA 2026, News",Somoy TV
-http://114.130.57.224:8080/Somoy-TV-3Mb/tracks-v1a1/mono.m3u8?token=SkQuhAXZxgBan1
-#EXTINF:-1 tvg-name="Somoy TV B" tvg-logo="https://tstatic.akash-go.com/cms-ui/images/custom-content/1735560559088.png" group-title="Bangla, FIFA 2026, News",Somoy TV B
+#EXTINF:-1 tvg-name="GO Live" tvg-logo="https://i.postimg.cc/661Rm2z8/image.png" group-title="FIFA 2026",GO Live
+https://d1211whpimeups.cloudfront.net/smil:rtbgo/chunklist.m3u8
+
+#EXTINF:-1 tvg-name="Somoy TV" tvg-logo="https://tstatic.akash-go.com/cms-ui/images/custom-content/1735560559088.png" group-title="Bangla, FIFA 2026, News",Somoy TV 
 https://live.thebosstv.com:30443/dwlive/Somoy-TV/chunks.m3u8
-#EXTINF:-1 tvg-name="Somoy TV C" tvg-logo="https://tstatic.akash-go.com/cms-ui/images/custom-content/1735560559088.png" group-title="Bangla, FIFA 2026, News",Somoy TV C
+#EXTINF:-1 tvg-name="Somoy TV 2" tvg-logo="https://tstatic.akash-go.com/cms-ui/images/custom-content/1735560559088.png" group-title="Bangla, FIFA 2026, News",Somoy TV 2
 https://iptv.ryvoxtb.workers.dev/live/somoytv.m3u8?token=698bb62d6919e5c22ec8be7a017971f5&time=1781488364
+#EXTINF:-1 tvg-name="Somoy TV 3" tvg-logo="https://tstatic.akash-go.com/cms-ui/images/custom-content/1735560559088.png" group-title="Bangla, FIFA 2026, News",Somoy TV 3
+http://114.130.57.224:8080/Somoy-TV-3Mb/tracks-v1a1/mono.m3u8?token=SkQuhAXZxgBan1
 #EXTINF:-1 tvg-name="T Sports" tvg-logo="https://i.postimg.cc/661Rm2z8/image.png" group-title="FIFA 2026",T Sports
 http://198.195.239.50:8095/tsports/tracks-v1a1/mono.m3u8
 #EXTINF:-1 tvg-name="T Sports 2 Monir" tvg-logo="https://i.postimg.cc/661Rm2z8/image.png" group-title="FIFA 2026",T Sports 2 Monir
 http://198.195.239.50:8095/tsports/index.m3u8
-#EXTINF:-1 tvg-name="GO Live" tvg-logo="https://i.postimg.cc/661Rm2z8/image.png" group-title="FIFA 2026",GO Live
-https://d1211whpimeups.cloudfront.net/smil:rtbgo/chunklist.m3u8
+
 #EXTINF:-1 tvg-name="BIOSCOPE PLUS" tvg-logo="https://i.postimg.cc/661Rm2z8/image.png" group-title="FIFA 2026",BIOSCOPE PLUS
 https://bioscope.sm-monirulislam-exp.workers.dev/bioscope.m3u8
 #EXTINF:-1 tvg-name="Caze TV" tvg-logo="https://i.postimg.cc/661Rm2z8/image.png" group-title="FIFA 2026",Caze TV
