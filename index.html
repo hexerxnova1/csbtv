@@ -37,7 +37,7 @@
     </noscript>
 
     <!-- Custom Style -->
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css?v=1.1.4" />
   </head>
 
   <body>
@@ -164,6 +164,16 @@
             </div>
             <h2 id="currentChannelTitle">Select a channel</h2>
             <p id="currentChannelCategory">M3U Stream Player</p>
+          </div>
+        </div>
+
+        <!-- Server Selector Container (Dynamic) -->
+        <div id="serverSelectorContainer" class="server-selector-container hidden">
+          <div class="server-selector-title">
+            <i class="fa-solid fa-server"></i> Select Server / সার্ভার নির্বাচন
+          </div>
+          <div class="server-buttons-grid" id="serverButtonsGrid">
+            <!-- Dynamic server buttons will be inserted here -->
           </div>
         </div>
 
@@ -642,6 +652,6 @@
     </div>
 
     <!-- Custom Logic -->
-    <script src="script.js"></script>
+    <script src="script.js?v=1.1.4"></script>
   </body>
 </html>

@@ -21,6 +21,8 @@ let searchKeyword = "";
 let currentHls = null;
 let hlsInitInterval = null;
 let controlsTimeout;
+let resolvedServers = [];
+let activeServerIndex = 0;
 
 /* ON INITIALIZATION */
 document.addEventListener("DOMContentLoaded", () => {
@@ -584,6 +586,236 @@ function resetPlayerLoader() {
   }
 }
 
+/* EXTRACT SERVERS FROM M3U OR HTML CONTENT */
+function extractServersFromM3uOrHtml(text) {
+  const servers = [];
+  
+  // 1. Try matching HTML button formats: onclick="changeServer('https://...')"
+  const buttonRegex = /onclick="changeServer\('([^']+)'\)"[^>]*>\s*([^<]+)\s*<\/button>/g;
+  let match;
+  while ((match = buttonRegex.exec(text)) !== null) {
+    let name = match[2].replace(/\s+/g, ' ').trim();
+    let url = match[1].trim();
+    if (url.startsWith('//')) {
+      url = 'https:' + url;
+    }
+    servers.push({ name, url });
+  }
+
+  // 2. Try parsing as standard M3U if no HTML buttons matched
+  if (servers.length === 0) {
+    const lines = text.split('\n');
+    let currentName = '';
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (line.startsWith('#EXTINF')) {
+        const parts = line.split(',');
+        currentName = parts[parts.length - 1].trim() || `Server ${servers.length + 1}`;
+      } else if (line && !line.startsWith('#')) {
+        let url = line;
+        if (url.startsWith('//')) {
+          url = 'https:' + url;
+        }
+        servers.push({
+          name: currentName || `Server ${servers.length + 1}`,
+          url: url
+        });
+        currentName = '';
+      }
+    }
+  }
+
+  return servers;
+}
+
+const proxies = [
+  (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+  (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+  (url) => url // Direct fetch as final resort
+];
+
+function tryProxy(url, index, callback, errorCallback) {
+  if (index >= proxies.length) {
+    errorCallback(new Error("All CORS proxies failed"));
+    return;
+  }
+
+  const fetchUrl = proxies[index](url);
+  console.log(`Attempting to fetch with proxy index ${index}: ${fetchUrl}`);
+
+  fetch(fetchUrl)
+    .then(response => {
+      if (!response.ok) throw new Error(`Proxy returned status ${response.status}`);
+      return response.text();
+    })
+    .then(text => {
+      const servers = extractServersFromM3uOrHtml(text);
+      if (servers.length > 0) {
+        callback(servers);
+      } else {
+        throw new Error("No servers parsed from proxy response");
+      }
+    })
+    .catch(err => {
+      console.warn(`Proxy index ${index} failed:`, err);
+      tryProxy(url, index + 1, callback, errorCallback);
+    });
+}
+
+function fetchDirect(url, callback, errorCallback) {
+  fetch(url)
+    .then(response => {
+      if (!response.ok) throw new Error(`Direct fetch failed: ${response.status}`);
+      return response.text();
+    })
+    .then(text => {
+      const servers = extractServersFromM3uOrHtml(text);
+      if (servers.length > 0) {
+        callback(servers);
+      } else {
+        errorCallback(new Error("No servers parsed from direct fetch"));
+      }
+    })
+    .catch(err => {
+      errorCallback(err);
+    });
+}
+
+/* FETCH MULTI-SERVERS DATA USING CORS PROXIES OR NATIVE FETCH */
+function fetchMultiServers(url, callback, errorCallback) {
+  if (window.Capacitor) {
+    fetchDirect(url, callback, errorCallback);
+  } else {
+    tryProxy(url, 0, callback, errorCallback);
+  }
+}
+
+/* RENDER SERVER SELECTOR BUTTONS IN UI */
+function renderServerSelector() {
+  const container = document.getElementById("serverSelectorContainer");
+  const grid = document.getElementById("serverButtonsGrid");
+  if (!container || !grid) return;
+
+  grid.innerHTML = "";
+  resolvedServers.forEach((server, index) => {
+    const btn = document.createElement("button");
+    btn.className = `server-btn ${index === activeServerIndex ? "active" : ""}`;
+    btn.innerHTML = `<i class="fa-solid fa-server"></i> ${server.name}`;
+    btn.onclick = () => playServer(index);
+    grid.appendChild(btn);
+  });
+
+  container.classList.remove("hidden");
+}
+
+/* PLAY SELECTED MULTI-SERVER STREAM */
+function playServer(serverIndex) {
+  if (serverIndex < 0 || serverIndex >= resolvedServers.length) return;
+  activeServerIndex = serverIndex;
+
+  // Highlight active selector button
+  document.querySelectorAll(".server-btn").forEach((btn, idx) => {
+    if (idx === serverIndex) {
+      btn.classList.add("active");
+    } else {
+      btn.classList.remove("active");
+    }
+  });
+
+  const video = document.getElementById("video");
+  const loader = document.getElementById("playerLoader");
+  const serverUrl = resolvedServers[serverIndex].url;
+
+  // Reset loader & error state
+  resetPlayerLoader();
+  video.onerror = null;
+  loader.classList.remove("hidden");
+
+  // Destroy existing HLS instance
+  if (currentHls) {
+    currentHls.destroy();
+    currentHls = null;
+  }
+
+  if (typeof Hls !== "undefined" && Hls.isSupported()) {
+    currentHls = new Hls({
+      maxMaxBufferLength: 10,
+      enableWorker: true
+    });
+    currentHls.loadSource(serverUrl);
+    currentHls.attachMedia(video);
+
+    currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
+      video.play().catch(err => {
+        console.log("Autoplay blocked:", err);
+        loader.querySelector("span").innerHTML = 'Stream paused. Click Play to watch!<br><span class="paused-play-icon" onclick="togglePlay()">▶</span>';
+        const spinner = loader.querySelector(".spinner");
+        if (spinner) spinner.classList.add("hidden");
+      });
+    });
+
+    currentHls.on(Hls.Events.ERROR, (event, data) => {
+      if (data.fatal) {
+        console.warn("HLS fatal error on server:", data);
+        loader.querySelector("span").innerText = "Re-connecting stream...";
+        const spinner = loader.querySelector(".spinner");
+        if (spinner) spinner.classList.remove("hidden");
+        switch (data.type) {
+          case Hls.ErrorTypes.NETWORK_ERROR:
+            currentHls.startLoad();
+            break;
+          case Hls.ErrorTypes.MEDIA_ERROR:
+            currentHls.recoverMediaError();
+            break;
+          default:
+            loader.querySelector("span").innerText = "Stream unavailable ⚠️";
+            break;
+        }
+      }
+    });
+  } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+    video.src = serverUrl;
+    video.onerror = () => {
+      loader.querySelector("span").innerText = "Stream unavailable ⚠️";
+      const spinner = loader.querySelector(".spinner");
+      if (spinner) spinner.classList.add("hidden");
+    };
+
+    video.addEventListener("loadedmetadata", () => {
+      video.play().catch(err => {
+        console.log("Autoplay blocked:", err);
+        loader.querySelector("span").innerHTML = 'Stream paused. Click Play to watch!<br><span class="paused-play-icon" onclick="togglePlay()">▶</span>';
+        const spinner = loader.querySelector(".spinner");
+        if (spinner) spinner.classList.add("hidden");
+      });
+    });
+  }
+
+  // Hook playing events to handle loaders
+  video.onplaying = () => {
+    loader.classList.add("hidden");
+    resetPlayerLoader();
+  };
+
+  video.onwaiting = () => {
+    resetPlayerLoader();
+    loader.querySelector("span").innerText = "Buffering stream...";
+    loader.classList.remove("hidden");
+  };
+
+  // Update active style in list for main channel
+  const mainChannelIndex = filteredChannels.findIndex(c => c.url === currentChannel.url);
+  document.querySelectorAll(".channel").forEach((el) => {
+    if (parseInt(el.dataset.index) === mainChannelIndex) {
+      el.classList.add("active");
+    } else {
+      el.classList.remove("active");
+    }
+  });
+
+  updateCurrentInfoCard(currentChannel);
+}
+
 /* PLAY CHANNEL STREAM */
 function playChannel(index) {
   if (index < 0 || index >= filteredChannels.length) return;
@@ -611,6 +843,33 @@ function playChannel(index) {
     currentHls.destroy();
     currentHls = null;
   }
+
+  // --- INTERCEPT MULTI-SERVER CHANNELS ---
+  if (channel.url === "https://fifalive.click/play") {
+    loader.querySelector("span").innerText = "Fetching live server links...";
+    const requestedChannel = channel;
+    fetchMultiServers(channel.url, (servers) => {
+      if (currentChannel !== requestedChannel) return;
+      resolvedServers = servers;
+      renderServerSelector();
+      playServer(0);
+    }, (err) => {
+      if (currentChannel !== requestedChannel) return;
+      console.error("Failed to load multi-server channel:", err);
+      loader.querySelector("span").innerText = "Failed to load live servers ⚠️";
+      const spinner = loader.querySelector(".spinner");
+      if (spinner) spinner.classList.add("hidden");
+    });
+    return;
+  }
+
+  // Hide server selector if playing a standard single-stream channel
+  const serverContainer = document.getElementById("serverSelectorContainer");
+  if (serverContainer) {
+    serverContainer.classList.add("hidden");
+  }
+  resolvedServers = [];
+  activeServerIndex = 0;
 
   if (typeof Hls !== "undefined" && Hls.isSupported()) {
     currentHls = new Hls({
