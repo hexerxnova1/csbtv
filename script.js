@@ -573,6 +573,26 @@ function closeWarningModal() {
   }
 }
 
+/* SHOW APP REQUIRED MODAL */
+function showAppRequiredModal() {
+  const modal = document.getElementById("appRequiredModal");
+  if (modal) {
+    modal.classList.remove("hidden");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden"; // Disable body scroll
+  }
+}
+
+/* CLOSE APP REQUIRED MODAL */
+function closeAppRequiredModal() {
+  const modal = document.getElementById("appRequiredModal");
+  if (modal) {
+    modal.classList.add("hidden");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = ""; // Restore body scroll
+  }
+}
+
 /* RESET PLAYER LOADER TO NORMAL BUFFERING STATE */
 function resetPlayerLoader() {
   const loader = document.getElementById("playerLoader");
@@ -723,11 +743,22 @@ function renderServerSelector() {
   const grid = document.getElementById("serverButtonsGrid");
   if (!container || !grid) return;
 
+  const isBrowser = !window.Capacitor;
   grid.innerHTML = "";
   resolvedServers.forEach((server, index) => {
     const btn = document.createElement("button");
     btn.className = `server-btn ${index === activeServerIndex ? "active" : ""}`;
-    btn.innerHTML = `<i class="fa-solid fa-server"></i> ${server.name}`;
+    
+    // Check if this server is Server 1 and we are in a web browser
+    const isServer1Locked = isBrowser && (server.isLocked || (server.name && (server.name.toLowerCase().includes("server 1") || server.name.includes("১"))));
+    
+    if (isServer1Locked) {
+      btn.innerHTML = `<i class="fa-solid fa-lock"></i> ${server.name} <span class="app-tag">App Only</span>`;
+      btn.classList.add("locked-server");
+    } else {
+      btn.innerHTML = `<i class="fa-solid fa-server"></i> ${server.name}`;
+    }
+    
     btn.onclick = () => playServer(index);
     grid.appendChild(btn);
   });
@@ -738,6 +769,17 @@ function renderServerSelector() {
 /* PLAY SELECTED MULTI-SERVER STREAM */
 function playServer(serverIndex) {
   if (serverIndex < 0 || serverIndex >= resolvedServers.length) return;
+  
+  const server = resolvedServers[serverIndex];
+  const isBrowser = !window.Capacitor;
+  
+  // Show app required modal if user clicks on Server 1 in browser
+  const isServer1Locked = isBrowser && (server.isLocked || (server.name && (server.name.toLowerCase().includes("server 1") || server.name.includes("১"))));
+  if (isServer1Locked) {
+    showAppRequiredModal();
+    return;
+  }
+
   activeServerIndex = serverIndex;
 
   // Highlight active selector button
@@ -877,22 +919,48 @@ function playChannel(index) {
     const requestedChannel = channel;
     fetchMultiServers(channel.url, (servers) => {
       if (currentChannel !== requestedChannel) return;
-      resolvedServers = servers;
+      
+      const isBrowser = !window.Capacitor;
+      
+      // Inject isLocked flag for Server 1 if in browser
+      resolvedServers = servers.map(s => {
+        if (isBrowser && s.name && (s.name.toLowerCase().includes("server 1") || s.name.includes("১"))) {
+          return { ...s, isLocked: true };
+        }
+        return s;
+      });
+      
       renderServerSelector();
-      playServer(0);
+      
+      if (isBrowser) {
+        // In browser, auto-play first non-locked server (Server 2/index 1)
+        const firstWorkingIndex = resolvedServers.findIndex(s => !s.isLocked);
+        playServer(firstWorkingIndex >= 0 ? firstWorkingIndex : 0);
+      } else {
+        // In mobile app, play Server 1 (index 0) directly
+        playServer(0);
+      }
     }, (err) => {
       if (currentChannel !== requestedChannel) return;
       console.warn("Failed to load live servers via proxy, falling back to static backup servers:", err);
       
-      // Fallback to static backup servers (Servers 2, 3, and 4)
+      const isBrowser = !window.Capacitor;
+      
+      // Fallback: manually include Server 1 (locked) followed by others
       resolvedServers = [
+        { name: "Server 1", url: "", isLocked: true },
         { name: "Server 2 (Backup)", url: "https://1nyaler.streamhostingcdn.top/stream/89/index.m3u8" },
         { name: "Server 3", url: "https://ua.online24.pm/play/1101/350B326FB34F4B8/video.m3u8" },
         { name: "Server 4", url: "https://live.thebosstv.com:30443/dwlive/Somoy-TV/playlist.m3u8" }
       ];
       
       renderServerSelector();
-      playServer(0); // Play Server 2 by default
+      
+      if (isBrowser) {
+        playServer(1); // Play Server 2 (index 1) by default in browser
+      } else {
+        playServer(0); // On mobile, default to index 0 (Server 1)
+      }
     });
     return;
   }

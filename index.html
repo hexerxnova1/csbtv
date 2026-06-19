@@ -571,6 +571,45 @@
       </div>
     </div>
 
+    <!-- App Required Modal for Server 1 (Browser Only) -->
+    <div id="appRequiredModal" class="custom-modal hidden" aria-hidden="true">
+      <div class="custom-modal-overlay" onclick="closeAppRequiredModal()"></div>
+      <div class="custom-modal-card warning-modal-card">
+        <button class="custom-modal-close-btn" onclick="closeAppRequiredModal()" aria-label="Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="custom-modal-header warning-modal-header" style="border-bottom: 2px solid var(--neon-cyan); text-shadow: 0 0 10px rgba(0, 242, 254, 0.4);">
+          <i class="fa-solid fa-mobile-screen-button warning-modal-icon" style="color: var(--secondary);"></i>
+          <h2 id="appRequiredModalTitle" style="color: var(--secondary);">মোবাইল অ্যাপ প্রয়োজন</h2>
+        </div>
+        <div class="custom-modal-content warning-modal-content">
+          <p class="warning-main-text" style="color: #fff; font-size: 1.1rem; line-height: 1.6; margin-bottom: 15px;">
+            <strong>Server 1 (Toffee Live)</strong> ব্রাউজারের কঠোর নিরাপত্তা ও CORS নীতিমালার কারণে সরাসরি ওয়েব ব্রাউজারে চালানো সম্ভব নয়।
+          </p>
+          <div class="warning-methods" style="margin-top: 15px;">
+            <p class="methods-title" style="color: var(--secondary); font-weight: bold; margin-bottom: 10px;">মোবাইলে দেখতে চাইলে:</p>
+            <div class="method-item" style="display: flex; align-items: flex-start; margin-bottom: 8px;">
+              <span class="method-number" style="color: var(--primary); font-weight: bold; margin-right: 8px; white-space: nowrap;">ধাপ ১:</span>
+              <span class="method-desc" style="color: var(--text-secondary);">নিচের বাটনটি ক্লিক করে আমাদের অফিসিয়াল **Android App (APK)** ডাউনলোড করুন।</span>
+            </div>
+            <div class="method-item" style="display: flex; align-items: flex-start; margin-bottom: 8px;">
+              <span class="method-number" style="color: var(--primary); font-weight: bold; margin-right: 8px; white-space: nowrap;">ধাপ ২:</span>
+              <span class="method-desc" style="color: var(--text-secondary);">অ্যাপটি আপনার ফোনে ইনস্টল করে ওপেন করুন এবং সরাসরি **Server 1** প্লে করুন।</span>
+            </div>
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 15px; font-style: italic; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px;">
+            * নোট: ব্রাউজারে খেলা দেখতে চাইলে আপনি <strong>Server 2</strong>, <strong>Server 3</strong> অথবা <strong>Server 4</strong> ব্যবহার করতে পারেন।
+          </p>
+        </div>
+        <div class="custom-modal-footer warning-modal-footer">
+          <a href="https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases" class="custom-modal-btn warning-app-download-btn download-apk-link" target="_blank">
+            <i class="fa-brands fa-android"></i> Download Android App
+          </a>
+          <button class="custom-modal-btn warning-modal-btn" onclick="closeAppRequiredModal()">Got It</button>
+        </div>
+      </div>
+    </div>
+
     <!-- In-App Update Modal (Android Only) -->
     <div id="updateModal" class="custom-modal hidden" aria-hidden="true">
       <div class="custom-modal-overlay" onclick="closeUpdateModal()"></div>
