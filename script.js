@@ -1786,12 +1786,17 @@ function checkDisclaimer() {
       modal.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
     }
+  } else {
+    // If disclaimer accepted, check if Telegram modal should be shown
+    checkTelegramModal();
   }
 }
 
 function acceptDisclaimer() {
   localStorage.setItem("alpha_tv_disclaimer_accepted", "true");
   closeDisclaimerModal();
+  // Immediately check and open the telegram modal after disclaimer
+  checkTelegramModal();
 }
 
 function showDisclaimerModal(event) {
@@ -1806,6 +1811,33 @@ function showDisclaimerModal(event) {
 
 function closeDisclaimerModal() {
   const modal = document.getElementById("disclaimerModal");
+  if (modal) {
+    modal.classList.add("hidden");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+  }
+}
+
+/* TELEGRAM COMMUNITY JOIN POPUP MODAL LOGIC */
+function checkTelegramModal() {
+  const accepted = localStorage.getItem("alpha_tv_telegram_accepted");
+  if (!accepted) {
+    const modal = document.getElementById("joinCommunityModal");
+    if (modal) {
+      modal.classList.remove("hidden");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    }
+  }
+}
+
+function acceptTelegramModal() {
+  localStorage.setItem("alpha_tv_telegram_accepted", "true");
+  closeTelegramModal();
+}
+
+function closeTelegramModal() {
+  const modal = document.getElementById("joinCommunityModal");
   if (modal) {
     modal.classList.add("hidden");
     modal.setAttribute("aria-hidden", "true");

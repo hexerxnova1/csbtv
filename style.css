@@ -2988,11 +2988,11 @@ body.pip-active video {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  color: var(--secondary);
+  color: #ffffff;
   display: flex;
   align-items: center;
   gap: 8px;
-  text-shadow: 0 0 10px var(--secondary-glow);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
 .server-selector-title i {
@@ -3029,9 +3029,9 @@ body.pip-active video {
 }
 
 .server-btn.active {
-  background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
   border-color: transparent;
-  box-shadow: 0 0 20px var(--secondary-glow), inset 0 1px 0 rgba(255,255,255,0.2);
+  box-shadow: 0 0 20px var(--primary-glow), inset 0 1px 0 rgba(255,255,255,0.2);
   color: #fff;
   transform: translateY(0);
 }
@@ -3053,23 +3053,23 @@ body.pip-active video {
 
 /* LOCKED SERVER STYLES (WEB ONLY) */
 .server-btn.locked-server {
-  border-color: rgba(255, 0, 127, 0.35);
-  background: rgba(255, 0, 127, 0.05);
+  border-color: rgba(255, 109, 0, 0.35);
+  background: rgba(255, 109, 0, 0.05);
 }
 
 .server-btn.locked-server:hover {
-  border-color: var(--primary);
-  background: rgba(255, 0, 127, 0.12);
-  box-shadow: 0 0 15px var(--primary-glow);
+  border-color: #ff6d00;
+  background: rgba(255, 109, 0, 0.12);
+  box-shadow: 0 0 15px rgba(255, 109, 0, 0.35);
   transform: translateY(-2px);
 }
 
 .server-btn.locked-server i {
-  color: var(--primary);
+  color: #ff6d00;
 }
 
 .server-btn .app-tag {
-  background: var(--primary);
+  background: #ff6d00;
   color: #fff;
   font-size: 0.62rem;
   font-weight: 700;
@@ -3077,6 +3077,6 @@ body.pip-active video {
   padding: 2px 6px;
   border-radius: 4px;
   margin-left: 6px;
-  box-shadow: 0 0 8px var(--primary-glow);
+  box-shadow: 0 0 8px rgba(255, 109, 0, 0.35);
   letter-spacing: 0.5px;
 }
