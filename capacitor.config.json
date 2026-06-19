@@ -6,7 +6,9 @@
     "allowNavigation": [
       "*"
     ],
-    "cleartext": true
+    "cleartext": true,
+    "hostname": "toffeelive.com",
+    "androidScheme": "https"
   },
   "android": {
     "allowMixedContent": true
