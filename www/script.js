@@ -737,6 +737,18 @@ function fetchMultiServers(url, callback, errorCallback) {
   tryProxy(url, 0, callback, errorCallback);
 }
 
+/* CLEAN SERVER NAME FOR UI DISPLAY */
+function cleanServerName(name, index) {
+  if (!name) return `Server ${index + 1}`;
+  
+  // Extract "Server X" or "Server X (Backup)" -> "Server X"
+  const match = name.match(/Server\s*(\d+)/i);
+  if (match) {
+    return `Server ${match[1]}`;
+  }
+  return name;
+}
+
 /* RENDER SERVER SELECTOR BUTTONS IN UI */
 function renderServerSelector() {
   const container = document.getElementById("serverSelectorContainer");
@@ -749,14 +761,17 @@ function renderServerSelector() {
     const btn = document.createElement("button");
     btn.className = `server-btn ${index === activeServerIndex ? "active" : ""}`;
     
+    // Clean server name for display (e.g. Server 2 (Backup) -> Server 2)
+    const cleanedName = cleanServerName(server.name, index);
+    
     // Check if this server is Server 1 and we are in a web browser
     const isServer1Locked = isBrowser && (server.isLocked || (server.name && (server.name.toLowerCase().includes("server 1") || server.name.includes("১"))));
     
     if (isServer1Locked) {
-      btn.innerHTML = `<i class="fa-solid fa-lock"></i> ${server.name} <span class="app-tag">App Only</span>`;
+      btn.innerHTML = `<i class="fa-solid fa-lock"></i> ${cleanedName} <span class="app-tag">App Only</span>`;
       btn.classList.add("locked-server");
     } else {
-      btn.innerHTML = `<i class="fa-solid fa-server"></i> ${server.name}`;
+      btn.innerHTML = `<i class="fa-solid fa-server"></i> ${cleanedName}`;
     }
     
     btn.onclick = () => playServer(index);
@@ -949,7 +964,7 @@ function playChannel(index) {
       // Fallback: manually include Server 1 (locked) followed by others
       resolvedServers = [
         { name: "Server 1", url: "", isLocked: true },
-        { name: "Server 2 (Backup)", url: "https://1nyaler.streamhostingcdn.top/stream/89/index.m3u8" },
+        { name: "Server 2", url: "https://1nyaler.streamhostingcdn.top/stream/89/index.m3u8" },
         { name: "Server 3", url: "https://ua.online24.pm/play/1101/350B326FB34F4B8/video.m3u8" },
         { name: "Server 4", url: "https://live.thebosstv.com:30443/dwlive/Somoy-TV/playlist.m3u8" }
       ];
