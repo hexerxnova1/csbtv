@@ -5,14 +5,14 @@
 # 📺 Alpha TV - Premium Live Streaming Platform
 
 <p align="center">
-  <a href="https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases"><img src="https://img.shields.io/badge/Download-AlphaTV--v1.1.3.apk-brightgreen?style=for-the-badge&logo=android&logoColor=white" alt="Download APK"></a>
+  <a href="https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases"><img src="https://img.shields.io/badge/Download-AlphaTV--v1.1.4.apk-brightgreen?style=for-the-badge&logo=android&logoColor=white" alt="Download APK"></a>
   <a href="https://shariar-ahamed.github.io/online-tv-streaming-platform/"><img src="https://img.shields.io/badge/Live-Web%20Demo-ff007f?style=for-the-badge&logo=livewire&logoColor=white" alt="Live Demo"></a>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Platform-Android%20%7C%20Web-blue?style=flat-square&logo=capacitor&logoColor=white">
   <img src="https://img.shields.io/badge/UI-Neumorphic%20%2F%20Glassmorphism-violet?style=flat-square">
-  <img src="https://img.shields.io/badge/Version-v1.1.3-brightgreen?style=flat-square">
+  <img src="https://img.shields.io/badge/Version-v1.1.4-brightgreen?style=flat-square">
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square">
 </p>
 
@@ -44,9 +44,9 @@ Below are the technical specifications of the native Android application package
 
 | Specification                  | Details                                                                                    |
 | ------------------------------ | ------------------------------------------------------------------------------------------ |
-| 📦 **App Name**                | `AlphaTV-v1.1.3.apk`                                                                       |
+| 📦 **App Name**                | `AlphaTV-v1.1.4.apk`                                                                       |
 | 🆔 **Package Name**            | `com.alphatv.app`                                                                          |
-| 🏷️ **Current Version**         | `1.1.3` (Build Code `14`)                                                                  |
+| 🏷️ **Current Version**         | `1.1.4` (Build Code `15`)                                                                  |
 | 📂 **App Size**                | ~31.1 MB                                                                                   |
 | ⚙️ **Minimum OS Support**      | Android 7.0 (Nougat - API Level 24) or higher                                              |
 | 🎯 **Target SDK**              | Android 15 / 16 (API Level 36)                                                             |
@@ -189,7 +189,21 @@ npx cap open android
 
 ## 📋 Release History & Changelog
 
-### 🚀 v1.1.3 (Current Release) - Build Code `14`
+### 🚀 v1.1.4 (Current Release) - Build Code `15`
+* **Disclaimer & Telegram Sequence Modal:**
+  * Implemented a sequential onboarding flow for first-time users: showing a Disclaimer modal, and upon acceptance, instantly showing an official Telegram Community modal.
+  * Persists user agreements in `localStorage` to avoid repeating popups on subsequent visits.
+* **Server 1 browser lock & App-Only Indicator:**
+  * Added dynamic browser-detection logic to indicate that Server 1 (Toffee Live) requires the Android App.
+  * Restricts Server 1 playback in web browsers with a secure popup modal linking to the official Android App release.
+  * Server selector UI dynamically updates server titles, locks, and colors.
+* **Brand Logo Shimmer & Wave Animation:**
+  * Integrated a highly customized, ultra-slow brand text shimmer animation flowing with Neon Pink and Neon Purple.
+  * Added a gentle waving animation (`flagWave`) anchored on the left to make the logo text sway gracefully like a flag in a light breeze.
+* **Buffering Spinner Color Tuning:**
+  * Adjusted the player buffering gyro-spinner color variables to match the Neon Pink (`var(--primary)`) and Neon Cyan (`var(--secondary)`) theme colors.
+
+### 🚀 v1.1.3 - Build Code `14`
 * **Mute/Volume Control Button:**
   * Integrated a dedicated Mute/Unmute sound button directly into the custom control bar (re-ordered for optimal UX, placing Fullscreen on the far right).
   * Automatically stores the user's volume state in `localStorage` so it persists between different channels and application restarts.
@@ -239,7 +253,7 @@ npx cap open android
 
 ## 🔗 Useful Links
 
-- **Latest APK Release:** [Download AlphaTV-v1.1.3.apk](https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases)
+- **Latest APK Release:** [Download AlphaTV-v1.1.4.apk](https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases)
 - **Live Web App:** [Alpha TV Live Web App](https://shariar-ahamed.github.io/online-tv-streaming-platform/)
 - **Source Code Repository:** [GitHub Repository](https://github.com/Shariar-Ahamed/online-tv-streaming-platform)
 

@@ -192,28 +192,65 @@ body {
   font-weight: 800;
   font-size: 28px;
   letter-spacing: -0.5px;
-  background: linear-gradient(to right, var(--secondary) 0%, var(--primary) 40%, var(--accent) 70%, var(--secondary) 100%);
-  background-size: 200% auto;
+  background: linear-gradient(120deg, 
+    #ffffff 40%, 
+    var(--primary) 46%, 
+    var(--accent) 50%, 
+    var(--primary) 54%, 
+    #ffffff 60%
+  );
+  background-size: 250% auto;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
   text-transform: uppercase;
-  filter: drop-shadow(0 0 12px rgba(0, 242, 254, 0.25));
-  animation: logoGradientFlow 6s linear infinite;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.15));
+  animation: glassShine 12s ease-in-out infinite, flagWave 12s ease-in-out infinite;
+  transform-origin: left center;
 }
 
-@keyframes logoGradientFlow {
+@keyframes glassShine {
   0% {
+    background-position: 100% center;
+  }
+  40% {
     background-position: 0% center;
   }
+  50%, 60% {
+    background-position: 0% center;
+  }
+  90% {
+    background-position: 100% center;
+  }
   100% {
-    background-position: 200% center;
+    background-position: 100% center;
+  }
+}
+
+@keyframes flagWave {
+  0% {
+    transform: translateY(0) rotate(0deg) skewX(0deg) skewY(0deg);
+  }
+  25% {
+    transform: translateY(-0.8px) rotate(0.5deg) skewX(0.4deg) skewY(0.2deg);
+  }
+  50% {
+    transform: translateY(0.5px) rotate(-0.3deg) skewX(-0.4deg) skewY(-0.1deg);
+  }
+  75% {
+    transform: translateY(-0.3px) rotate(0.2deg) skewX(0.2deg) skewY(0.05deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0deg) skewX(0deg) skewY(0deg);
   }
 }
 
 .logo span {
-  background: transparent;
+  color: inherit;
+  background: inherit;
+  -webkit-background-clip: inherit;
+  background-clip: inherit;
   -webkit-text-fill-color: inherit;
   font-weight: 800;
 }
@@ -279,7 +316,7 @@ video {
   height: 8px;
   background-color: #ffffff;
   border-radius: 50%;
-  box-shadow: 0 0 12px 2px rgba(255, 109, 0, 0.35), 0 0 24px 4px var(--secondary-glow);
+  box-shadow: 0 0 12px 2px var(--primary-glow), 0 0 24px 4px var(--secondary-glow);
   animation: pulseDot 1.2s ease-in-out infinite alternate;
 }
 
@@ -291,10 +328,10 @@ video {
   width: 48px;
   height: 48px;
   border: 3px solid transparent;
-  border-top-color: #ff6d00;
-  border-bottom-color: #ff6d00;
+  border-top-color: var(--primary);
+  border-bottom-color: var(--primary);
   border-radius: 50%;
-  box-shadow: 0 0 10px rgba(255, 109, 0, 0.45);
+  box-shadow: 0 0 10px var(--primary-glow);
   animation: spin-clockwise 1.2s cubic-bezier(0.5, 0.1, 0.4, 0.9) infinite;
 }
 
@@ -357,8 +394,8 @@ video {
 }
 
 @keyframes pulseDot {
-  0% { opacity: 0.6; box-shadow: 0 0 8px 1px rgba(255, 109, 0, 0.35), 0 0 15px 2px var(--secondary-glow); }
-  100% { opacity: 1; box-shadow: 0 0 15px 3px rgba(255, 109, 0, 0.55), 0 0 30px 5px var(--secondary-glow); }
+  0% { opacity: 0.6; box-shadow: 0 0 8px 1px var(--primary-glow), 0 0 15px 2px var(--secondary-glow); }
+  100% { opacity: 1; box-shadow: 0 0 15px 3px var(--primary-glow), 0 0 30px 5px var(--secondary-glow); }
 }
 
 @keyframes shineText {
