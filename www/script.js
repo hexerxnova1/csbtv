@@ -1,7 +1,7 @@
 /* VARIABLES */
 
-const playlistOnline = "channels.m3u";
-// const playlistOnline = "https://raw.githubusercontent.com/Shariar-Ahamed/online-tv-streaming-platform/main/channels.m3u";
+// const playlistOnline = "channels.m3u";
+const playlistOnline = "https://raw.githubusercontent.com/Shariar-Ahamed/online-tv-streaming-platform/main/channels.m3u";
 const playlistLocal = "channels.m3u";
 
 let channels = [];
@@ -681,13 +681,40 @@ function fetchDirect(url, callback, errorCallback) {
     });
 }
 
-/* FETCH MULTI-SERVERS DATA USING CORS PROXIES OR NATIVE FETCH */
+/* FETCH MULTI-SERVERS DATA USING CORS PROXIES OR NATIVE CAPACITOR HTTP */
 function fetchMultiServers(url, callback, errorCallback) {
-  if (window.Capacitor) {
-    fetchDirect(url, callback, errorCallback);
-  } else {
-    tryProxy(url, 0, callback, errorCallback);
+  const cap = window.Capacitor;
+  
+  // 1. If running in Capacitor (Mobile App) and CapacitorHttp is available, use native fetch (bypasses CORS completely)
+  if (cap && cap.Plugins && cap.Plugins.CapacitorHttp) {
+    console.log("Using Capacitor native HTTP to fetch streams...");
+    cap.Plugins.CapacitorHttp.get({
+      url: url,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      }
+    })
+    .then(response => {
+      let text = response.data;
+      if (typeof text !== 'string') {
+        text = JSON.stringify(text);
+      }
+      const servers = extractServersFromM3uOrHtml(text);
+      if (servers.length > 0) {
+        callback(servers);
+      } else {
+        errorCallback(new Error("No servers parsed from CapacitorHttp response"));
+      }
+    })
+    .catch(err => {
+      console.warn("Capacitor native HTTP failed, falling back to proxy...", err);
+      tryProxy(url, 0, callback, errorCallback);
+    });
+    return;
   }
+
+  // 2. Otherwise, use CORS proxy chain (Web Browser / Fallback)
+  tryProxy(url, 0, callback, errorCallback);
 }
 
 /* RENDER SERVER SELECTOR BUTTONS IN UI */
@@ -855,10 +882,17 @@ function playChannel(index) {
       playServer(0);
     }, (err) => {
       if (currentChannel !== requestedChannel) return;
-      console.error("Failed to load multi-server channel:", err);
-      loader.querySelector("span").innerText = "Failed to load live servers ⚠️";
-      const spinner = loader.querySelector(".spinner");
-      if (spinner) spinner.classList.add("hidden");
+      console.warn("Failed to load live servers via proxy, falling back to static backup servers:", err);
+      
+      // Fallback to static backup servers (Servers 2, 3, and 4)
+      resolvedServers = [
+        { name: "Server 2 (Backup)", url: "https://1nyaler.streamhostingcdn.top/stream/89/index.m3u8" },
+        { name: "Server 3", url: "https://ua.online24.pm/play/1101/350B326FB34F4B8/video.m3u8" },
+        { name: "Server 4", url: "https://live.thebosstv.com:30443/dwlive/Somoy-TV/playlist.m3u8" }
+      ];
+      
+      renderServerSelector();
+      playServer(0); // Play Server 2 by default
     });
     return;
   }
