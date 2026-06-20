@@ -659,7 +659,7 @@ function extractServersFromM3uOrHtml(text) {
 }
 
 const proxies = [
-  (url) => `https://toffee-proxy.shahriar-diu64.workers.dev/?url=${encodeURIComponent(url)}`,
+  (url) => `https://toffee-proxy.shahriar-diu64.workers.dev/${url}`,
   (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
   (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
   (url) => url // Direct fetch as final resort
@@ -824,7 +824,7 @@ function playServer(serverIndex) {
   // Route Server 1 through Cloudflare Worker proxy in browser to bypass CORS/Referer checks
   const isServer1 = server.name && (server.name.toLowerCase().includes("server 1") || server.name.includes("১"));
   if (isBrowser && isServer1 && serverUrl) {
-    serverUrl = `https://toffee-proxy.shahriar-diu64.workers.dev/?url=${encodeURIComponent(serverUrl)}`;
+    serverUrl = `https://toffee-proxy.shahriar-diu64.workers.dev/${serverUrl}`;
   }
 
   // Reset loader & error state
