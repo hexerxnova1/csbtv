@@ -659,6 +659,7 @@ function extractServersFromM3uOrHtml(text) {
 }
 
 const proxies = [
+  (url) => `https://toffee-proxy.shahriar-diu64.workers.dev/?url=${encodeURIComponent(url)}`,
   (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
   (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
   (url) => url // Direct fetch as final resort
