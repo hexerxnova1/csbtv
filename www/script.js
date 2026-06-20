@@ -774,10 +774,10 @@ function renderServerSelector() {
     // Clean server name for display (e.g. Server 2 (Backup) -> Server 2)
     const cleanedName = cleanServerName(server.name, index);
     
-    // Check if this server is Server 1 and we are in a web browser
-    const isServer1Locked = isBrowser && (server.isLocked || (server.name && (server.name.toLowerCase().includes("server 1") || server.name.includes("১"))));
+    // Check if this server is locked (either explicitly locked or has no valid stream URL)
+    const isLocked = isBrowser && (server.isLocked || !server.url);
     
-    if (isServer1Locked) {
+    if (isLocked) {
       btn.innerHTML = `<i class="fa-solid fa-lock"></i> ${cleanedName} <span class="app-tag">App Only</span>`;
       btn.classList.add("locked-server");
     } else {
@@ -798,9 +798,9 @@ function playServer(serverIndex) {
   const server = resolvedServers[serverIndex];
   const isBrowser = !window.Capacitor;
   
-  // Show app required modal if user clicks on Server 1 in browser
-  const isServer1Locked = isBrowser && (server.isLocked || (server.name && (server.name.toLowerCase().includes("server 1") || server.name.includes("১"))));
-  if (isServer1Locked) {
+  // Show app required modal if server is locked in browser
+  const isLocked = isBrowser && (server.isLocked || !server.url);
+  if (isLocked) {
     showAppRequiredModal();
     return;
   }
@@ -818,7 +818,13 @@ function playServer(serverIndex) {
 
   const video = document.getElementById("video");
   const loader = document.getElementById("playerLoader");
-  const serverUrl = resolvedServers[serverIndex].url;
+  let serverUrl = resolvedServers[serverIndex].url;
+
+  // Route Server 1 through Cloudflare Worker proxy in browser to bypass CORS/Referer checks
+  const isServer1 = server.name && (server.name.toLowerCase().includes("server 1") || server.name.includes("১"));
+  if (isBrowser && isServer1 && serverUrl) {
+    serverUrl = `https://toffee-proxy.shahriar-diu64.workers.dev/?url=${encodeURIComponent(serverUrl)}`;
+  }
 
   // Reset loader & error state
   resetPlayerLoader();
@@ -947,9 +953,9 @@ function playChannel(index) {
       
       const isBrowser = !window.Capacitor;
       
-      // Inject isLocked flag for Server 1 if in browser
+      // Inject isLocked flag for Server 1 if in browser and it has no URL
       resolvedServers = servers.map(s => {
-        if (isBrowser && s.name && (s.name.toLowerCase().includes("server 1") || s.name.includes("১"))) {
+        if (isBrowser && (!s.url || s.isLocked)) {
           return { ...s, isLocked: true };
         }
         return s;
