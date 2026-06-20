@@ -624,6 +624,12 @@ function extractServersFromM3uOrHtml(text) {
 
   // 2. Try parsing as standard M3U if no HTML buttons matched
   if (servers.length === 0) {
+    const trimmed = text.trim();
+    // If the response is HTML (starts with < or contains <html), do not parse as M3U
+    if (trimmed.startsWith('<') || trimmed.toLowerCase().includes('<html')) {
+      return [];
+    }
+
     const lines = text.split('\n');
     let currentName = '';
     for (let i = 0; i < lines.length; i++) {
@@ -633,6 +639,10 @@ function extractServersFromM3uOrHtml(text) {
         currentName = parts[parts.length - 1].trim() || `Server ${servers.length + 1}`;
       } else if (line && !line.startsWith('#')) {
         let url = line;
+        // Ignore lines containing HTML tags to prevent parsing invalid URLs
+        if (url.includes('<') || url.includes('>')) {
+          continue;
+        }
         if (url.startsWith('//')) {
           url = 'https:' + url;
         }
