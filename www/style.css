@@ -308,6 +308,7 @@ video {
 .player-loader.hidden {
   opacity: 0;
   pointer-events: none;
+  display: none !important;
 }
 
 .spinner {
@@ -3116,4 +3117,21 @@ body.pip-active video {
   margin-left: 6px;
   box-shadow: 0 0 8px rgba(255, 109, 0, 0.35);
   letter-spacing: 0.5px;
+}
+
+/* MOBILE PERFORMANCE OPTIMIZATIONS */
+@media (max-width: 768px) {
+  /* Disable background mesh floating orb animation to save GPU rendering resources */
+  .glow-orb {
+    animation: none !important;
+  }
+  
+  /* Disable brand logo animations on mobile */
+  .brand-logo {
+    animation: none !important;
+  }
+  
+  .logo {
+    animation: none !important;
+  }
 }
