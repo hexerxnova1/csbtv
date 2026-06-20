@@ -10,9 +10,9 @@ https://live.thebosstv.com:30443/dwlive/Somoy-TV/chunks.m3u8
 #EXTINF:-1 tvg-name="GO Live" tvg-logo="https://i.postimg.cc/661Rm2z8/image.png" group-title="FIFA 2026",GO Live
 https://d1211whpimeups.cloudfront.net/smil:rtbgo/chunklist.m3u8
 
-#EXTINF:-1 tvg-name="T Sports" tvg-logo="https://i.postimg.cc/661Rm2z8/image.png" group-title="FIFA 2026",T Sports
+#EXTINF:-1 tvg-name="UNITE8 SPORTS 1HD" tvg-logo="https://i.postimg.cc/661Rm2z8/image.png" group-title="FIFA 2026",UNITE8 SPORTS 1HD
 http://198.195.239.50:8095/tsports/tracks-v1a1/mono.m3u8
-#EXTINF:-1 tvg-name="T Sports 2 Monir" tvg-logo="https://i.postimg.cc/661Rm2z8/image.png" group-title="FIFA 2026",T Sports 2 Monir
+#EXTINF:-1 tvg-name="UNITE8 SPORTS 2HD" tvg-logo="https://i.postimg.cc/661Rm2z8/image.png" group-title="FIFA 2026",UNITE8 SPORTS 2HD
 http://198.195.239.50:8095/tsports/index.m3u8
 #EXTINF:-1 tvg-name="FOX" tvg-logo="https://i.postimg.cc/661Rm2z8/image.png" group-title="FIFA 2026",FOX
 https://1nyaler.streamhostingcdn.top/stream/26/index.m3u8
