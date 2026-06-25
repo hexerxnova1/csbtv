@@ -241,7 +241,9 @@
               </button>
             </div>
             <div class="search-options-right">
-              <!-- You can add custom buttons/options here -->
+              <button class="settings-trigger-btn" onclick="openSettingsModal()" title="Settings / সেটিংস">
+                <i class="fa-solid fa-gear"></i> Settings
+              </button>
             </div>
           </div>
 
@@ -741,6 +743,57 @@
       <a href="https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases" class="banner-download-btn download-apk-link" target="_blank">
         <i class="fa-brands fa-android"></i> Download
       </a>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="settings-modal hidden" aria-hidden="true" role="dialog">
+      <div class="settings-modal-content">
+        <header class="settings-header">
+          <h2><i class="fa-solid fa-gear"></i> Settings / সেটিংস</h2>
+          <button class="settings-close-btn" onclick="closeSettingsModal()" aria-label="Close Settings">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </header>
+
+        <div class="settings-body">
+          <!-- Active Playlist Info -->
+          <div class="settings-section playlist-status-section">
+            <h3>Active Playlist / সক্রিয় প্লেলিস্ট</h3>
+            <div id="playlistStatusBadge" class="playlist-badge default">Alpha TV (Default)</div>
+          </div>
+
+          <!-- M3U URL Input -->
+          <div class="settings-section">
+            <h3>Load M3U URL / কাস্টম প্লেলিস্ট লিঙ্ক</h3>
+            <p class="section-desc">Paste your M3U playlist link below to load custom channels:</p>
+            <div class="url-input-wrapper">
+              <input type="url" id="customM3uUrl" placeholder="https://example.com/playlist.m3u" />
+              <button onclick="loadCustomM3uUrl()" class="settings-btn primary-btn">Load URL</button>
+            </div>
+            <p id="urlErrorText" class="settings-error hidden"></p>
+          </div>
+
+          <!-- M3U File Upload -->
+          <div class="settings-section">
+            <h3>Upload M3U File / ফাইল আপলোড</h3>
+            <p class="section-desc">Upload a local `.m3u` or `.m3u8` playlist file from your device:</p>
+            <input type="file" id="customM3uFile" accept=".m3u,.m3u8" style="display: none;" onchange="loadCustomM3uFile(event)" />
+            <button onclick="document.getElementById('customM3uFile').click()" class="settings-btn secondary-btn">
+              <i class="fa-solid fa-file-upload"></i> Choose M3U File / ফাইল সিলেক্ট করুন
+            </button>
+            <p id="fileErrorText" class="settings-error hidden"></p>
+          </div>
+
+          <!-- Reset Section -->
+          <div class="settings-section reset-section">
+            <h3>Reset Playlist / ডিফল্ট প্লেলিস্ট</h3>
+            <p class="section-desc">Clear your custom playlist and return to default Alpha TV channels:</p>
+            <button onclick="resetToDefaultPlaylist()" class="settings-btn danger-btn">
+              <i class="fa-solid fa-arrow-rotate-left"></i> Restore Alpha TV Channels
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Custom Logic -->

@@ -269,14 +269,71 @@ function parseM3U(data) {
   return parsedChannels;
 }
 
-/* LOAD M3U PLAYLIST (Instant local load, background online update) */
+/* LOAD M3U PLAYLIST (Instant local load, background online update, supports custom) */
 function loadPlaylist() {
   const loader = document.getElementById("playerLoader");
   if (!loader) return;
   loader.classList.remove("hidden");
   loader.querySelector("span").innerText = "Loading playlist...";
 
-  // 1. Fetch the bundled local playlist immediately (instant, offline-capable)
+  // Check for custom playlist first
+  const customUrl = localStorage.getItem("alpha_tv_custom_m3u_url");
+  const customData = localStorage.getItem("alpha_tv_custom_m3u_data");
+
+  if (customData) {
+    console.log("Loading playlist from locally saved M3U file");
+    const parsed = parseM3U(customData);
+    if (parsed.length > 0) {
+      channels = parsed;
+      loader.classList.add("hidden");
+      renderCategories();
+      filterAndSearch();
+      playDefaultOrFirstChannel();
+      return;
+    }
+  }
+
+  if (customUrl) {
+    console.log("Loading custom playlist from URL:", customUrl);
+    fetch(customUrl)
+      .then(response => {
+        if (!response.ok) throw new Error("Custom URL response error");
+        return response.text();
+      })
+      .then(customText => {
+        const parsed = parseM3U(customText);
+        if (parsed.length > 0) {
+          channels = parsed;
+          loader.classList.add("hidden");
+          renderCategories();
+          filterAndSearch();
+          playDefaultOrFirstChannel();
+        } else {
+          throw new Error("Could not parse custom M3U");
+        }
+      })
+      .catch(err => {
+        console.error("Failed to load custom URL playlist, falling back to default:", err);
+        loadDefaultPlaylist();
+      });
+    return;
+  }
+
+  // Fallback: Load default playlist
+  loadDefaultPlaylist();
+}
+
+/* HELPER TO PLAY DEFAULT CHANNEL OR FIRST AVAILABLE */
+function playDefaultOrFirstChannel() {
+  if (filteredChannels.length > 0) {
+    const defaultIndex = filteredChannels.findIndex(c => c.name.toLowerCase().includes("tooffee"));
+    playChannel(defaultIndex !== -1 ? defaultIndex : 0);
+  }
+}
+
+/* LOAD DEFAULT ALPHA TV PLAYLIST */
+function loadDefaultPlaylist() {
+  const loader = document.getElementById("playerLoader");
   fetch(playlistLocal)
     .then(response => {
       if (!response.ok) throw new Error("Local playlist response error");
@@ -286,25 +343,18 @@ function loadPlaylist() {
       const parsedLocal = parseM3U(localData);
       if (parsedLocal.length > 0) {
         channels = parsedLocal;
-        loader.classList.add("hidden");
+        if (loader) loader.classList.add("hidden");
         renderCategories();
         filterAndSearch();
-
-        // Start playing the default channel
-        if (filteredChannels.length > 0) {
-          const defaultIndex = filteredChannels.findIndex(c => c.name.toLowerCase().includes("tooffee"));
-          playChannel(defaultIndex !== -1 ? defaultIndex : 0);
-        }
+        playDefaultOrFirstChannel();
       }
-      // 2. Fetch remote online playlist in the background
       fetchOnlinePlaylistInBackground();
     })
     .catch(err => {
-      console.warn("Failed to load local playlist first, attempting online fetch directly:", err);
-      // Fallback: try online playlist directly if local fails
+      console.warn("Failed to load local playlist, fetching online directly:", err);
       fetch(`${playlistOnline}?t=${new Date().getTime()}`)
         .then(response => {
-          if (!response.ok) throw new Error("Online playlist response error");
+          if (!response.ok) throw new Error("Online playlist error");
           return response.text();
         })
         .then(onlineData => {
@@ -312,23 +362,25 @@ function loadPlaylist() {
           if (parsedOnline.length > 0) {
             channels = parsedOnline;
           }
-          loader.classList.add("hidden");
+          if (loader) loader.classList.add("hidden");
           renderCategories();
           filterAndSearch();
-          if (filteredChannels.length > 0) {
-            const defaultIndex = filteredChannels.findIndex(c => c.name.toLowerCase().includes("tooffee"));
-            playChannel(defaultIndex !== -1 ? defaultIndex : 0);
-          }
+          playDefaultOrFirstChannel();
         })
         .catch(finalErr => {
           console.error("Failed to load playlist entirely", finalErr);
-          loader.querySelector("span").innerText = "Failed to load playlist ⚠️";
+          if (loader) loader.querySelector("span").innerText = "Failed to load playlist ⚠️";
         });
     });
 }
 
 /* FETCH REMOTE PLAYLIST IN BACKGROUND AND SILENTLY UPDATE UI */
 function fetchOnlinePlaylistInBackground() {
+  // Check if custom playlist is active
+  if (localStorage.getItem("alpha_tv_custom_m3u_url") || localStorage.getItem("alpha_tv_custom_m3u_data")) {
+    return; // Don't run background fetch if user has a custom playlist loaded
+  }
+
   fetch(`${playlistOnline}?t=${new Date().getTime()}`)
     .then(response => {
       if (!response.ok) throw new Error("Background online playlist fetch failed");
@@ -338,15 +390,12 @@ function fetchOnlinePlaylistInBackground() {
       const parsedOnline = parseM3U(onlineData);
       if (parsedOnline.length === 0) return;
 
-      // Compare online playlist length and entries to detect differences
       const isDifferent = channels.length !== parsedOnline.length ||
                           channels.some((c, idx) => !parsedOnline[idx] || c.url !== parsedOnline[idx].url || c.name !== parsedOnline[idx].name);
 
       if (isDifferent) {
         console.log("Online playlist updates detected. Updating channels list in background.");
         channels = parsedOnline;
-
-        // Re-render categories list and channels grid
         renderCategories();
         filterAndSearch();
       } else {
@@ -1977,4 +2026,148 @@ document.addEventListener("click", () => {
   if (qualityMenu && !qualityMenu.classList.contains("hidden")) {
     qualityMenu.classList.add("hidden");
   }
+});
+
+/* ==========================================================================
+   SETTINGS & CUSTOM PLAYLIST HANDLING
+   ========================================================================== */
+
+// Open Settings Modal
+window.openSettingsModal = function() {
+  const modal = document.getElementById("settingsModal");
+  if (!modal) return;
+  modal.classList.remove("hidden");
+  modal.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden"; // Prevent background scroll
+  
+  // Clear any previous error messages
+  document.getElementById("urlErrorText").classList.add("hidden");
+  document.getElementById("fileErrorText").classList.add("hidden");
+  document.getElementById("customM3uUrl").value = localStorage.getItem("alpha_tv_custom_m3u_url") || "";
+
+  updateSettingsStatusBadge();
+};
+
+// Close Settings Modal
+window.closeSettingsModal = function() {
+  const modal = document.getElementById("settingsModal");
+  if (!modal) return;
+  modal.classList.add("hidden");
+  modal.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = ""; // Enable background scroll
+};
+
+// Update active badge status in Settings Modal
+function updateSettingsStatusBadge() {
+  const badge = document.getElementById("playlistStatusBadge");
+  if (!badge) return;
+
+  const customUrl = localStorage.getItem("alpha_tv_custom_m3u_url");
+  const customData = localStorage.getItem("alpha_tv_custom_m3u_data");
+
+  if (customUrl || customData) {
+    badge.innerText = "Custom Playlist (সক্রিয় কাস্টম প্লেলিস্ট)";
+    badge.className = "playlist-badge custom";
+  } else {
+    badge.innerText = "Alpha TV Default (ডিফল্ট প্লেলিস্ট)";
+    badge.className = "playlist-badge default";
+  }
+}
+
+// Load remote M3U URL
+window.loadCustomM3uUrl = function() {
+  const urlInput = document.getElementById("customM3uUrl");
+  const errorEl = document.getElementById("urlErrorText");
+  const url = urlInput.value.trim();
+
+  if (!url) {
+    showSettingError(errorEl, "Please enter a valid URL / লিঙ্ক প্রদান করুন।");
+    return;
+  }
+
+  errorEl.classList.add("hidden");
+  
+  // Show loading indicator
+  const loader = document.getElementById("playerLoader");
+  if (loader) {
+    loader.classList.remove("hidden");
+    loader.querySelector("span").innerText = "Testing custom M3U link...";
+  }
+
+  fetch(url)
+    .then(response => {
+      if (!response.ok) throw new Error("Server returned error response");
+      return response.text();
+    })
+    .then(m3uText => {
+      const parsed = parseM3U(m3uText);
+      if (parsed.length > 0) {
+        // Save to localStorage
+        localStorage.setItem("alpha_tv_custom_m3u_url", url);
+        localStorage.removeItem("alpha_tv_custom_m3u_data"); // Remove file data to avoid conflicts
+
+        // Reload app
+        window.location.reload();
+      } else {
+        throw new Error("No channels found in M3U file");
+      }
+    })
+    .catch(err => {
+      console.error("Error loading M3U URL:", err);
+      if (loader) loader.classList.add("hidden");
+      showSettingError(errorEl, "Failed to load M3U. Check connection/CORS policy. (লিঙ্কটি লোড করা সম্ভব হয়নি)");
+    });
+};
+
+// Load uploaded M3U File
+window.loadCustomM3uFile = function(event) {
+  const file = event.target.files[0];
+  const errorEl = document.getElementById("fileErrorText");
+  if (!file) return;
+
+  errorEl.classList.add("hidden");
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const m3uText = e.target.result;
+    const parsed = parseM3U(m3uText);
+
+    if (parsed.length > 0) {
+      // Save content text to localStorage
+      localStorage.setItem("alpha_tv_custom_m3u_data", m3uText);
+      localStorage.removeItem("alpha_tv_custom_m3u_url"); // Remove URL to avoid conflicts
+
+      // Reload app
+      window.location.reload();
+    } else {
+      showSettingError(errorEl, "Invalid M3U file format. No channels found. (অকার্যকর M3U ফাইল ফরম্যাট)");
+    }
+  };
+
+  reader.onerror = function() {
+    showSettingError(errorEl, "Error reading file. Try again. (ফাইলটি পড়তে সমস্যা হয়েছে)");
+  };
+
+  reader.readAsText(file);
+};
+
+// Reset to default playlist
+window.resetToDefaultPlaylist = function() {
+  localStorage.removeItem("alpha_tv_custom_m3u_url");
+  localStorage.removeItem("alpha_tv_custom_m3u_data");
+  
+  // Reload app
+  window.location.reload();
+};
+
+// Show settings error helper
+function showSettingError(element, message) {
+  if (!element) return;
+  element.innerText = message;
+  element.classList.remove("hidden");
+}
+
+// Initial status badge update on startup
+document.addEventListener("DOMContentLoaded", () => {
+  updateSettingsStatusBadge();
 });
