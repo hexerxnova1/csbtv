@@ -71,7 +71,6 @@ body {
   filter: blur(120px);
   opacity: 0.35;
   mix-blend-mode: screen;
-  animation: orbFloat 20s infinite alternate ease-in-out;
 }
 
 .orb-1 {
@@ -140,6 +139,25 @@ body {
   position: sticky;
   top: 0;
   z-index: 10;
+  overflow-y: auto;
+}
+
+/* Thin custom scrollbar for left sidebar */
+.player-section::-webkit-scrollbar {
+  width: 4px;
+}
+
+.player-section::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.player-section::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+}
+
+.player-section::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.15);
 }
 
 /* LOGO & HEADER */
@@ -473,8 +491,8 @@ video {
   gap: 20px;
   backdrop-filter: blur(var(--blur-amount));
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-  flex-grow: 1;
-  max-height: 200px;
+  flex-shrink: 0;
+  height: auto;
   overflow: hidden;
 }
 
@@ -619,10 +637,27 @@ video {
 }
 
 /* SEARCH WRAPPER */
+.search-bar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
 .search-wrapper {
   position: relative;
   width: 100%;
-  margin-bottom: 20px;
+  max-width: 450px;
+  margin-bottom: 0;
+}
+
+.search-options-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
 }
 
 .search-icon {
@@ -2526,6 +2561,17 @@ video {
 .warning-app-download-btn:hover {
   transform: translateY(-1px) scale(1.02);
   box-shadow: 0 6px 20px rgba(255, 110, 0, 0.4) !important;
+}
+
+.warning-modal-btn {
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 24px !important;
+  border-radius: 12px !important;
+  font-size: 13.5px;
+  margin: 0;
 }
 
 /* Neumorphic 3D overrides for the warning app download button */

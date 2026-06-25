@@ -220,24 +220,29 @@
       <main class="channels-section">
         <!-- Search & Control Header -->
         <div class="search-filter-sticky">
-          <div class="search-wrapper">
-            <span class="search-icon"
-              ><i class="fa-solid fa-magnifying-glass"></i
-            ></span>
-            <input
-              type="text"
-              id="search"
-              placeholder="Search among all channels..."
-              onkeyup="searchChannels()"
-            />
-            <button
-              class="clear-search-btn"
-              id="clearSearch"
-              onclick="clearSearchInput()"
-              style="display: none"
-            >
-              <i class="fa-solid fa-xmark"></i>
-            </button>
+          <div class="search-bar-row">
+            <div class="search-wrapper">
+              <span class="search-icon"
+                ><i class="fa-solid fa-magnifying-glass"></i
+              ></span>
+              <input
+                type="text"
+                id="search"
+                placeholder="Search among all channels..."
+                onkeyup="searchChannels()"
+              />
+              <button
+                class="clear-search-btn"
+                id="clearSearch"
+                onclick="clearSearchInput()"
+                style="display: none"
+              >
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <div class="search-options-right">
+              <!-- You can add custom buttons/options here -->
+            </div>
           </div>
 
           <!-- Category Pill Filter List -->
