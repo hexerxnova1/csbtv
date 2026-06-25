@@ -3666,6 +3666,27 @@ body.pip-active video {
   padding: 12px 16px;
   display: flex;
   flex-direction: column;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+/* Custom Scrollbar for Chat Body */
+.chat-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  transition: all var(--transition-fast);
+}
+
+.chat-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(155, 81, 224, 0.5);
 }
 
 .chat-messages {
