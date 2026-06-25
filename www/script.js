@@ -2763,6 +2763,7 @@ function setupKeyboardAdjustments() {
   const chatMessages = document.getElementById("chatMessages");
 
   let originalWindowHeight = window.innerHeight;
+  let isKeyboardOpen = false;
 
   // Update original window height if orientation changes
   window.addEventListener('orientationchange', () => {
@@ -2776,6 +2777,7 @@ function setupKeyboardAdjustments() {
       const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768);
       if (isMobile) {
         chatContainer.classList.add("keyboard-visible");
+        isKeyboardOpen = false; // Reset to false until resize event detects shrink
         // Scroll the messages list to bottom
         setTimeout(() => {
           if (chatMessages) {
@@ -2794,6 +2796,7 @@ function setupKeyboardAdjustments() {
       const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768);
       if (isMobile) {
         chatContainer.classList.remove("keyboard-visible");
+        isKeyboardOpen = false;
         // Ensure layout recovers fully when keyboard is closed
         setTimeout(() => {
           window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2807,25 +2810,32 @@ function setupKeyboardAdjustments() {
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768);
     if (!isMobile) return;
 
-    // If viewport height expands back to near-original size, hide keyboard adjustments
-    if (window.innerHeight >= originalWindowHeight - 80) {
-      if (chatContainer && chatContainer.classList.contains("keyboard-visible")) {
-        chatContainer.classList.remove("keyboard-visible");
-        if (chatInput) {
-          chatInput.blur();
-        }
-        setTimeout(() => {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }, 100);
-      }
-    } else {
-      // If active element is chatInput and keyboard-visible is not set, add it
+    const currentHeight = window.innerHeight;
+
+    // 1. Detect if keyboard opened (viewport shrunk)
+    if (currentHeight < originalWindowHeight - 120) {
+      isKeyboardOpen = true;
       if (document.activeElement === chatInput && chatContainer && !chatContainer.classList.contains("keyboard-visible")) {
         chatContainer.classList.add("keyboard-visible");
         setTimeout(() => {
           if (chatMessages) {
             chatMessages.scrollTop = chatMessages.scrollHeight;
           }
+        }, 100);
+      }
+    } 
+    // 2. Detect if keyboard closed (viewport height recovered) after being open
+    else if (currentHeight >= originalWindowHeight - 80) {
+      if (isKeyboardOpen) {
+        isKeyboardOpen = false;
+        if (chatContainer && chatContainer.classList.contains("keyboard-visible")) {
+          chatContainer.classList.remove("keyboard-visible");
+        }
+        if (chatInput) {
+          chatInput.blur();
+        }
+        setTimeout(() => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         }, 100);
       }
     }
