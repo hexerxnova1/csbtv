@@ -2609,6 +2609,11 @@ window.saveNewNickname = function() {
 function initChatForChannel(channel) {
   if (!channel) return;
   
+  const chatHeaderTitle = document.getElementById("chatHeaderTitle");
+  if (chatHeaderTitle) {
+    chatHeaderTitle.innerHTML = `<i class="fa-solid fa-comments"></i> Live Chat with "${escapeHtml(channel.name)}"`;
+  }
+  
   initFirebase();
   loadNickname();
   loadChatUIState();
