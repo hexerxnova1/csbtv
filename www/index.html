@@ -128,6 +128,16 @@
               </div>
             </div>
 
+            <!-- Chat Toggle Button -->
+            <button
+              class="control-btn"
+              id="chatToggleControlBtn"
+              onclick="toggleChat()"
+              title="Toggle Live Chat / লাইভ চ্যাট"
+            >
+              <i class="fa-solid fa-comments"></i>
+            </button>
+
             <button
               class="control-btn"
               onclick="toggleFullscreen()"
@@ -135,6 +145,28 @@
             >
               <i class="fa-solid fa-expand"></i>
             </button>
+          </div>
+
+          <!-- Live Chat Container -->
+          <div id="liveChatContainer" class="live-chat-container">
+            <div class="chat-header">
+              <div class="chat-header-title">
+                <i class="fa-solid fa-comments"></i> Live Chat / লাইভ চ্যাট
+              </div>
+              <div class="chat-header-actions">
+                <span id="chatNickname" class="chat-nickname" onclick="changeNickname()" title="Edit Nickname">AlphaFan <i class="fa-solid fa-pen"></i></span>
+                <button class="chat-toggle-collapse-btn" onclick="toggleChatCollapse()" title="Toggle Chat"><i class="fa-solid fa-chevron-down"></i></button>
+              </div>
+            </div>
+            <div class="chat-body" id="chatBody">
+              <div class="chat-messages" id="chatMessages">
+                <div class="chat-system-message">Welcome to Alpha TV Chat! Type below to chat live. (লাইভ চ্যাটে স্বাগতম!)</div>
+              </div>
+            </div>
+            <div class="chat-input-row">
+              <input type="text" id="chatInput" placeholder="Write a message... / মেসেজ লিখুন..." onkeydown="handleChatInputKey(event)" />
+              <button id="chatSendBtn" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
           </div>
         </div>
 
@@ -796,6 +828,32 @@
         </div>
       </div>
     </div>
+
+    <!-- Nickname Modal -->
+    <div id="nicknameModal" class="settings-modal hidden" aria-hidden="true" role="dialog">
+      <div class="settings-modal-content" style="max-width: 380px;">
+        <header class="settings-header">
+          <h2><i class="fa-solid fa-user-pen"></i> Edit Nickname</h2>
+          <button class="settings-close-btn" onclick="closeNicknameModal()" aria-label="Close Nickname Modal">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </header>
+        <div class="settings-body">
+          <div class="settings-section">
+            <p class="section-desc">Choose a nickname for the live chat room (সর্বোচ্চ ১৫ অক্ষর):</p>
+            <div class="url-input-wrapper url-input-layout-stacked">
+              <input type="text" id="nicknameInput" placeholder="Enter nickname... / ডাকনাম লিখুন" maxlength="15" />
+              <button onclick="saveNewNickname()" class="settings-btn primary-btn" style="width: 100%; margin-top: 10px;">Save Name</button>
+            </div>
+            <p id="nicknameErrorText" class="settings-error hidden"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Firebase Compat SDKs (App & Database) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
     <!-- Custom Logic -->
     <script src="script.js?v=1.1.4"></script>

@@ -1100,6 +1100,11 @@ function playChannel(index) {
   const channel = filteredChannels[index];
   currentChannel = channel;
 
+  // Initialize chat room for this channel
+  if (typeof initChatForChannel === "function") {
+    initChatForChannel(channel);
+  }
+
   // Reset loader & error state
   resetPlayerLoader();
   video.onerror = null;
@@ -2361,4 +2366,329 @@ function showSettingError(element, message) {
 // Initial status badge update on startup
 document.addEventListener("DOMContentLoaded", () => {
   updateSettingsStatusBadge();
+  loadChatUIState();
 });
+
+/* LIVE CHAT ROOM FEATURING FIREBASE REALTIME DATABASE */
+
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  databaseURL: "YOUR_DATABASE_URL_HERE",
+  projectId: "YOUR_PROJECT_ID",
+  appId: "YOUR_APP_ID"
+};
+
+let database = null;
+let chatRef = null;
+let chatInitialized = false;
+let currentNickname = "";
+let shouldScrollToBottom = true;
+
+function initFirebase() {
+  if (chatInitialized) return;
+  
+  if (typeof firebase !== 'undefined') {
+    try {
+      firebase.initializeApp(firebaseConfig);
+      database = firebase.database();
+      chatInitialized = true;
+      console.log("Firebase Chat initialized successfully.");
+    } catch (e) {
+      console.error("Firebase initialization failed:", e);
+    }
+  } else {
+    console.warn("Firebase SDK not loaded. Chat room running in offline mode.");
+  }
+}
+
+function getSanitizedChannelId(name) {
+  if (!name) return 'general';
+  return name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+}
+
+function loadNickname() {
+  let saved = localStorage.getItem("alpha_tv_chat_nickname");
+  if (!saved) {
+    const rand = Math.floor(1000 + Math.random() * 9000);
+    saved = "AlphaFan_" + rand;
+    localStorage.setItem("alpha_tv_chat_nickname", saved);
+  }
+  currentNickname = saved;
+  updateNicknameUI();
+}
+
+function updateNicknameUI() {
+  const el = document.getElementById("chatNickname");
+  if (el) {
+    el.innerHTML = `${escapeHtml(currentNickname)} <i class="fa-solid fa-pen" style="font-size: 8px; margin-left: 2px;"></i>`;
+  }
+}
+
+window.changeNickname = function() {
+  const modal = document.getElementById("nicknameModal");
+  const input = document.getElementById("nicknameInput");
+  const errorEl = document.getElementById("nicknameErrorText");
+  
+  if (modal && input) {
+    input.value = currentNickname;
+    if (errorEl) errorEl.classList.add("hidden");
+    modal.classList.remove("hidden");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+  }
+};
+
+window.closeNicknameModal = function() {
+  const modal = document.getElementById("nicknameModal");
+  if (modal) {
+    modal.classList.add("hidden");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+  }
+};
+
+window.saveNewNickname = function() {
+  const input = document.getElementById("nicknameInput");
+  const errorEl = document.getElementById("nicknameErrorText");
+  if (!input) return;
+  
+  const newName = input.value.trim();
+  if (newName.length === 0) {
+    if (errorEl) {
+      errorEl.innerText = "Please enter a valid nickname / ডাকনাম লিখুন।";
+      errorEl.classList.remove("hidden");
+    }
+    return;
+  }
+  
+  if (newName.length > 15) {
+    if (errorEl) {
+      errorEl.innerText = "Name must be 15 characters or less / নাম সর্বোচ্চ ১৫ অক্ষর হতে পারবে।";
+      errorEl.classList.remove("hidden");
+    }
+    return;
+  }
+  
+  currentNickname = newName;
+  localStorage.setItem("alpha_tv_chat_nickname", newName);
+  updateNicknameUI();
+  
+  appendSystemMessage(`You changed nickname to "${newName}".`);
+  closeNicknameModal();
+};
+
+function initChatForChannel(channel) {
+  if (!channel) return;
+  
+  initFirebase();
+  loadNickname();
+  loadChatUIState();
+  
+  const sanitizedId = getSanitizedChannelId(channel.name);
+  shouldScrollToBottom = true;
+  
+  if (chatRef) {
+    chatRef.off();
+  }
+  
+  const chatMessagesEl = document.getElementById("chatMessages");
+  if (chatMessagesEl) {
+    chatMessagesEl.innerHTML = `<div class="chat-system-message">Connecting to ${escapeHtml(channel.name)} chat... (চ্যাটে সংযুক্ত হচ্ছে...)</div>`;
+  }
+  
+  if (!database) {
+    if (chatMessagesEl) {
+      chatMessagesEl.innerHTML = `<div class="chat-system-message">Chat offline. Please configure Firebase in script.js. (চ্যাট অফলাইন। ফায়ারবেস কনফিগার করুন।)</div>`;
+    }
+    return;
+  }
+  
+  chatRef = database.ref('chats/' + sanitizedId);
+  
+  chatRef.limitToLast(100).on('value', (snapshot) => {
+    const messages = [];
+    snapshot.forEach((childSnapshot) => {
+      const key = childSnapshot.key;
+      const data = childSnapshot.val();
+      messages.push({
+        key: key,
+        sender: data.sender || 'Anonymous',
+        text: data.text || '',
+        timestamp: data.timestamp || 0
+      });
+    });
+    
+    renderChatMessages(messages);
+  }, (err) => {
+    console.error("Firebase chat listen error:", err);
+  });
+}
+
+function renderChatMessages(messages) {
+  const chatMessagesEl = document.getElementById("chatMessages");
+  if (!chatMessagesEl) return;
+  
+  if (messages.length === 0) {
+    chatMessagesEl.innerHTML = `<div class="chat-system-message">No messages yet. Say hello! (কোনো মেসেজ নেই। হ্যালো বলুন!)</div>`;
+    return;
+  }
+  
+  const isNearBottom = chatMessagesEl.scrollHeight - chatMessagesEl.clientHeight - chatMessagesEl.scrollTop < 50;
+  
+  chatMessagesEl.innerHTML = messages.map(msg => {
+    const isSelf = msg.sender === currentNickname;
+    return `
+      <div class="chat-msg-row ${isSelf ? 'self' : ''}">
+        <span class="chat-msg-sender">${escapeHtml(msg.sender)}</span>
+        <div class="chat-msg-bubble">${escapeHtml(msg.text)}</div>
+      </div>
+    `;
+  }).join('');
+  
+  if (shouldScrollToBottom) {
+    chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+    shouldScrollToBottom = false;
+  } else if (isNearBottom) {
+    chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+  }
+}
+
+window.sendChatMessage = function() {
+  const inputEl = document.getElementById("chatInput");
+  if (!inputEl) return;
+  
+  const text = inputEl.value.trim();
+  if (text.length === 0) return;
+  
+  if (!chatRef) {
+    alert("Chat not connected.");
+    return;
+  }
+  
+  const filteredText = filterToxicity(text);
+  
+  const messageData = {
+    sender: currentNickname,
+    text: filteredText,
+    timestamp: firebase.database.ServerValue.TIMESTAMP
+  };
+  
+  chatRef.push(messageData).then(() => {
+    inputEl.value = "";
+    if (currentChannel) {
+      cleanupOldMessages(getSanitizedChannelId(currentChannel.name));
+    }
+  }).catch(err => {
+    console.error("Failed to send message:", err);
+  });
+};
+
+function cleanupOldMessages(sanitizedId) {
+  if (!database) return;
+  const ref = database.ref('chats/' + sanitizedId);
+  ref.once('value').then((snapshot) => {
+    const numChildren = snapshot.numChildren();
+    if (numChildren > 100) {
+      let count = 0;
+      const limit = numChildren - 100;
+      const updates = {};
+      snapshot.forEach((child) => {
+        if (count < limit) {
+          updates[child.key] = null;
+          count++;
+        } else {
+          return true;
+        }
+      });
+      ref.update(updates);
+    }
+  });
+}
+
+function filterToxicity(text) {
+  const badWords = ["gali", "badword", "spammer"];
+  let cleaned = text;
+  badWords.forEach(word => {
+    const regex = new RegExp("\\b" + word + "\\b", "gi");
+    cleaned = cleaned.replace(regex, "***");
+  });
+  return cleaned;
+}
+
+function appendSystemMessage(text) {
+  const chatMessagesEl = document.getElementById("chatMessages");
+  if (!chatMessagesEl) return;
+  
+  const div = document.createElement("div");
+  div.className = "chat-system-message";
+  div.innerText = text;
+  chatMessagesEl.appendChild(div);
+  chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+}
+
+window.handleChatInputKey = function(event) {
+  if (event.key === "Enter") {
+    sendChatMessage();
+  }
+};
+
+window.toggleChat = function() {
+  const container = document.getElementById("liveChatContainer");
+  if (container) {
+    container.classList.toggle("hidden");
+    const isHidden = container.classList.contains("hidden");
+    localStorage.setItem("alpha_tv_chat_hidden", isHidden);
+    
+    if (!isHidden) {
+      setTimeout(() => {
+        const chatMessagesEl = document.getElementById("chatMessages");
+        if (chatMessagesEl) chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+      }, 100);
+    }
+  }
+};
+
+window.toggleChatCollapse = function() {
+  const container = document.getElementById("liveChatContainer");
+  if (container) {
+    container.classList.toggle("chat-collapsed");
+    const isCollapsed = container.classList.contains("chat-collapsed");
+    localStorage.setItem("alpha_tv_chat_collapsed", isCollapsed);
+    if (!isCollapsed) {
+      setTimeout(() => {
+        const chatMessagesEl = document.getElementById("chatMessages");
+        if (chatMessagesEl) chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+      }, 100);
+    }
+  }
+};
+
+function loadChatUIState() {
+  const container = document.getElementById("liveChatContainer");
+  if (!container) return;
+  
+  const isHidden = localStorage.getItem("alpha_tv_chat_hidden") === "true";
+  const isCollapsed = localStorage.getItem("alpha_tv_chat_collapsed") === "true";
+  
+  if (isHidden) {
+    container.classList.add("hidden");
+  } else {
+    container.classList.remove("hidden");
+  }
+  
+  if (isCollapsed) {
+    container.classList.add("chat-collapsed");
+  } else {
+    container.classList.remove("chat-collapsed");
+  }
+}
+
+function escapeHtml(text) {
+  if (!text) return "";
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
