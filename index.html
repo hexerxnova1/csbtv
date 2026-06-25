@@ -112,6 +112,22 @@
             >
               <i class="fa-solid fa-volume-high"></i>
             </button>
+            <!-- Quality Selector -->
+            <div class="quality-selector-container">
+              <button
+                class="control-btn"
+                id="qualityBtn"
+                onclick="toggleQualityMenu(event)"
+                title="Video Quality"
+                style="display: none;"
+              >
+                <i class="fa-solid fa-gear"></i>
+              </button>
+              <div id="qualityMenu" class="quality-menu hidden">
+                <!-- Dynamically populated options -->
+              </div>
+            </div>
+
             <button
               class="control-btn"
               onclick="toggleFullscreen()"

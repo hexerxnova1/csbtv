@@ -838,6 +838,8 @@ function playServer(serverIndex) {
     currentHls = null;
   }
 
+  initializeQualitySelector(null);
+
   if (typeof Hls !== "undefined" && Hls.isSupported()) {
     currentHls = new Hls({
       maxMaxBufferLength: 10,
@@ -845,6 +847,7 @@ function playServer(serverIndex) {
     });
     currentHls.loadSource(serverUrl);
     currentHls.attachMedia(video);
+    initializeQualitySelector(currentHls);
 
     currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
       video.play().catch(err => {
@@ -1005,6 +1008,8 @@ function playChannel(index) {
   resolvedServers = [];
   activeServerIndex = 0;
 
+  initializeQualitySelector(null);
+
   if (typeof Hls !== "undefined" && Hls.isSupported()) {
     currentHls = new Hls({
       maxMaxBufferLength: 10,
@@ -1012,6 +1017,7 @@ function playChannel(index) {
     });
     currentHls.loadSource(channel.url);
     currentHls.attachMedia(video);
+    initializeQualitySelector(currentHls);
 
     currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
       video.play().catch(err => {
@@ -1887,3 +1893,83 @@ function setupPictureInPicture() {
     }
   };
 }
+
+/* VIDEO QUALITY SELECTOR LOGIC */
+function initializeQualitySelector(hlsInstance) {
+  const qualityBtn = document.getElementById("qualityBtn");
+  const qualityMenu = document.getElementById("qualityMenu");
+
+  if (!qualityBtn || !qualityMenu) return;
+
+  // Make sure quality button is always visible
+  qualityBtn.style.display = "flex";
+  qualityMenu.classList.add("hidden");
+
+  // Default menu before manifest parsed or if single quality
+  qualityMenu.innerHTML = `<div class="quality-menu-item active" data-level="-1">Original</div>`;
+
+  if (!hlsInstance) return;
+
+  hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+    const levels = hlsInstance.levels;
+    if (levels && levels.length > 1) {
+      // Build menu options (Auto at top)
+      let menuHtml = `<div class="quality-menu-item active" data-level="-1" onclick="changeQualityLevel(-1, event)">Auto</div>`;
+
+      // Sort levels by height descending (e.g. 1080p, 720p...)
+      const sortedLevels = [...levels].map((level, index) => ({ level, originalIndex: index }));
+      sortedLevels.sort((a, b) => (b.level.height || 0) - (a.level.height || 0));
+
+      sortedLevels.forEach(item => {
+        const height = item.level.height || Math.round((item.level.width || 0) * 9 / 16);
+        const name = height ? `${height}p` : `Level ${item.originalIndex + 1}`;
+        menuHtml += `<div class="quality-menu-item" data-level="${item.originalIndex}" onclick="changeQualityLevel(${item.originalIndex}, event)">${name}</div>`;
+      });
+
+      qualityMenu.innerHTML = menuHtml;
+    } else {
+      qualityMenu.innerHTML = `<div class="quality-menu-item active" data-level="-1">Original</div>`;
+    }
+  });
+}
+
+function changeQualityLevel(levelIndex, event) {
+  if (event) event.stopPropagation();
+  if (!currentHls) return;
+
+  currentHls.currentLevel = levelIndex;
+
+  // Update active item in the UI
+  const menuItems = document.querySelectorAll(".quality-menu-item");
+  menuItems.forEach(item => {
+    if (parseInt(item.getAttribute("data-level")) === levelIndex) {
+      item.classList.add("active");
+    } else {
+      item.classList.remove("active");
+    }
+  });
+
+  // Hide the menu
+  const qualityMenu = document.getElementById("qualityMenu");
+  if (qualityMenu) {
+    qualityMenu.classList.add("hidden");
+  }
+
+  console.log("Quality level changed to index:", levelIndex);
+}
+
+function toggleQualityMenu(event) {
+  if (event) event.stopPropagation();
+  const qualityMenu = document.getElementById("qualityMenu");
+  if (qualityMenu) {
+    qualityMenu.classList.toggle("hidden");
+  }
+}
+
+// Global click listener to close the quality menu when clicking outside of it
+document.addEventListener("click", () => {
+  const qualityMenu = document.getElementById("qualityMenu");
+  if (qualityMenu && !qualityMenu.classList.contains("hidden")) {
+    qualityMenu.classList.add("hidden");
+  }
+});
