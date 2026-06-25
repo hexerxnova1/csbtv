@@ -164,7 +164,7 @@
               </div>
             </div>
             <div class="chat-input-row">
-              <input type="text" id="chatInput" placeholder="Write a message... / মেসেজ লিখুন..." onkeydown="handleChatInputKey(event)" />
+              <input type="text" id="chatInput" placeholder="Write a message... / মেসেজ লিখুন..." onkeydown="handleChatInputKey(event)" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
               <button id="chatSendBtn" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
           </div>
@@ -842,7 +842,7 @@
           <div class="settings-section">
             <p class="section-desc">Choose a nickname for live chat / আপনার ডাকনাম লিখুন (সর্বোচ্চ ১৫ অক্ষর):</p>
             <div class="url-input-wrapper url-input-layout-stacked">
-              <input type="text" id="nicknameInput" placeholder="Enter nickname... / ডাকনাম লিখুন" maxlength="15" />
+              <input type="text" id="nicknameInput" placeholder="Enter nickname... / ডাকনাম লিখুন" maxlength="15" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
               <button onclick="saveNewNickname()" class="settings-btn primary-btn" style="width: 100%; margin-top: 10px;">Save Name</button>
             </div>
             <p id="nicknameErrorText" class="settings-error hidden"></p>
