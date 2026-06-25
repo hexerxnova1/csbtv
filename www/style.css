@@ -3857,3 +3857,40 @@ body.pip-active video {
 .mode-3d #chatSendBtn:active {
   box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.7), inset -2px -2px 4px rgba(255, 255, 255, 0.02) !important;
 }
+
+/* PICTURE-IN-PICTURE (PIP) OPTIMIZATION FOR HYBRID APP */
+body.pip-active {
+  background: #000 !important;
+  overflow: hidden !important;
+}
+
+body.pip-active > *:not(.player-wrapper) {
+  display: none !important;
+}
+
+body.pip-active .player-wrapper {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  z-index: 99999 !important;
+  background: #000 !important;
+  box-shadow: none !important;
+}
+
+body.pip-active .video-container,
+body.pip-active video {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 0 !important;
+}
+
+body.pip-active .custom-controls,
+body.pip-active .live-chat-container {
+  display: none !important;
+}
+
