@@ -2043,6 +2043,72 @@ function closeTelegramModal() {
 function setupPictureInPicture() {
   const video = document.getElementById("video");
 
+  // State to capture chat layout settings before PiP
+  let chatStateBeforePiP = {
+    hidden: false,
+    collapsed: false
+  };
+
+  function handleEnterPiP() {
+    const chatInput = document.getElementById("chatInput");
+    const chatContainer = document.getElementById("liveChatContainer");
+
+    // Dismiss keyboard and focus state to prevent layout distortions in tiny PiP view
+    if (chatInput) {
+      chatInput.blur();
+    }
+    if (document.activeElement && typeof document.activeElement.blur === 'function') {
+      document.activeElement.blur();
+    }
+
+    if (chatContainer) {
+      // Capture current settings
+      chatStateBeforePiP.hidden = chatContainer.classList.contains("hidden");
+      chatStateBeforePiP.collapsed = chatContainer.classList.contains("chat-collapsed");
+
+      // Hide and collapse the chat container in PiP mode
+      chatContainer.classList.add("hidden");
+      chatContainer.classList.add("chat-collapsed");
+      chatContainer.classList.remove("keyboard-visible");
+    }
+
+    // Reset window scroll position to keep player aligned in tiny PiP window
+    window.scrollTo(0, 0);
+  }
+
+  function handleExitPiP() {
+    const chatContainer = document.getElementById("liveChatContainer");
+    if (chatContainer) {
+      // Restore states
+      if (chatStateBeforePiP.hidden) {
+        chatContainer.classList.add("hidden");
+      } else {
+        chatContainer.classList.remove("hidden");
+      }
+
+      if (chatStateBeforePiP.collapsed) {
+        chatContainer.classList.add("chat-collapsed");
+      } else {
+        chatContainer.classList.remove("chat-collapsed");
+      }
+
+      // Scroll chat body to bottom if chat is restored to visible
+      if (!chatStateBeforePiP.hidden && !chatStateBeforePiP.collapsed) {
+        setTimeout(() => {
+          const chatMessages = document.getElementById("chatMessages");
+          if (chatMessages) {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+          }
+        }, 100);
+      }
+    }
+
+    // Smooth scroll page back to top alignment
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
+  }
+
   // Expose play control functions to window for native Android PiP actions
   window.nextChannel = nextChannel;
   window.prevChannel = prevChannel;
@@ -2052,11 +2118,13 @@ function setupPictureInPicture() {
   video.addEventListener("enterpictureinpicture", () => {
     console.log("Web PiP Entered");
     document.body.classList.add("pip-active");
+    handleEnterPiP();
   });
 
   video.addEventListener("leavepictureinpicture", () => {
     console.log("Web PiP Exited");
     document.body.classList.remove("pip-active");
+    handleExitPiP();
   });
 
   // Android capacitor wrapper callback
@@ -2064,8 +2132,10 @@ function setupPictureInPicture() {
     console.log("Android PiP Changed:", isInPiP);
     if (isInPiP) {
       document.body.classList.add("pip-active");
+      handleEnterPiP();
     } else {
       document.body.classList.remove("pip-active");
+      handleExitPiP();
     }
   };
 }
