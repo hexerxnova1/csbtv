@@ -485,7 +485,7 @@ function finishLoadingPlaylist() {
 /* HELPER TO PLAY DEFAULT CHANNEL OR FIRST AVAILABLE */
 function playDefaultOrFirstChannel() {
   if (filteredChannels.length > 0) {
-    const defaultIndex = filteredChannels.findIndex(c => c.name.toLowerCase().includes("tooffee"));
+    const defaultIndex = filteredChannels.findIndex(c => c.name.toLowerCase().includes("channel i"));
     playChannel(defaultIndex !== -1 ? defaultIndex : 0);
   }
 }
@@ -1702,7 +1702,7 @@ function resetToDefaultApp(event) {
   
   // Play the default channel
   if (channels.length > 0) {
-    const defaultIndex = channels.findIndex(c => c.name.toLowerCase().includes("tooffee"));
+    const defaultIndex = channels.findIndex(c => c.name.toLowerCase().includes("channel i"));
     playChannel(defaultIndex !== -1 ? defaultIndex : 0);
   }
   
