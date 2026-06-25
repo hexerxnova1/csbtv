@@ -2871,9 +2871,25 @@ function setupKeyboardAdjustments() {
   // Handle mobile keyboard open/close (especially dismiss via back button)
   if (isMobile) {
     if (window.visualViewport) {
+      let originalHeight = window.innerHeight;
+      
+      const updateOriginalHeight = () => {
+        const activeTag = document.activeElement ? document.activeElement.tagName : '';
+        if (activeTag !== 'INPUT' && activeTag !== 'TEXTAREA') {
+          originalHeight = window.innerHeight;
+        }
+      };
+      
+      window.addEventListener('resize', updateOriginalHeight);
+      window.addEventListener('orientationchange', () => {
+        setTimeout(() => {
+          originalHeight = window.innerHeight;
+        }, 300);
+      });
+
       window.visualViewport.addEventListener('resize', () => {
-        const keyboardHeight = window.innerHeight - window.visualViewport.height;
-        const isKeyboardActive = keyboardHeight > 150;
+        const isKeyboardActive = (window.innerHeight < originalHeight - 100) || 
+                                 (window.visualViewport.height < window.innerHeight - 100);
 
         if (isKeyboardActive) {
           if (document.activeElement === chatInput && chatContainer && !chatContainer.classList.contains("keyboard-visible")) {
