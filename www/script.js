@@ -2539,7 +2539,7 @@ function loadNickname() {
   let saved = localStorage.getItem("alpha_tv_chat_nickname");
   if (!saved) {
     const rand = Math.floor(1000 + Math.random() * 9000);
-    saved = "AlphaFan_" + rand;
+    saved = "User_" + rand;
     localStorage.setItem("alpha_tv_chat_nickname", saved);
   }
   currentNickname = saved;
