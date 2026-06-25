@@ -5,6 +5,8 @@ const playlistOnline = "https://raw.githubusercontent.com/Shariar-Ahamed/online-
 const playlistLocal = "channels.m3u";
 
 let channels = [];
+let defaultChannels = [];
+let customChannels = [];
 let filteredChannels = [];
 let currentChannel = null;
 let currentCategory = "All";
@@ -217,6 +219,143 @@ function setupControlAutohide() {
   playerWrapper.addEventListener("touchstart", showControls);
 }
 
+// Helper to check if URL is a direct stream URL
+function isDirectStreamUrl(url) {
+  try {
+    const parsedUrl = new URL(url);
+    const pathname = parsedUrl.pathname.toLowerCase();
+    return pathname.endsWith(".m3u8") || 
+           pathname.endsWith(".ts") || 
+           pathname.endsWith(".mp4") || 
+           pathname.endsWith(".mkv") || 
+           pathname.endsWith(".mp3") ||
+           pathname.includes(".m3u8") ||
+           pathname.includes(".ts");
+  } catch (e) {
+    return false;
+  }
+}
+
+// Helper to wrap a direct stream URL as a single-channel M3U playlist
+function wrapStreamUrlAsM3u(url, customName) {
+  let name = customName ? customName.trim() : "";
+  if (!name) {
+    name = "Custom Stream";
+    try {
+      const urlObj = new URL(url);
+      const pathParts = urlObj.pathname.split('/').filter(p => p && !p.includes('.'));
+      if (pathParts.length > 0) {
+        const lastPart = pathParts[pathParts.length - 1];
+        name = decodeURIComponent(lastPart).replace(/[-_]/g, ' ');
+      }
+    } catch(e) {}
+  }
+  return `#EXTM3U\n#EXTINF:-1 tvg-name="${name}" group-title="Custom Channel",${name}\n${url}`;
+}
+
+// Merge default and custom channels, then refresh UI
+function mergeAndRefreshChannels() {
+  channels = [...defaultChannels, ...customChannels];
+  renderCategories();
+  filterAndSearch();
+}
+
+// Migrate old custom keys to the new list format
+function migrateOldCustomPlaylist() {
+  const oldUrl = localStorage.getItem("alpha_tv_custom_m3u_url");
+  const oldData = localStorage.getItem("alpha_tv_custom_m3u_data");
+  const oldSource = localStorage.getItem("alpha_tv_custom_m3u_source") || "file";
+  const oldName = localStorage.getItem("alpha_tv_custom_m3u_name") || "";
+
+  if (oldData && !localStorage.getItem("alpha_tv_custom_channels_list")) {
+    console.log("Migrating old custom playlist to new flat list format...");
+    const parsed = parseM3U(oldData);
+    if (parsed.length > 0) {
+      const categoryName = oldSource === "url" ? "Custom URL" : "Custom File";
+      const migrated = parsed.map((ch, index) => ({
+        id: `cust-${Date.now()}-${Math.random().toString(36).substr(2, 9)}-${index}`,
+        name: parsed.length === 1 && oldName ? oldName : ch.name,
+        url: ch.url,
+        logo: ch.logo || "",
+        categories: [categoryName]
+      }));
+      localStorage.setItem("alpha_tv_custom_channels_list", JSON.stringify(migrated));
+    }
+    // Clean up old keys
+    localStorage.removeItem("alpha_tv_custom_m3u_url");
+    localStorage.removeItem("alpha_tv_custom_m3u_data");
+    localStorage.removeItem("alpha_tv_custom_m3u_source");
+    localStorage.removeItem("alpha_tv_custom_m3u_name");
+  }
+}
+
+// Load custom channels from localStorage (URL or File flat list)
+function loadCustomChannels() {
+  // First run migration if needed
+  migrateOldCustomPlaylist();
+
+  const customDataStr = localStorage.getItem("alpha_tv_custom_channels_list");
+  if (customDataStr) {
+    try {
+      const parsed = JSON.parse(customDataStr);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        console.log("Loaded custom channels list from localStorage, count:", parsed.length);
+        customChannels = parsed;
+        return;
+      }
+    } catch(e) {
+      console.error("Failed to parse custom channels list from localStorage:", e);
+    }
+  }
+  customChannels = [];
+}
+
+// Delete a specific custom channel from the list
+window.deleteCustomChannel = function(event, id) {
+  if (event) event.stopPropagation(); // Stop playing the channel on click
+
+  let currentCustom = [];
+  const saved = localStorage.getItem("alpha_tv_custom_channels_list");
+  if (saved) {
+    try {
+      currentCustom = JSON.parse(saved);
+      if (!Array.isArray(currentCustom)) currentCustom = [];
+    } catch(e) {
+      currentCustom = [];
+    }
+  }
+
+  // Filter out the channel to delete
+  const updated = currentCustom.filter(ch => ch.id !== id);
+  localStorage.setItem("alpha_tv_custom_channels_list", JSON.stringify(updated));
+
+  // Update in memory and refresh UI
+  customChannels = updated;
+  
+  // If the currently playing channel is the one we deleted, reset active channel
+  if (currentChannel && currentChannel.id === id) {
+    currentChannel = null;
+  }
+
+  mergeAndRefreshChannels();
+  
+  // Update Settings Modal Badge if open
+  updateSettingsStatusBadge();
+};
+
+// Helper to verify if the file is a channel playlist vs HLS media stream playlist
+function isChannelPlaylist(m3uText) {
+  if (!m3uText) return false;
+  // If it contains HLS segments or stream configurations, it's not a channels playlist
+  if (m3uText.includes("#EXT-X-TARGETDURATION") || 
+      m3uText.includes("#EXT-X-MEDIA-SEQUENCE") || 
+      m3uText.includes("#EXT-X-STREAM-INF") || 
+      m3uText.includes("#EXT-X-I-FRAME-STREAM-INF")) {
+    return false;
+  }
+  return m3uText.includes("#EXTINF");
+}
+
 /* PARSE M3U PLAYLIST DATA */
 function parseM3U(data) {
   const lines = data.split("\n");
@@ -276,64 +415,7 @@ function loadPlaylist() {
   loader.classList.remove("hidden");
   loader.querySelector("span").innerText = "Loading playlist...";
 
-  // Check for custom playlist first
-  const customUrl = localStorage.getItem("alpha_tv_custom_m3u_url");
-  const customData = localStorage.getItem("alpha_tv_custom_m3u_data");
-
-  if (customData) {
-    console.log("Loading playlist from locally saved M3U file");
-    const parsed = parseM3U(customData);
-    if (parsed.length > 0) {
-      channels = parsed;
-      loader.classList.add("hidden");
-      renderCategories();
-      filterAndSearch();
-      playDefaultOrFirstChannel();
-      return;
-    }
-  }
-
-  if (customUrl) {
-    console.log("Loading custom playlist from URL:", customUrl);
-    fetch(customUrl)
-      .then(response => {
-        if (!response.ok) throw new Error("Custom URL response error");
-        return response.text();
-      })
-      .then(customText => {
-        const parsed = parseM3U(customText);
-        if (parsed.length > 0) {
-          channels = parsed;
-          loader.classList.add("hidden");
-          renderCategories();
-          filterAndSearch();
-          playDefaultOrFirstChannel();
-        } else {
-          throw new Error("Could not parse custom M3U");
-        }
-      })
-      .catch(err => {
-        console.error("Failed to load custom URL playlist, falling back to default:", err);
-        loadDefaultPlaylist();
-      });
-    return;
-  }
-
-  // Fallback: Load default playlist
-  loadDefaultPlaylist();
-}
-
-/* HELPER TO PLAY DEFAULT CHANNEL OR FIRST AVAILABLE */
-function playDefaultOrFirstChannel() {
-  if (filteredChannels.length > 0) {
-    const defaultIndex = filteredChannels.findIndex(c => c.name.toLowerCase().includes("tooffee"));
-    playChannel(defaultIndex !== -1 ? defaultIndex : 0);
-  }
-}
-
-/* LOAD DEFAULT ALPHA TV PLAYLIST */
-function loadDefaultPlaylist() {
-  const loader = document.getElementById("playerLoader");
+  // Always load default playlist first from local
   fetch(playlistLocal)
     .then(response => {
       if (!response.ok) throw new Error("Local playlist response error");
@@ -342,13 +424,9 @@ function loadDefaultPlaylist() {
     .then(localData => {
       const parsedLocal = parseM3U(localData);
       if (parsedLocal.length > 0) {
-        channels = parsedLocal;
-        if (loader) loader.classList.add("hidden");
-        renderCategories();
-        filterAndSearch();
-        playDefaultOrFirstChannel();
+        defaultChannels = parsedLocal;
       }
-      fetchOnlinePlaylistInBackground();
+      finishLoadingPlaylist();
     })
     .catch(err => {
       console.warn("Failed to load local playlist, fetching online directly:", err);
@@ -360,27 +438,59 @@ function loadDefaultPlaylist() {
         .then(onlineData => {
           const parsedOnline = parseM3U(onlineData);
           if (parsedOnline.length > 0) {
-            channels = parsedOnline;
+            defaultChannels = parsedOnline;
           }
-          if (loader) loader.classList.add("hidden");
-          renderCategories();
-          filterAndSearch();
-          playDefaultOrFirstChannel();
+          finishLoadingPlaylist();
         })
         .catch(finalErr => {
-          console.error("Failed to load playlist entirely", finalErr);
-          if (loader) loader.querySelector("span").innerText = "Failed to load playlist ⚠️";
+          console.error("Failed to load default playlist entirely", finalErr);
+          // Try loading custom channels anyway even if default failed
+          loadCustomChannels();
+          mergeAndRefreshChannels();
+          if (channels.length > 0) {
+            if (loader) loader.classList.add("hidden");
+            playDefaultOrFirstChannel();
+          } else {
+            if (loader) loader.querySelector("span").innerText = "Failed to load playlist ⚠️";
+          }
         });
     });
 }
 
+function finishLoadingPlaylist() {
+  const loader = document.getElementById("playerLoader");
+  loadCustomChannels();
+  mergeAndRefreshChannels();
+  if (loader) loader.classList.add("hidden");
+  
+  // Check if we need to auto-select a newly added category
+  const autoSelectCat = localStorage.getItem("alpha_tv_auto_select_category");
+  if (autoSelectCat) {
+    localStorage.removeItem("alpha_tv_auto_select_category");
+    filterCategory(autoSelectCat);
+    
+    // Play the first channel in this custom category if available
+    if (filteredChannels.length > 0) {
+      playChannel(0);
+    }
+  } else {
+    playDefaultOrFirstChannel();
+  }
+  
+  // Background updates for default channels
+  fetchOnlinePlaylistInBackground();
+}
+
+/* HELPER TO PLAY DEFAULT CHANNEL OR FIRST AVAILABLE */
+function playDefaultOrFirstChannel() {
+  if (filteredChannels.length > 0) {
+    const defaultIndex = filteredChannels.findIndex(c => c.name.toLowerCase().includes("tooffee"));
+    playChannel(defaultIndex !== -1 ? defaultIndex : 0);
+  }
+}
+
 /* FETCH REMOTE PLAYLIST IN BACKGROUND AND SILENTLY UPDATE UI */
 function fetchOnlinePlaylistInBackground() {
-  // Check if custom playlist is active
-  if (localStorage.getItem("alpha_tv_custom_m3u_url") || localStorage.getItem("alpha_tv_custom_m3u_data")) {
-    return; // Don't run background fetch if user has a custom playlist loaded
-  }
-
   fetch(`${playlistOnline}?t=${new Date().getTime()}`)
     .then(response => {
       if (!response.ok) throw new Error("Background online playlist fetch failed");
@@ -390,16 +500,15 @@ function fetchOnlinePlaylistInBackground() {
       const parsedOnline = parseM3U(onlineData);
       if (parsedOnline.length === 0) return;
 
-      const isDifferent = channels.length !== parsedOnline.length ||
-                          channels.some((c, idx) => !parsedOnline[idx] || c.url !== parsedOnline[idx].url || c.name !== parsedOnline[idx].name);
+      const isDifferent = defaultChannels.length !== parsedOnline.length ||
+                          defaultChannels.some((c, idx) => !parsedOnline[idx] || c.url !== parsedOnline[idx].url || c.name !== parsedOnline[idx].name);
 
       if (isDifferent) {
-        console.log("Online playlist updates detected. Updating channels list in background.");
-        channels = parsedOnline;
-        renderCategories();
-        filterAndSearch();
+        console.log("Online playlist updates detected. Updating default channels list in background.");
+        defaultChannels = parsedOnline;
+        mergeAndRefreshChannels();
       } else {
-        console.log("Background check complete. Playlist is up-to-date.");
+        console.log("Background check complete. Default playlist is up-to-date.");
       }
     })
     .catch(err => {
@@ -436,6 +545,8 @@ function renderCategories() {
   // Sort categories by user defined custom order
   categories.sort((a, b) => {
     const customOrder = [
+      "custom url",
+      "custom file",
       "fifa 2026",
       "sports",
       "bangla",
@@ -565,6 +676,11 @@ function renderChannels() {
       <button class="fav-btn ${isFav ? "is-favorite" : ""}" onclick="toggleFavorite(event, '${ch.url}')">
         <i class="fa-${isFav ? "solid" : "regular"} fa-star"></i>
       </button>
+      ${ch.id && ch.id.startsWith("cust-") ? `
+        <button class="delete-custom-btn" onclick="deleteCustomChannel(event, '${ch.id}')" title="Remove Channel">
+          <i class="fa-solid fa-trash-can"></i>
+        </button>
+      ` : ""}
       <div class="channel-card-fallback" style="display: ${ch.logo ? "none" : "flex"}">
         <div class="channel-card-fallback-avatar" style="background: ${fallbackGradient}">${initials}</div>
         <div class="channel-card-fallback-name">${ch.name}</div>
@@ -2044,6 +2160,8 @@ window.openSettingsModal = function() {
   document.getElementById("urlErrorText").classList.add("hidden");
   document.getElementById("fileErrorText").classList.add("hidden");
   document.getElementById("customM3uUrl").value = localStorage.getItem("alpha_tv_custom_m3u_url") || "";
+  const nameInput = document.getElementById("customChannelName");
+  if (nameInput) nameInput.value = "";
 
   updateSettingsStatusBadge();
 };
@@ -2062,11 +2180,15 @@ function updateSettingsStatusBadge() {
   const badge = document.getElementById("playlistStatusBadge");
   if (!badge) return;
 
-  const customUrl = localStorage.getItem("alpha_tv_custom_m3u_url");
   const customData = localStorage.getItem("alpha_tv_custom_m3u_data");
+  const customSource = localStorage.getItem("alpha_tv_custom_m3u_source");
 
-  if (customUrl || customData) {
-    badge.innerText = "Custom Playlist (সক্রিয় কাস্টম প্লেলিস্ট)";
+  if (customData) {
+    if (customSource === "url") {
+      badge.innerText = "Custom URL Active (সক্রিয় ইউআরএল চ্যানেল)";
+    } else {
+      badge.innerText = "Custom File Active (সক্রিয় কাস্টম ফাইল)";
+    }
     badge.className = "playlist-badge custom";
   } else {
     badge.innerText = "Alpha TV Default (ডিফল্ট প্লেলিস্ট)";
@@ -2074,11 +2196,33 @@ function updateSettingsStatusBadge() {
   }
 }
 
+// Helper to append channels to custom channels list in localStorage
+function appendCustomChannels(channelsToAppend, targetCategory) {
+  let currentCustom = [];
+  const saved = localStorage.getItem("alpha_tv_custom_channels_list");
+  if (saved) {
+    try {
+      currentCustom = JSON.parse(saved);
+      if (!Array.isArray(currentCustom)) currentCustom = [];
+    } catch(e) {
+      currentCustom = [];
+    }
+  }
+  const combined = [...currentCustom, ...channelsToAppend];
+  localStorage.setItem("alpha_tv_custom_channels_list", JSON.stringify(combined));
+  if (targetCategory) {
+    localStorage.setItem("alpha_tv_auto_select_category", targetCategory);
+  }
+  window.location.reload();
+}
+
 // Load remote M3U URL
 window.loadCustomM3uUrl = function() {
   const urlInput = document.getElementById("customM3uUrl");
+  const nameInput = document.getElementById("customChannelName");
   const errorEl = document.getElementById("urlErrorText");
   const url = urlInput.value.trim();
+  const customName = nameInput ? nameInput.value.trim() : "";
 
   if (!url) {
     showSettingError(errorEl, "Please enter a valid URL / লিঙ্ক প্রদান করুন।");
@@ -2094,28 +2238,66 @@ window.loadCustomM3uUrl = function() {
     loader.querySelector("span").innerText = "Testing custom M3U link...";
   }
 
+  function saveAsSingleStream(streamUrl) {
+    console.log("Wrapping and saving direct stream URL:", streamUrl, "with name:", customName);
+    const wrappedM3u = wrapStreamUrlAsM3u(streamUrl, customName);
+    const parsed = parseM3U(wrappedM3u);
+    if (parsed.length > 0) {
+      const formatted = parsed.map(ch => ({
+        id: "cust-" + Date.now() + "-" + Math.random().toString(36).substr(2, 9),
+        name: ch.name,
+        url: ch.url,
+        logo: ch.logo || "",
+        categories: ["Custom URL"]
+      }));
+      appendCustomChannels(formatted, "Custom URL");
+    }
+  }
+
+  // If it's a direct stream URL, we save immediately to bypass CORS fetch restriction
+  if (isDirectStreamUrl(url)) {
+    saveAsSingleStream(url);
+    return;
+  }
+
   fetch(url)
     .then(response => {
       if (!response.ok) throw new Error("Server returned error response");
       return response.text();
     })
     .then(m3uText => {
-      const parsed = parseM3U(m3uText);
-      if (parsed.length > 0) {
-        // Save to localStorage
-        localStorage.setItem("alpha_tv_custom_m3u_url", url);
-        localStorage.removeItem("alpha_tv_custom_m3u_data"); // Remove file data to avoid conflicts
-
-        // Reload app
-        window.location.reload();
+      if (isChannelPlaylist(m3uText)) {
+        const parsed = parseM3U(m3uText);
+        if (parsed.length > 0) {
+          const formatted = parsed.map((ch, index) => ({
+            id: "cust-" + Date.now() + "-" + Math.random().toString(36).substr(2, 9) + "-" + index,
+            name: ch.name,
+            url: ch.url,
+            logo: ch.logo || "",
+            categories: ["Custom URL"]
+          }));
+          appendCustomChannels(formatted, "Custom URL");
+        } else {
+          throw new Error("No channels found in M3U file");
+        }
       } else {
-        throw new Error("No channels found in M3U file");
+        // If content contains standard HLS tags, treat it as a direct stream
+        if (isDirectStreamUrl(url) || m3uText.includes("#EXT-X-") || m3uText.includes("#EXTM3U")) {
+          saveAsSingleStream(url);
+        } else {
+          throw new Error("No channels found in M3U file");
+        }
       }
     })
     .catch(err => {
       console.error("Error loading M3U URL:", err);
-      if (loader) loader.classList.add("hidden");
-      showSettingError(errorEl, "Failed to load M3U. Check connection/CORS policy. (লিঙ্কটি লোড করা সম্ভব হয়নি)");
+      // Double check if we can fall back to direct stream on fetch failure
+      if (isDirectStreamUrl(url)) {
+        saveAsSingleStream(url);
+      } else {
+        if (loader) loader.classList.add("hidden");
+        showSettingError(errorEl, "Failed to load M3U. Check connection/CORS policy. (লিঙ্কটি লোড করা সম্ভব হয়নি)");
+      }
     });
 };
 
@@ -2130,15 +2312,21 @@ window.loadCustomM3uFile = function(event) {
   const reader = new FileReader();
   reader.onload = function(e) {
     const m3uText = e.target.result;
-    const parsed = parseM3U(m3uText);
 
-    if (parsed.length > 0) {
-      // Save content text to localStorage
-      localStorage.setItem("alpha_tv_custom_m3u_data", m3uText);
-      localStorage.removeItem("alpha_tv_custom_m3u_url"); // Remove URL to avoid conflicts
-
-      // Reload app
-      window.location.reload();
+    if (isChannelPlaylist(m3uText)) {
+      const parsed = parseM3U(m3uText);
+      if (parsed.length > 0) {
+        const formatted = parsed.map((ch, index) => ({
+          id: "cust-" + Date.now() + "-" + Math.random().toString(36).substr(2, 9) + "-" + index,
+          name: ch.name,
+          url: ch.url,
+          logo: ch.logo || "",
+          categories: ["Custom File"]
+        }));
+        appendCustomChannels(formatted, "Custom File");
+      } else {
+        showSettingError(errorEl, "No channels found in M3U file. (M3U ফাইলে কোনো চ্যানেল পাওয়া যায়নি)");
+      }
     } else {
       showSettingError(errorEl, "Invalid M3U file format. No channels found. (অকার্যকর M3U ফাইল ফরম্যাট)");
     }
@@ -2153,8 +2341,11 @@ window.loadCustomM3uFile = function(event) {
 
 // Reset to default playlist
 window.resetToDefaultPlaylist = function() {
+  localStorage.removeItem("alpha_tv_custom_channels_list");
   localStorage.removeItem("alpha_tv_custom_m3u_url");
   localStorage.removeItem("alpha_tv_custom_m3u_data");
+  localStorage.removeItem("alpha_tv_custom_m3u_source");
+  localStorage.removeItem("alpha_tv_custom_m3u_name");
   
   // Reload app
   window.location.reload();

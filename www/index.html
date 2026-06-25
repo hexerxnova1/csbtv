@@ -241,8 +241,8 @@
               </button>
             </div>
             <div class="search-options-right">
-              <button class="settings-trigger-btn" onclick="openSettingsModal()" title="Settings / সেটিংস">
-                <i class="fa-solid fa-gear"></i> Settings
+              <button class="settings-trigger-btn" onclick="openSettingsModal()" title="Add Custom Playlist / কাস্টম প্লেলিস্ট যোগ করুন">
+                <i class="fa-solid fa-circle-plus"></i> Add Playlist
               </button>
             </div>
           </div>
@@ -749,8 +749,8 @@
     <div id="settingsModal" class="settings-modal hidden" aria-hidden="true" role="dialog">
       <div class="settings-modal-content">
         <header class="settings-header">
-          <h2><i class="fa-solid fa-gear"></i> Settings / সেটিংস</h2>
-          <button class="settings-close-btn" onclick="closeSettingsModal()" aria-label="Close Settings">
+          <h2><i class="fa-solid fa-folder-plus"></i> Add Playlist / প্লেলিস্ট যোগ করুন</h2>
+          <button class="settings-close-btn" onclick="closeSettingsModal()" aria-label="Close">
             <i class="fa-solid fa-xmark"></i>
           </button>
         </header>
@@ -766,8 +766,9 @@
           <div class="settings-section">
             <h3>Load M3U URL / কাস্টম প্লেলিস্ট লিঙ্ক</h3>
             <p class="section-desc">Paste your M3U playlist link below to load custom channels:</p>
-            <div class="url-input-wrapper">
+            <div class="url-input-wrapper url-input-layout-stacked">
               <input type="url" id="customM3uUrl" placeholder="https://example.com/playlist.m3u" />
+              <input type="text" id="customChannelName" placeholder="Channel Name / চ্যানেলের নাম (Optional for single link)" />
               <button onclick="loadCustomM3uUrl()" class="settings-btn primary-btn">Load URL</button>
             </div>
             <p id="urlErrorText" class="settings-error hidden"></p>
