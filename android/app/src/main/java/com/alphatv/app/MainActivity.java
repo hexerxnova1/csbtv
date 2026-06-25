@@ -96,6 +96,16 @@ public class MainActivity extends BridgeActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && isInPictureInPictureMode()) {
+            if (bridge != null && bridge.getWebView() != null) {
+                bridge.getWebView().onResume();
+            }
+        }
+    }
+
+    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         applySystemUiVisibility(newConfig.orientation);
