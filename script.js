@@ -2765,6 +2765,15 @@ function setupKeyboardAdjustments() {
   const chatContainer = document.getElementById("liveChatContainer");
   const chatMessages = document.getElementById("chatMessages");
 
+  let originalWindowHeight = window.innerHeight;
+
+  // Update original window height if orientation changes
+  window.addEventListener('orientationchange', () => {
+    setTimeout(() => {
+      originalWindowHeight = window.innerHeight;
+    }, 300);
+  });
+
   if (chatInput && chatContainer) {
     chatInput.addEventListener('focus', () => {
       const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768);
@@ -2795,6 +2804,35 @@ function setupKeyboardAdjustments() {
       }
     });
   }
+
+  // Handle Android Back button keyboard hide (which doesn't fire blur event)
+  window.addEventListener('resize', () => {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768);
+    if (!isMobile) return;
+
+    // If viewport height expands back to near-original size, hide keyboard adjustments
+    if (window.innerHeight >= originalWindowHeight - 80) {
+      if (chatContainer && chatContainer.classList.contains("keyboard-visible")) {
+        chatContainer.classList.remove("keyboard-visible");
+        if (chatInput) {
+          chatInput.blur();
+        }
+        setTimeout(() => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 100);
+      }
+    } else {
+      // If active element is chatInput and keyboard-visible is not set, add it
+      if (document.activeElement === chatInput && chatContainer && !chatContainer.classList.contains("keyboard-visible")) {
+        chatContainer.classList.add("keyboard-visible");
+        setTimeout(() => {
+          if (chatMessages) {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+          }
+        }, 100);
+      }
+    }
+  });
 
   // Handle other inputs (settings, nickname) normally without shrinking the chat
   const otherInputs = ['nicknameInput', 'customM3uUrl', 'customChannelName'];
