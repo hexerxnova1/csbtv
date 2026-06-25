@@ -2387,6 +2387,53 @@ let chatRef = null;
 let chatInitialized = false;
 let currentNickname = "";
 let shouldScrollToBottom = true;
+let userCountry = "";
+
+function fetchUserCountry() {
+  if (userCountry) return;
+  fetch('https://ipapi.co/json/')
+    .then(res => res.json())
+    .then(data => {
+      if (data && data.country_code) {
+        userCountry = data.country_code;
+        console.log("Detected user country:", userCountry);
+      }
+    })
+    .catch(err => {
+      console.warn("ipapi.co failed, trying ip-api.com:", err);
+      fetch('https://ip-api.com/json/')
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.countryCode) {
+            userCountry = data.countryCode;
+            console.log("Detected user country (fallback):", userCountry);
+          }
+        })
+        .catch(() => {
+          userCountry = "";
+        });
+    });
+}
+
+function getFlagEmoji(countryCode) {
+  if (!countryCode || countryCode.length !== 2) return "";
+  try {
+    const codePoints = countryCode
+      .toUpperCase()
+      .split('')
+      .map(char => 127397 + char.charCodeAt(0));
+    return String.fromCodePoint(...codePoints);
+  } catch (e) {
+    return "";
+  }
+}
+
+function formatChatTime(timestamp) {
+  if (!timestamp) return "";
+  const date = new Date(timestamp);
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+}
+
 
 function initFirebase() {
   if (chatInitialized) return;
@@ -2397,6 +2444,7 @@ function initFirebase() {
       database = firebase.database();
       chatInitialized = true;
       console.log("Firebase Chat initialized successfully.");
+      fetchUserCountry();
     } catch (e) {
       console.error("Firebase initialization failed:", e);
     }
@@ -2518,7 +2566,8 @@ function initChatForChannel(channel) {
         key: key,
         sender: data.sender || 'Anonymous',
         text: data.text || '',
-        timestamp: data.timestamp || 0
+        timestamp: data.timestamp || 0,
+        country: data.country || ''
       });
     });
     
@@ -2547,10 +2596,15 @@ function renderChatMessages(messages) {
   
   chatMessagesEl.innerHTML = messages.map(msg => {
     const isSelf = msg.sender === currentNickname;
+    const timeStr = formatChatTime(msg.timestamp);
+    const flag = msg.country ? getFlagEmoji(msg.country) : "";
+    const metaStr = [flag, msg.country, timeStr].filter(Boolean).join(" ");
+    
     return `
       <div class="chat-msg-row ${isSelf ? 'self' : ''}">
         <span class="chat-msg-sender">${escapeHtml(msg.sender)}</span>
         <div class="chat-msg-bubble">${escapeHtml(msg.text)}</div>
+        <span class="chat-msg-meta">${escapeHtml(metaStr)}</span>
       </div>
     `;
   }).join('');
@@ -2580,7 +2634,8 @@ window.sendChatMessage = function() {
   const messageData = {
     sender: currentNickname,
     text: filteredText,
-    timestamp: firebase.database.ServerValue.TIMESTAMP
+    timestamp: firebase.database.ServerValue.TIMESTAMP,
+    country: userCountry || ""
   };
   
   chatRef.push(messageData).then(() => {

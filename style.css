@@ -3738,6 +3738,21 @@ body.pip-active video {
   box-shadow: 0 0 10px rgba(155, 81, 224, 0.05);
 }
 
+.chat-msg-meta {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  opacity: 0.5;
+  margin-top: 3px;
+  margin-left: 6px;
+  align-self: flex-start;
+}
+
+.chat-msg-row.self .chat-msg-meta {
+  align-self: flex-end;
+  margin-right: 6px;
+  margin-left: 0;
+}
+
 .chat-system-message {
   font-size: 0.72rem;
   color: var(--text-secondary);
