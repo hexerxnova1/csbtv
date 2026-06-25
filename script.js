@@ -2762,23 +2762,12 @@ function setupKeyboardAdjustments() {
   const chatContainer = document.getElementById("liveChatContainer");
   const chatMessages = document.getElementById("chatMessages");
 
-  let originalWindowHeight = window.innerHeight;
-  let isKeyboardOpen = false;
-
-  // Update original window height if orientation changes
-  window.addEventListener('orientationchange', () => {
-    setTimeout(() => {
-      originalWindowHeight = window.innerHeight;
-    }, 300);
-  });
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768);
 
   if (chatInput && chatContainer) {
     chatInput.addEventListener('focus', () => {
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768);
       if (isMobile) {
         chatContainer.classList.add("keyboard-visible");
-        isKeyboardOpen = false; // Reset to false until resize event detects shrink
-        // Scroll the messages list to bottom
         setTimeout(() => {
           if (chatMessages) {
             chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -2793,10 +2782,8 @@ function setupKeyboardAdjustments() {
     });
     
     chatInput.addEventListener('blur', () => {
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768);
       if (isMobile) {
         chatContainer.classList.remove("keyboard-visible");
-        isKeyboardOpen = false;
         // Ensure layout recovers fully when keyboard is closed
         setTimeout(() => {
           window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2805,41 +2792,75 @@ function setupKeyboardAdjustments() {
     });
   }
 
-  // Handle Android Back button keyboard hide (which doesn't fire blur event)
-  window.addEventListener('resize', () => {
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768);
-    if (!isMobile) return;
+  // Handle mobile keyboard open/close (especially dismiss via back button)
+  if (isMobile) {
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', () => {
+        const keyboardHeight = window.innerHeight - window.visualViewport.height;
+        const isKeyboardActive = keyboardHeight > 150;
 
-    const currentHeight = window.innerHeight;
-
-    // 1. Detect if keyboard opened (viewport shrunk)
-    if (currentHeight < originalWindowHeight - 120) {
-      isKeyboardOpen = true;
-      if (document.activeElement === chatInput && chatContainer && !chatContainer.classList.contains("keyboard-visible")) {
-        chatContainer.classList.add("keyboard-visible");
-        setTimeout(() => {
-          if (chatMessages) {
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+        if (isKeyboardActive) {
+          if (document.activeElement === chatInput && chatContainer && !chatContainer.classList.contains("keyboard-visible")) {
+            chatContainer.classList.add("keyboard-visible");
+            setTimeout(() => {
+              if (chatMessages) {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+              }
+            }, 100);
           }
-        }, 100);
-      }
-    } 
-    // 2. Detect if keyboard closed (viewport height recovered) after being open
-    else if (currentHeight >= originalWindowHeight - 80) {
-      if (isKeyboardOpen) {
-        isKeyboardOpen = false;
-        if (chatContainer && chatContainer.classList.contains("keyboard-visible")) {
-          chatContainer.classList.remove("keyboard-visible");
+        } else {
+          // Keyboard was closed
+          if (chatContainer && chatContainer.classList.contains("keyboard-visible")) {
+            chatContainer.classList.remove("keyboard-visible");
+          }
+          if (document.activeElement === chatInput) {
+            chatInput.blur();
+          }
+          setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, 100);
         }
-        if (chatInput) {
-          chatInput.blur();
-        }
+      });
+    } else {
+      // Legacy resize logic if visualViewport is not supported
+      let originalWindowHeight = window.innerHeight;
+      let isKeyboardOpenLegacy = false;
+
+      window.addEventListener('orientationchange', () => {
         setTimeout(() => {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }, 100);
-      }
+          originalWindowHeight = window.innerHeight;
+        }, 300);
+      });
+
+      window.addEventListener('resize', () => {
+        const currentHeight = window.innerHeight;
+        if (currentHeight < originalWindowHeight - 120) {
+          isKeyboardOpenLegacy = true;
+          if (document.activeElement === chatInput && chatContainer && !chatContainer.classList.contains("keyboard-visible")) {
+            chatContainer.classList.add("keyboard-visible");
+            setTimeout(() => {
+              if (chatMessages) {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+              }
+            }, 100);
+          }
+        } else if (currentHeight >= originalWindowHeight - 80) {
+          if (isKeyboardOpenLegacy) {
+            isKeyboardOpenLegacy = false;
+            if (chatContainer && chatContainer.classList.contains("keyboard-visible")) {
+              chatContainer.classList.remove("keyboard-visible");
+            }
+            if (chatInput) {
+              chatInput.blur();
+            }
+            setTimeout(() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 100);
+          }
+        }
+      });
     }
-  });
+  }
 
   // Handle other inputs (settings, nickname) normally without shrinking the chat
   const otherInputs = ['nicknameInput', 'customM3uUrl', 'customChannelName'];
