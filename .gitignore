@@ -6,3 +6,4 @@ local.properties
 C:\\Users\\User\\.gemini\\antigravity-ide\\brain\\*
 *.bak
 scratch/
+.firebase/

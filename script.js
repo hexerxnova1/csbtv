@@ -2372,10 +2372,14 @@ document.addEventListener("DOMContentLoaded", () => {
 /* LIVE CHAT ROOM FEATURING FIREBASE REALTIME DATABASE */
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  databaseURL: "YOUR_DATABASE_URL_HERE",
-  projectId: "YOUR_PROJECT_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyARbUktjx16jOc2Ja6O5zCHdq2JW_F9Lx8",
+  authDomain: "alpha-tv-chat.firebaseapp.com",
+  databaseURL: "https://alpha-tv-chat-default-rtdb.firebaseio.com", // If Singapore region, change to: https://alpha-tv-chat-default-rtdb.asia-southeast1.firebasedatabase.app
+  projectId: "alpha-tv-chat",
+  storageBucket: "alpha-tv-chat.firebasestorage.app",
+  messagingSenderId: "868815265771",
+  appId: "1:868815265771:web:c771819dbc1aea9ba543ae",
+  measurementId: "G-SRE4CZ3ZSX"
 };
 
 let database = null;
