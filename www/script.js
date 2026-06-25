@@ -1872,6 +1872,11 @@ function closeTelegramModal() {
 function setupPictureInPicture() {
   const video = document.getElementById("video");
 
+  // Expose play control functions to window for native Android PiP actions
+  window.nextChannel = nextChannel;
+  window.prevChannel = prevChannel;
+  window.togglePlay = togglePlay;
+
   // Web Browser native PiP event listeners
   video.addEventListener("enterpictureinpicture", () => {
     console.log("Web PiP Entered");
