@@ -2761,37 +2761,45 @@ function escapeHtml(text) {
 }
 
 function setupKeyboardAdjustments() {
-  const inputs = ['chatInput', 'nicknameInput', 'customM3uUrl', 'customChannelName'];
-  
-  inputs.forEach(id => {
+  const chatInput = document.getElementById("chatInput");
+  const chatContainer = document.getElementById("liveChatContainer");
+  const chatMessages = document.getElementById("chatMessages");
+
+  if (chatInput && chatContainer) {
+    chatInput.addEventListener('focus', () => {
+      chatContainer.classList.add("keyboard-visible");
+      // Scroll the messages list to bottom
+      setTimeout(() => {
+        if (chatMessages) {
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+      }, 100);
+      
+      // Prevent browser default scroll shifting by using nearest block alignment
+      setTimeout(() => {
+        chatInput.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 250);
+    });
+    
+    chatInput.addEventListener('blur', () => {
+      chatContainer.classList.remove("keyboard-visible");
+      // Ensure layout recovers fully when keyboard is closed
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 100);
+    });
+  }
+
+  // Handle other inputs (settings, nickname) normally without shrinking the chat
+  const otherInputs = ['nicknameInput', 'customM3uUrl', 'customChannelName'];
+  otherInputs.forEach(id => {
     const el = document.getElementById(id);
     if (el) {
       el.addEventListener('focus', () => {
-        // Wait a short duration for keyboard animation to start
         setTimeout(() => {
           el.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }, 200);
-        
-        // Also if it's chatInput, scroll the chatMessages container to bottom
-        if (id === 'chatInput') {
-          setTimeout(() => {
-            const chatMessages = document.getElementById("chatMessages");
-            if (chatMessages) {
-              chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
-          }, 350);
-        }
       });
-    }
-  });
-
-  // Watch for orientation change or viewport resize to keep active input visible
-  window.addEventListener('resize', () => {
-    const activeEl = document.activeElement;
-    if (activeEl && inputs.includes(activeEl.id)) {
-      setTimeout(() => {
-        activeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 150);
     }
   });
 }

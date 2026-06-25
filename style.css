@@ -3894,3 +3894,9 @@ body.pip-active .live-chat-container {
   display: none !important;
 }
 
+/* Shrink Chat Container height on mobile when typing to prevent keyboard overlay */
+.live-chat-container.keyboard-visible {
+  height: 160px !important;
+}
+
+
