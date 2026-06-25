@@ -5,14 +5,14 @@
 # 📺 Alpha TV - Premium Live Streaming Platform
 
 <p align="center">
-  <a href="https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases"><img src="https://img.shields.io/badge/Download-AlphaTV--v1.1.4.apk-brightgreen?style=for-the-badge&logo=android&logoColor=white" alt="Download APK"></a>
+  <a href="https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases"><img src="https://img.shields.io/badge/Download-AlphaTV--v1.1.5.apk-brightgreen?style=for-the-badge&logo=android&logoColor=white" alt="Download APK"></a>
   <a href="https://shariar-ahamed.github.io/online-tv-streaming-platform/"><img src="https://img.shields.io/badge/Live-Web%20Demo-ff007f?style=for-the-badge&logo=livewire&logoColor=white" alt="Live Demo"></a>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Platform-Android%20%7C%20Web-blue?style=flat-square&logo=capacitor&logoColor=white">
   <img src="https://img.shields.io/badge/UI-Neumorphic%20%2F%20Glassmorphism-violet?style=flat-square">
-  <img src="https://img.shields.io/badge/Version-v1.1.4-brightgreen?style=flat-square">
+  <img src="https://img.shields.io/badge/Version-v1.1.5-brightgreen?style=flat-square">
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square">
 </p>
 
@@ -44,9 +44,9 @@ Below are the technical specifications of the native Android application package
 
 | Specification                  | Details                                                                                    |
 | ------------------------------ | ------------------------------------------------------------------------------------------ |
-| 📦 **App Name**                | `AlphaTV-v1.1.4.apk`                                                                       |
+| 📦 **App Name**                | `AlphaTV-v1.1.5.apk`                                                                       |
 | 🆔 **Package Name**            | `com.alphatv.app`                                                                          |
-| 🏷️ **Current Version**         | `1.1.4` (Build Code `15`)                                                                  |
+| 🏷️ **Current Version**         | `1.1.5` (Build Code `16`)                                                                  |
 | 📂 **App Size**                | ~31.1 MB                                                                                   |
 | ⚙️ **Minimum OS Support**      | Android 7.0 (Nougat - API Level 24) or higher                                              |
 | 🎯 **Target SDK**              | Android 15 / 16 (API Level 36)                                                             |
@@ -189,7 +189,24 @@ npx cap open android
 
 ## 📋 Release History & Changelog
 
-### 🚀 v1.1.4 (Current Release) - Build Code `15`
+### 🚀 v1.1.5 (Current Release) - Build Code `16`
+* **PiP Black Screen Bug Fix:**
+  * Resolved the Android Picture-in-Picture (PiP) black screen layout issue by correcting the buggy CSS child-combinator selector that was inadvertently hiding the main `.app-container`.
+  * Positioned the `.player-wrapper` as fixed (`top: 0; left: 0; z-index: 99999;`) during PiP mode, ensuring a seamless video playback view.
+* **Keyboard Auto-Dismiss Bug Fix:**
+  * Fixed a bug where focusing the live chat input box on Android immediately blurred the input, causing the virtual keyboard to pop up and bounce closed automatically.
+  * Robustly tracks the layout viewport height against a cached baseline `originalHeight` to reliably distinguish when the keyboard is open in `adjustResize` layout mode.
+* **Dynamic Active Channel in Chat Header:**
+  * Updated the chat header title dynamically to show the active channel name (e.g., `Live Chat with "Channel Name"`), providing context about the current stream's discussion.
+* **Chat Header Flex Layout Refinements:**
+  * Optimised the chat header title and action layout. Allowed long channel names to wrap gracefully to 2 lines, while ensuring the user's nickname badge and edit icon stay neatly on 1 line (`white-space: nowrap`) and align properly.
+* **User Nickname Prefix & Default Channel Updates:**
+  * Replaced the default random nickname prefix from `AlphaFan_xxxx` to the more standard `User_xxxx`.
+  * Set `Channel I HD` as the default channel selected on first load and app resets.
+* **Android WebView Persistence:**
+  * Kept the Capacitor WebView running active in `MainActivity.java`'s `onPause()` to prevent rendering freezes when switching to picture-in-picture mode.
+
+### 🚀 v1.1.4 - Build Code `15`
 * **Disclaimer & Telegram Sequence Modal:**
   * Implemented a sequential onboarding flow for first-time users: showing a Disclaimer modal, and upon acceptance, instantly showing an official Telegram Community modal.
   * Persists user agreements in `localStorage` to avoid repeating popups on subsequent visits.
@@ -253,7 +270,7 @@ npx cap open android
 
 ## 🔗 Useful Links
 
-- **Latest APK Release:** [Download AlphaTV-v1.1.4.apk](https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases)
+- **Latest APK Release:** [Download AlphaTV-v1.1.5.apk](https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases)
 - **Live Web App:** [Alpha TV Live Web App](https://shariar-ahamed.github.io/online-tv-streaming-platform/)
 - **Source Code Repository:** [GitHub Repository](https://github.com/Shariar-Ahamed/online-tv-streaming-platform)
 

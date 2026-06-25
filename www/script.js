@@ -1847,7 +1847,7 @@ function closeAppBanner() {
 }
 
 /* IN-APP UPDATE CHECKER (ANDROID APP ONLY) */
-const currentBuildCode = 15; // Matches version 1.1.4 build code
+const currentBuildCode = 16; // Matches version 1.1.5 build code
 
 function checkForUpdates() {
   if (!window.Capacitor) return;
