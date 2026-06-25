@@ -437,7 +437,7 @@ video {
   backdrop-filter: blur(var(--blur-amount));
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   width: 100%;
-  z-index: 4;
+  z-index: 10;
 }
 
 .control-btn {
