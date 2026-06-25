@@ -292,7 +292,7 @@ function loadPlaylist() {
 
         // Start playing the default channel
         if (filteredChannels.length > 0) {
-          const defaultIndex = filteredChannels.findIndex(c => c.name.toLowerCase().includes("channel i"));
+          const defaultIndex = filteredChannels.findIndex(c => c.name.toLowerCase().includes("tooffee"));
           playChannel(defaultIndex !== -1 ? defaultIndex : 0);
         }
       }
@@ -316,7 +316,7 @@ function loadPlaylist() {
           renderCategories();
           filterAndSearch();
           if (filteredChannels.length > 0) {
-            const defaultIndex = filteredChannels.findIndex(c => c.name.toLowerCase().includes("channel i"));
+            const defaultIndex = filteredChannels.findIndex(c => c.name.toLowerCase().includes("tooffee"));
             playChannel(defaultIndex !== -1 ? defaultIndex : 0);
           }
         })
@@ -1525,7 +1525,7 @@ function resetToDefaultApp(event) {
   
   // Play the default channel
   if (channels.length > 0) {
-    const defaultIndex = channels.findIndex(c => c.name.toLowerCase().includes("channel i"));
+    const defaultIndex = channels.findIndex(c => c.name.toLowerCase().includes("tooffee"));
     playChannel(defaultIndex !== -1 ? defaultIndex : 0);
   }
   

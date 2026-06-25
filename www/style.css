@@ -1,8 +1,9 @@
 /* DESIGN SYSTEM & GLOBAL VARIABLES */
 :root {
-  --font-primary: 'Outfit', sans-serif;
-  --font-display: 'Space Grotesk', sans-serif;
-  --font-poppins: 'Poppins', sans-serif;
+  --font-primary: 'Outfit', 'Hind Siliguri', sans-serif;
+  --font-display: 'Space Grotesk', 'Hind Siliguri', sans-serif;
+  --font-poppins: 'Poppins', 'Hind Siliguri', sans-serif;
+  --font-bengali: 'Hind Siliguri', sans-serif;
   
   /* Cyberpunk / Premium Glow Color Palette */
   --bg-dark: #07070a;
@@ -1807,6 +1808,13 @@ video {
 }
 
 /* CUSTOM MODAL SYSTEM */
+.custom-modal,
+.custom-modal *,
+.mobile-app-banner,
+.mobile-app-banner * {
+  font-family: var(--font-bengali);
+}
+
 .custom-modal {
   position: fixed;
   top: 0;
