@@ -2525,6 +2525,12 @@ function initChatForChannel(channel) {
     renderChatMessages(messages);
   }, (err) => {
     console.error("Firebase chat listen error:", err);
+    if (chatMessagesEl) {
+      chatMessagesEl.innerHTML = `<div class="chat-system-message" style="color: #ff5e5e; padding: 10px; text-align: center;">
+        <i class="fa-solid fa-triangle-exclamation"></i> Connection failed (সংযোগ ব্যর্থ):<br>
+        <span style="font-size: 11px; opacity: 0.8;">${escapeHtml(err.message || err.code || err)}</span>
+      </div>`;
+    }
   });
 }
 
@@ -2584,6 +2590,7 @@ window.sendChatMessage = function() {
     }
   }).catch(err => {
     console.error("Failed to send message:", err);
+    alert("Failed to send message (মেসেজ পাঠানো ব্যর্থ হয়েছে): " + (err.message || err.code || err));
   });
 };
 
