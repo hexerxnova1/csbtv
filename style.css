@@ -1809,9 +1809,9 @@ video {
 
 /* CUSTOM MODAL SYSTEM */
 .custom-modal,
-.custom-modal *,
+.custom-modal *:not(i):not([class*="fa-"]),
 .mobile-app-banner,
-.mobile-app-banner * {
+.mobile-app-banner *:not(i):not([class*="fa-"]) {
   font-family: var(--font-bengali);
 }
 
