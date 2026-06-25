@@ -3450,7 +3450,8 @@ body.pip-active video {
 }
 
 #customM3uUrl,
-#customChannelName {
+#customChannelName,
+#nicknameInput {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
@@ -3464,10 +3465,16 @@ body.pip-active video {
 }
 
 #customM3uUrl:focus,
-#customChannelName:focus {
+#customChannelName:focus,
+#nicknameInput:focus {
   border-color: #9b51e0;
   background: rgba(255, 255, 255, 0.06);
   box-shadow: 0 0 10px rgba(155, 81, 224, 0.2);
+}
+
+.nickname-modal-content {
+  border: 1px solid rgba(155, 81, 224, 0.25) !important;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(155, 81, 224, 0.15) !important;
 }
 
 /* Settings Buttons */
