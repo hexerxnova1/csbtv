@@ -3784,6 +3784,19 @@ body.pip-active video {
   transition: all var(--transition-fast);
 }
 
+/* Hide Webkit search icons & clear buttons for type="search" */
+#chatInput::-webkit-search-cancel-button,
+#chatInput::-webkit-search-decoration,
+#chatInput::-webkit-search-results-button,
+#chatInput::-webkit-search-results-decoration,
+#nicknameInput::-webkit-search-cancel-button,
+#nicknameInput::-webkit-search-decoration,
+#nicknameInput::-webkit-search-results-button,
+#nicknameInput::-webkit-search-results-decoration {
+  display: none;
+  -webkit-appearance: none;
+}
+
 #chatInput:focus {
   border-color: #9b51e0;
   background: rgba(255, 255, 255, 0.06);
