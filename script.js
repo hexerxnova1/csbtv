@@ -2586,14 +2586,13 @@ function initChatForChannel(channel) {
 
 function renderChatMessages(messages) {
   const chatMessagesEl = document.getElementById("chatMessages");
-  if (!chatMessagesEl) return;
+  const chatBodyEl = document.getElementById("chatBody");
+  if (!chatMessagesEl || !chatBodyEl) return;
   
   if (messages.length === 0) {
     chatMessagesEl.innerHTML = `<div class="chat-system-message">No messages yet. Say hello! (কোনো মেসেজ নেই। হ্যালো বলুন!)</div>`;
     return;
   }
-  
-  const isNearBottom = chatMessagesEl.scrollHeight - chatMessagesEl.clientHeight - chatMessagesEl.scrollTop < 50;
   
   chatMessagesEl.innerHTML = messages.map(msg => {
     const isSelf = msg.sender === currentNickname;
@@ -2610,12 +2609,10 @@ function renderChatMessages(messages) {
     `;
   }).join('');
   
-  if (shouldScrollToBottom) {
-    chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
-    shouldScrollToBottom = false;
-  } else if (isNearBottom) {
-    chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
-  }
+  // Always scroll to the bottom of the scrollable container (#chatBody) when messages load or arrive
+  setTimeout(() => {
+    chatBodyEl.scrollTop = chatBodyEl.scrollHeight;
+  }, 30);
 }
 
 window.sendChatMessage = function() {
