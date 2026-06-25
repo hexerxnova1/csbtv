@@ -2767,26 +2767,32 @@ function setupKeyboardAdjustments() {
 
   if (chatInput && chatContainer) {
     chatInput.addEventListener('focus', () => {
-      chatContainer.classList.add("keyboard-visible");
-      // Scroll the messages list to bottom
-      setTimeout(() => {
-        if (chatMessages) {
-          chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-      }, 100);
-      
-      // Prevent browser default scroll shifting by using nearest block alignment
-      setTimeout(() => {
-        chatInput.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }, 250);
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768);
+      if (isMobile) {
+        chatContainer.classList.add("keyboard-visible");
+        // Scroll the messages list to bottom
+        setTimeout(() => {
+          if (chatMessages) {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+          }
+        }, 100);
+        
+        // Prevent browser default scroll shifting by using nearest block alignment
+        setTimeout(() => {
+          chatInput.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 250);
+      }
     });
     
     chatInput.addEventListener('blur', () => {
-      chatContainer.classList.remove("keyboard-visible");
-      // Ensure layout recovers fully when keyboard is closed
-      setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }, 100);
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768);
+      if (isMobile) {
+        chatContainer.classList.remove("keyboard-visible");
+        // Ensure layout recovers fully when keyboard is closed
+        setTimeout(() => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 100);
+      }
     });
   }
 
