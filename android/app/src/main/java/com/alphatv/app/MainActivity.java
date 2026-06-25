@@ -166,11 +166,26 @@ public class MainActivity extends BridgeActivity {
         }
     }
 
+    private void prepareForPiP() {
+        if (bridge != null && bridge.getWebView() != null) {
+            bridge.getWebView().post(new Runnable() {
+                @Override
+                public void run() {
+                    bridge.getWebView().evaluateJavascript(
+                        "if(window.onPiPPrepare){window.onPiPPrepare();}", 
+                        null
+                    );
+                }
+            });
+        }
+    }
+
     @Override
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
         if (isVideoPlaying && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             try {
+                prepareForPiP();
                 PictureInPictureParams params = getPiPParams();
                 if (params != null) {
                     enterPictureInPictureMode(params);
@@ -196,6 +211,7 @@ public class MainActivity extends BridgeActivity {
             }, 1000);
         } else if (isVideoPlaying && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             try {
+                prepareForPiP();
                 PictureInPictureParams params = getPiPParams();
                 if (params != null) {
                     enterPictureInPictureMode(params);

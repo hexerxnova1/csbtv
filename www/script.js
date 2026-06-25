@@ -2127,6 +2127,12 @@ function setupPictureInPicture() {
     handleExitPiP();
   });
 
+  // Android capacitor wrapper callback to prepare for PiP before transition
+  window.onPiPPrepare = function() {
+    console.log("Android preparing for PiP");
+    handleEnterPiP();
+  };
+
   // Android capacitor wrapper callback
   window.onPiPModeChanged = function(isInPiP) {
     console.log("Android PiP Changed:", isInPiP);
