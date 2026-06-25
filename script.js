@@ -44,6 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
   checkDisclaimer();
   setupPictureInPicture();
   setupVolumeControl();
+  setupKeyboardAdjustments();
 });
 
 /* DETECT NATIVE FULLSCREEN EXIT TO UNLOCK ORIENTATION & HANDLE BACK BUTTON */
@@ -2757,4 +2758,40 @@ function escapeHtml(text) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+}
+
+function setupKeyboardAdjustments() {
+  const inputs = ['chatInput', 'nicknameInput', 'customM3uUrl', 'customChannelName'];
+  
+  inputs.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('focus', () => {
+        // Wait a short duration for keyboard animation to start
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 200);
+        
+        // Also if it's chatInput, scroll the chatMessages container to bottom
+        if (id === 'chatInput') {
+          setTimeout(() => {
+            const chatMessages = document.getElementById("chatMessages");
+            if (chatMessages) {
+              chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+          }, 350);
+        }
+      });
+    }
+  });
+
+  // Watch for orientation change or viewport resize to keep active input visible
+  window.addEventListener('resize', () => {
+    const activeEl = document.activeElement;
+    if (activeEl && inputs.includes(activeEl.id)) {
+      setTimeout(() => {
+        activeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 150);
+    }
+  });
 }
