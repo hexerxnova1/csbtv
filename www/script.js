@@ -52,13 +52,35 @@ document.addEventListener("DOMContentLoaded", () => {
 let activeFocusedEl = null;
 
 function setupRemoteNavigation() {
-  const FOCUSABLE_SELECTOR = '.channel, .category-pill, .control-btn, #chatSendBtn, .chat-toggle-collapse-btn, #search';
+  const FOCUSABLE_SELECTOR = '.channel, .category-pill, .control-btn, .quality-menu-item, #chatSendBtn, .chat-toggle-collapse-btn, #search';
+
+  // Helper to check if a modal is currently open and return it
+  function getActiveModal() {
+    return document.querySelector('.custom-modal:not(.hidden), .settings-modal:not(.hidden)');
+  }
+
+  // Helper to get all focusable elements in the current context (either active modal or whole app)
+  function getFocusableElements(activeModal) {
+    if (activeModal) {
+      // Find all buttons, links, inputs, and close buttons inside the active modal card
+      return Array.from(activeModal.querySelectorAll('.custom-modal-close-btn, .custom-modal-btn, a, button, input, textarea, [tabindex="0"]')).filter(el => {
+        const style = window.getComputedStyle(el);
+        return style.display !== 'none' && style.visibility !== 'hidden' && el.offsetParent !== null;
+      });
+    }
+    
+    // Normal context: query the global selector
+    return Array.from(document.querySelectorAll(FOCUSABLE_SELECTOR)).filter(el => {
+      const style = window.getComputedStyle(el);
+      return style.display !== 'none' && style.visibility !== 'hidden' && el.offsetParent !== null;
+    });
+  }
 
   function customScrollIntoView(el) {
     if (!el) return;
     
-    // If it's part of the sticky search/category header, use standard scrollIntoView
-    if (el.closest('.search-filter-sticky') || el.closest('.categories-wrapper')) {
+    // If it's part of the sticky search/category header or inside a modal, use standard scrollIntoView
+    if (el.closest('.search-filter-sticky') || el.closest('.categories-wrapper') || el.closest('.custom-modal-card') || el.closest('.settings-modal-content')) {
       el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
       return;
     }
@@ -92,14 +114,8 @@ function setupRemoteNavigation() {
     }
   }
 
-  function getClosestElement(currentEl, selector, direction) {
-    const elements = Array.from(document.querySelectorAll(selector)).filter(el => {
-      if (el === currentEl) return false;
-      const style = window.getComputedStyle(el);
-      if (style.display === 'none' || style.visibility === 'hidden' || el.offsetParent === null) return false;
-      return true;
-    });
-    if (elements.length === 0) return null;
+  function getClosestElement(currentEl, focusableElements, direction) {
+    if (focusableElements.length === 0) return null;
     
     const currentRect = currentEl.getBoundingClientRect();
     const currentCenterX = currentRect.left + currentRect.width / 2;
@@ -108,7 +124,9 @@ function setupRemoteNavigation() {
     let closestEl = null;
     let minDistance = Infinity;
     
-    for (const el of elements) {
+    for (const el of focusableElements) {
+      if (el === currentEl) continue;
+      
       const rect = el.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
@@ -117,35 +135,157 @@ function setupRemoteNavigation() {
       const diffY = centerY - currentCenterY;
       
       let isValidDirection = false;
-      if (direction === 'up' && diffY < -5 && Math.abs(diffX) < Math.abs(diffY) * 2) isValidDirection = true;
-      if (direction === 'down' && diffY > 5 && Math.abs(diffX) < Math.abs(diffY) * 2) isValidDirection = true;
-      if (direction === 'left' && diffX < -5 && Math.abs(diffY) < Math.abs(diffX) * 2) isValidDirection = true;
-      if (direction === 'right' && diffX > 5 && Math.abs(diffY) < Math.abs(diffX) * 2) isValidDirection = true;
+      if (direction === 'up' && diffY < -5 && Math.abs(diffX) < Math.abs(diffY) * 2.5) isValidDirection = true;
+      if (direction === 'down' && diffY > 5 && Math.abs(diffX) < Math.abs(diffY) * 2.5) isValidDirection = true;
+      if (direction === 'left' && diffX < -5 && Math.abs(diffY) < Math.abs(diffX) * 2.5) isValidDirection = true;
+      if (direction === 'right' && diffX > 5 && Math.abs(diffY) < Math.abs(diffX) * 2.5) isValidDirection = true;
       
       if (isValidDirection) {
-        const distance = Math.sqrt(diffX * diffX + diffY * diffY);
+        // Weight the perpendicular axis to heavily prefer straight alignment
+        const xWeight = (direction === 'up' || direction === 'down') ? 4.0 : 1.0;
+        const yWeight = (direction === 'left' || direction === 'right') ? 4.0 : 1.0;
+        
+        const wX = diffX * xWeight;
+        const wY = diffY * yWeight;
+        const distance = Math.sqrt(wX * wX + wY * wY);
+        
         if (distance < minDistance) {
           minDistance = distance;
           closestEl = el;
         }
       }
     }
+    
+    // Fallback: If no closest element in that direction, but we are in a modal, cycle focus
+    if (!closestEl && focusableElements.length > 1) {
+      const activeModal = getActiveModal();
+      if (activeModal) {
+        const currentIndex = focusableElements.indexOf(currentEl);
+        if (direction === 'down' || direction === 'right') {
+          closestEl = focusableElements[(currentIndex + 1) % focusableElements.length];
+        } else if (direction === 'up' || direction === 'left') {
+          closestEl = focusableElements[(currentIndex - 1 + focusableElements.length) % focusableElements.length];
+        }
+      }
+    }
+    
     return closestEl;
   }
 
   window.addEventListener('keydown', (e) => {
+    const qualityMenu = document.getElementById("qualityMenu");
+    const isMenuOpen = qualityMenu && !qualityMenu.classList.contains("hidden");
+    
     let direction = '';
     if (e.key === 'ArrowUp') direction = 'up';
     else if (e.key === 'ArrowDown') direction = 'down';
     else if (e.key === 'ArrowLeft') direction = 'left';
     else if (e.key === 'ArrowRight') direction = 'right';
+
+    // 1. Intercept quality menu navigation if it is open
+    if (isMenuOpen) {
+      const items = Array.from(qualityMenu.querySelectorAll('.quality-menu-item'));
+      
+      // Close quality menu on back button press
+      if (e.key === 'Escape' || e.key === 'Backspace' || e.key === 'BrowserBack') {
+        e.preventDefault();
+        e.stopPropagation();
+        qualityMenu.classList.add('hidden');
+        if (activeFocusedEl) activeFocusedEl.classList.remove('remote-focused');
+        activeFocusedEl = document.getElementById("qualityBtn");
+        if (activeFocusedEl) activeFocusedEl.classList.add('remote-focused');
+        return;
+      }
+
+      if (activeFocusedEl && activeFocusedEl.classList.contains('quality-menu-item')) {
+        const currentIndex = items.indexOf(activeFocusedEl);
+        
+        if (direction === 'up') {
+          if (currentIndex > 0) {
+            activeFocusedEl.classList.remove('remote-focused');
+            activeFocusedEl = items[currentIndex - 1];
+            activeFocusedEl.classList.add('remote-focused');
+          }
+          e.preventDefault();
+          return;
+        } else if (direction === 'down') {
+          activeFocusedEl.classList.remove('remote-focused');
+          if (currentIndex < items.length - 1) {
+            activeFocusedEl = items[currentIndex + 1];
+            activeFocusedEl.classList.add('remote-focused');
+          } else {
+            qualityMenu.classList.add('hidden');
+            activeFocusedEl = document.getElementById("qualityBtn");
+            if (activeFocusedEl) activeFocusedEl.classList.add('remote-focused');
+          }
+          e.preventDefault();
+          return;
+        } else if (direction === 'left' || direction === 'right') {
+          qualityMenu.classList.add('hidden');
+          activeFocusedEl.classList.remove('remote-focused');
+          activeFocusedEl = document.getElementById("qualityBtn");
+          if (activeFocusedEl) activeFocusedEl.classList.add('remote-focused');
+          e.preventDefault();
+          return;
+        }
+      } else if (activeFocusedEl && activeFocusedEl.id === 'qualityBtn') {
+        if (direction === 'up') {
+          activeFocusedEl.classList.remove('remote-focused');
+          activeFocusedEl = items[items.length - 1];
+          activeFocusedEl.classList.add('remote-focused');
+          e.preventDefault();
+          return;
+        } else if (direction === 'down') {
+          activeFocusedEl.classList.remove('remote-focused');
+          activeFocusedEl = items[0];
+          activeFocusedEl.classList.add('remote-focused');
+          e.preventDefault();
+          return;
+        }
+      }
+    }
+
+    // 2. Intercept Back button (Escape/Backspace/BrowserBack) on TV to exit fullscreen if active
+    if (e.key === 'Escape' || e.key === 'Backspace' || e.key === 'BrowserBack') {
+      const isFullscreen = document.fullscreenElement || 
+                           document.webkitFullscreenElement || 
+                           document.mozFullScreenElement || 
+                           document.msFullscreenElement;
+      if (isFullscreen) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+        return;
+      }
+    }
     
     if (direction) {
-      // Find default focusable element if none focused
-      if (!activeFocusedEl || !document.body.contains(activeFocusedEl) || activeFocusedEl.offsetParent === null) {
-        const activeChannel = document.querySelector('.channel.active');
-        const firstCat = document.querySelector('.category-pill.active');
-        activeFocusedEl = activeChannel || firstCat || document.querySelector(FOCUSABLE_SELECTOR);
+      const activeModal = getActiveModal();
+      const focusable = getFocusableElements(activeModal);
+      
+      // If modal is active, make sure activeFocusedEl is inside it
+      const isCurrentInActiveModal = activeModal && activeFocusedEl && activeModal.contains(activeFocusedEl);
+      
+      // Find default focusable element if none focused or if current focused is outside active modal
+      if (!activeFocusedEl || !document.body.contains(activeFocusedEl) || activeFocusedEl.offsetParent === null || (activeModal && !isCurrentInActiveModal)) {
+        if (activeFocusedEl) {
+          activeFocusedEl.classList.remove('remote-focused');
+        }
+        
+        if (activeModal) {
+          // Select the primary action button (usually has disclaimer-accept-btn or custom-modal-btn) or just first item
+          const primaryBtn = activeModal.querySelector('.disclaimer-accept-btn, .custom-modal-btn, a, button');
+          activeFocusedEl = primaryBtn || focusable[0];
+        } else {
+          const activeChannel = document.querySelector('.channel.active');
+          const firstCat = document.querySelector('.category-pill.active');
+          activeFocusedEl = activeChannel || firstCat || focusable[0];
+        }
+        
         if (activeFocusedEl) {
           activeFocusedEl.classList.add('remote-focused');
           customScrollIntoView(activeFocusedEl);
@@ -154,7 +294,7 @@ function setupRemoteNavigation() {
         return;
       }
       
-      const nextEl = getClosestElement(activeFocusedEl, FOCUSABLE_SELECTOR, direction);
+      const nextEl = getClosestElement(activeFocusedEl, focusable, direction);
       if (nextEl) {
         activeFocusedEl.classList.remove('remote-focused');
         activeFocusedEl = nextEl;
@@ -174,10 +314,21 @@ function setupRemoteNavigation() {
       e.preventDefault();
     } else if (e.key === 'Enter') {
       if (activeFocusedEl && document.body.contains(activeFocusedEl)) {
+        const activeModal = getActiveModal();
+        const isCurrentInActiveModal = activeModal && activeModal.contains(activeFocusedEl);
+        
+        // If modal is active and focused element is outside modal, don't allow click
+        if (activeModal && !isCurrentInActiveModal) {
+          e.preventDefault();
+          return;
+        }
+        
         if (activeFocusedEl.tagName === 'INPUT' || activeFocusedEl.tagName === 'TEXTAREA') {
           return;
         }
+        window.isRemoteClicking = true;
         activeFocusedEl.click();
+        window.isRemoteClicking = false;
         e.preventDefault();
       }
     }
@@ -185,6 +336,7 @@ function setupRemoteNavigation() {
 
   // Clear focus styling on click or touch event to prevent phone/web impact
   document.addEventListener('click', () => {
+    if (window.isRemoteClicking) return;
     if (activeFocusedEl) {
       activeFocusedEl.classList.remove('remote-focused');
       activeFocusedEl = null;
@@ -427,6 +579,7 @@ function setupControlAutohide() {
   playerWrapper.addEventListener("mousemove", showControls);
   playerWrapper.addEventListener("click", showControls);
   playerWrapper.addEventListener("touchstart", showControls);
+  window.addEventListener("keydown", showControls);
 }
 
 // Helper to check if URL is a direct stream URL
@@ -2365,7 +2518,7 @@ function initializeQualitySelector(hlsInstance) {
   qualityMenu.classList.add("hidden");
 
   // Default menu before manifest parsed or if single quality
-  qualityMenu.innerHTML = `<div class="quality-menu-item active" data-level="-1">Original</div>`;
+  qualityMenu.innerHTML = `<div class="quality-menu-item active" data-level="-1" onclick="changeQualityLevel(-1, event)">Original</div>`;
 
   if (!hlsInstance) return;
 
@@ -2387,16 +2540,17 @@ function initializeQualitySelector(hlsInstance) {
 
       qualityMenu.innerHTML = menuHtml;
     } else {
-      qualityMenu.innerHTML = `<div class="quality-menu-item active" data-level="-1">Original</div>`;
+      qualityMenu.innerHTML = `<div class="quality-menu-item active" data-level="-1" onclick="changeQualityLevel(-1, event)">Original</div>`;
     }
   });
 }
 
 function changeQualityLevel(levelIndex, event) {
   if (event) event.stopPropagation();
-  if (!currentHls) return;
 
-  currentHls.currentLevel = levelIndex;
+  if (currentHls) {
+    currentHls.currentLevel = levelIndex;
+  }
 
   // Update active item in the UI
   const menuItems = document.querySelectorAll(".quality-menu-item");
@@ -2414,6 +2568,16 @@ function changeQualityLevel(levelIndex, event) {
     qualityMenu.classList.add("hidden");
   }
 
+  // Return remote focus to the quality gear button
+  if (activeFocusedEl) {
+    activeFocusedEl.classList.remove("remote-focused");
+  }
+  const qualityBtn = document.getElementById("qualityBtn");
+  if (qualityBtn) {
+    activeFocusedEl = qualityBtn;
+    activeFocusedEl.classList.add("remote-focused");
+  }
+
   console.log("Quality level changed to index:", levelIndex);
 }
 
@@ -2421,7 +2585,22 @@ function toggleQualityMenu(event) {
   if (event) event.stopPropagation();
   const qualityMenu = document.getElementById("qualityMenu");
   if (qualityMenu) {
+    const wasHidden = qualityMenu.classList.contains("hidden");
     qualityMenu.classList.toggle("hidden");
+    
+    if (wasHidden) {
+      // Menu is now open! Auto-focus the active quality item or the first item
+      setTimeout(() => {
+        const activeItem = qualityMenu.querySelector(".quality-menu-item.active") || qualityMenu.querySelector(".quality-menu-item");
+        if (activeItem) {
+          if (activeFocusedEl) {
+            activeFocusedEl.classList.remove("remote-focused");
+          }
+          activeFocusedEl = activeItem;
+          activeFocusedEl.classList.add("remote-focused");
+        }
+      }, 50);
+    }
   }
 }
 

@@ -3970,4 +3970,9 @@ body.pip-active video {
   z-index: 5 !important;
 }
 
+.quality-menu-item.remote-focused {
+  background: rgba(155, 81, 224, 0.2) !important;
+  color: #fff !important;
+}
+
 
