@@ -45,7 +45,121 @@ document.addEventListener("DOMContentLoaded", () => {
   setupPictureInPicture();
   setupVolumeControl();
   setupKeyboardAdjustments();
+  setupRemoteNavigation();
 });
+
+/* SETUP D-PAD REMOTE CONTROL NAVIGATION (FOR ANDROID TV) */
+let activeFocusedEl = null;
+
+function setupRemoteNavigation() {
+  const FOCUSABLE_SELECTOR = '.channel, .category-btn, .control-btn, #chatSendBtn, .chat-toggle-collapse-btn, #search';
+
+  function getClosestElement(currentEl, selector, direction) {
+    const elements = Array.from(document.querySelectorAll(selector)).filter(el => {
+      if (el === currentEl) return false;
+      const style = window.getComputedStyle(el);
+      if (style.display === 'none' || style.visibility === 'hidden' || el.offsetParent === null) return false;
+      return true;
+    });
+    if (elements.length === 0) return null;
+    
+    const currentRect = currentEl.getBoundingClientRect();
+    const currentCenterX = currentRect.left + currentRect.width / 2;
+    const currentCenterY = currentRect.top + currentRect.height / 2;
+    
+    let closestEl = null;
+    let minDistance = Infinity;
+    
+    for (const el of elements) {
+      const rect = el.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      
+      const diffX = centerX - currentCenterX;
+      const diffY = centerY - currentCenterY;
+      
+      let isValidDirection = false;
+      if (direction === 'up' && diffY < -5 && Math.abs(diffX) < Math.abs(diffY) * 2) isValidDirection = true;
+      if (direction === 'down' && diffY > 5 && Math.abs(diffX) < Math.abs(diffY) * 2) isValidDirection = true;
+      if (direction === 'left' && diffX < -5 && Math.abs(diffY) < Math.abs(diffX) * 2) isValidDirection = true;
+      if (direction === 'right' && diffX > 5 && Math.abs(diffY) < Math.abs(diffX) * 2) isValidDirection = true;
+      
+      if (isValidDirection) {
+        const distance = Math.sqrt(diffX * diffX + diffY * diffY);
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestEl = el;
+        }
+      }
+    }
+    return closestEl;
+  }
+
+  window.addEventListener('keydown', (e) => {
+    let direction = '';
+    if (e.key === 'ArrowUp') direction = 'up';
+    else if (e.key === 'ArrowDown') direction = 'down';
+    else if (e.key === 'ArrowLeft') direction = 'left';
+    else if (e.key === 'ArrowRight') direction = 'right';
+    
+    if (direction) {
+      // Find default focusable element if none focused
+      if (!activeFocusedEl || !document.body.contains(activeFocusedEl) || activeFocusedEl.offsetParent === null) {
+        const activeChannel = document.querySelector('.channel.active');
+        const firstCat = document.querySelector('.category-btn.active');
+        activeFocusedEl = activeChannel || firstCat || document.querySelector(FOCUSABLE_SELECTOR);
+        if (activeFocusedEl) {
+          activeFocusedEl.classList.add('remote-focused');
+          activeFocusedEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+        }
+        e.preventDefault();
+        return;
+      }
+      
+      const nextEl = getClosestElement(activeFocusedEl, FOCUSABLE_SELECTOR, direction);
+      if (nextEl) {
+        activeFocusedEl.classList.remove('remote-focused');
+        activeFocusedEl = nextEl;
+        activeFocusedEl.classList.add('remote-focused');
+        
+        // Native focus for input fields so they can type
+        if (activeFocusedEl.tagName === 'INPUT' || activeFocusedEl.tagName === 'TEXTAREA') {
+          activeFocusedEl.focus();
+        } else {
+          if (document.activeElement && document.activeElement !== document.body) {
+            document.activeElement.blur();
+          }
+        }
+        
+        activeFocusedEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+      }
+      e.preventDefault();
+    } else if (e.key === 'Enter') {
+      if (activeFocusedEl && document.body.contains(activeFocusedEl)) {
+        if (activeFocusedEl.tagName === 'INPUT' || activeFocusedEl.tagName === 'TEXTAREA') {
+          return;
+        }
+        activeFocusedEl.click();
+        e.preventDefault();
+      }
+    }
+  });
+
+  // Clear focus styling on click or touch event to prevent phone/web impact
+  document.addEventListener('click', () => {
+    if (activeFocusedEl) {
+      activeFocusedEl.classList.remove('remote-focused');
+      activeFocusedEl = null;
+    }
+  }, true);
+
+  document.addEventListener('touchstart', () => {
+    if (activeFocusedEl) {
+      activeFocusedEl.classList.remove('remote-focused');
+      activeFocusedEl = null;
+    }
+  }, true);
+}
 
 /* DETECT NATIVE FULLSCREEN EXIT TO UNLOCK ORIENTATION & HANDLE BACK BUTTON */
 function setupFullscreenChange() {

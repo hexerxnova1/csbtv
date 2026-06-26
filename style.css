@@ -3960,4 +3960,14 @@ body.pip-active video {
   100% { transform: scale(1); }
 }
 
+/* REMOTE DPAD FOCUS SYSTEM FOR ANDROID TV */
+.remote-focused {
+  outline: 3px solid #9b51e0 !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 15px rgba(155, 81, 224, 0.8) !important;
+  transform: scale(1.03) !important;
+  transition: transform 0.2s ease, outline 0.1s ease !important;
+  z-index: 5 !important;
+}
+
 
