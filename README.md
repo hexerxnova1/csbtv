@@ -5,14 +5,14 @@
 # 📺 Alpha TV - Premium Live Streaming Platform
 
 <p align="center">
-  <a href="https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases"><img src="https://img.shields.io/badge/Download-AlphaTV--v1.1.5.apk-brightgreen?style=for-the-badge&logo=android&logoColor=white" alt="Download APK"></a>
+  <a href="https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases"><img src="https://img.shields.io/badge/Download-AlphaTV--v1.1.6.apk-brightgreen?style=for-the-badge&logo=android&logoColor=white" alt="Download APK"></a>
   <a href="https://shariar-ahamed.github.io/online-tv-streaming-platform/"><img src="https://img.shields.io/badge/Live-Web%20Demo-ff007f?style=for-the-badge&logo=livewire&logoColor=white" alt="Live Demo"></a>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Platform-Android%20%7C%20Web-blue?style=flat-square&logo=capacitor&logoColor=white">
   <img src="https://img.shields.io/badge/UI-Neumorphic%20%2F%20Glassmorphism-violet?style=flat-square">
-  <img src="https://img.shields.io/badge/Version-v1.1.5-brightgreen?style=flat-square">
+  <img src="https://img.shields.io/badge/Version-v1.1.6-brightgreen?style=flat-square">
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square">
 </p>
 
@@ -44,9 +44,9 @@ Below are the technical specifications of the native Android application package
 
 | Specification                  | Details                                                                                    |
 | ------------------------------ | ------------------------------------------------------------------------------------------ |
-| 📦 **App Name**                | `AlphaTV-v1.1.5.apk`                                                                       |
+| 📦 **App Name**                | `AlphaTV-v1.1.6.apk`                                                                       |
 | 🆔 **Package Name**            | `com.alphatv.app`                                                                          |
-| 🏷️ **Current Version**         | `1.1.5` (Build Code `16`)                                                                  |
+| 🏷️ **Current Version**         | `1.1.6` (Build Code `17`)                                                                  |
 | 📂 **App Size**                | ~31.1 MB                                                                                   |
 | ⚙️ **Minimum OS Support**      | Android 7.0 (Nougat - API Level 24) or higher                                              |
 | 🎯 **Target SDK**              | Android 15 / 16 (API Level 36)                                                             |
@@ -189,7 +189,24 @@ npx cap open android
 
 ## 📋 Release History & Changelog
 
-### 🚀 v1.1.5 (Current Release) - Build Code `16`
+### 🚀 v1.1.6 (Current Release) - Build Code `17`
+* **Android TV Remote Control (D-pad) Compatibility:**
+  * Enabled fully integrated directional keys navigation (ArrowUp, ArrowDown, ArrowLeft, ArrowRight) across categories, channel grids, and player controls.
+  * Added prioritized axis-weighting layout logic to prevent horizontal navigation from jumping vertically into categories or search inputs.
+  * Added active TV modal navigation loops and focus cycling (Settings, Disclaimer).
+* **Autoplay Support & Unmute Overlay:**
+  * Configured automated player autoplay fallback that plays stream muted if the browser/WebView blocks audio autoplay.
+  * Implemented an interactive glassmorphic unmute banner overlay (`#unmuteOverlay`) prompting users to tap to restore audio, fully conforming to modern browser autoplay policies.
+* **Resolution settings menu fixes:**
+  * Automated settings quality list option auto-focus on remote selection.
+  * Resolved click event losses for touch/mouse users on single-quality fallback items by attaching active click events to `Original` quality options.
+  * Dynamically detects remote control vs mouse/touch inputs, ensuring the purple focus borders (`.remote-focused`) are only shown to Android TV/remote control users and hidden for web/mobile users.
+* **Player Fullscreen Back-Button Handling:**
+  * Custom key intercept automatically exits fullscreen player view when pressing the Android TV back button (`Escape`/`Backspace`/`BrowserBack`).
+  * Seamlessly returns remote focus back to the active channel item or grid.
+  * Added window-level keydown listener to auto-display player controls on TV remote button presses.
+
+### 🚀 v1.1.5 - Build Code `16`
 * **PiP Black Screen Bug Fix:**
   * Resolved the Android Picture-in-Picture (PiP) black screen layout issue by correcting the buggy CSS child-combinator selector that was inadvertently hiding the main `.app-container`.
   * Positioned the `.player-wrapper` as fixed (`top: 0; left: 0; z-index: 99999;`) during PiP mode, ensuring a seamless video playback view.
@@ -270,7 +287,7 @@ npx cap open android
 
 ## 🔗 Useful Links
 
-- **Latest APK Release:** [Download AlphaTV-v1.1.5.apk](https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases)
+- **Latest APK Release:** [Download AlphaTV-v1.1.6.apk](https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases)
 - **Live Web App:** [Alpha TV Live Web App](https://shariar-ahamed.github.io/online-tv-streaming-platform/)
 - **Source Code Repository:** [GitHub Repository](https://github.com/Shariar-Ahamed/online-tv-streaming-platform)
 
