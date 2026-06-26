@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
 let activeFocusedEl = null;
 
 function setupRemoteNavigation() {
-  const FOCUSABLE_SELECTOR = '.channel, .category-btn, .control-btn, #chatSendBtn, .chat-toggle-collapse-btn, #search';
+  const FOCUSABLE_SELECTOR = '.channel, .category-pill, .control-btn, #chatSendBtn, .chat-toggle-collapse-btn, #search';
 
   function customScrollIntoView(el) {
     if (!el) return;
@@ -144,7 +144,7 @@ function setupRemoteNavigation() {
       // Find default focusable element if none focused
       if (!activeFocusedEl || !document.body.contains(activeFocusedEl) || activeFocusedEl.offsetParent === null) {
         const activeChannel = document.querySelector('.channel.active');
-        const firstCat = document.querySelector('.category-btn.active');
+        const firstCat = document.querySelector('.category-pill.active');
         activeFocusedEl = activeChannel || firstCat || document.querySelector(FOCUSABLE_SELECTOR);
         if (activeFocusedEl) {
           activeFocusedEl.classList.add('remote-focused');
