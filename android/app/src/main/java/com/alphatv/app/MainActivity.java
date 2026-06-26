@@ -82,39 +82,6 @@ public class MainActivity extends BridgeActivity {
                     updatePiPParams();
                 }
             }, "AndroidPiP");
-
-            // Expose an interface for opening external URLs directly without triggering multiple redirect downloads
-            bridge.getWebView().addJavascriptInterface(new Object() {
-                @android.webkit.JavascriptInterface
-                public void openExternalBrowser(final String url) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Intent intent = new Intent(Intent.ACTION_VIEW);
-                                intent.setData(android.net.Uri.parse(url));
-                                startActivity(intent);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                }
-            }, "AndroidInterface");
-
-            // Set Download Listener to open downloads in external system browser as a general fallback
-            bridge.getWebView().setDownloadListener(new android.webkit.DownloadListener() {
-                @Override
-                public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
-                    try {
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setData(android.net.Uri.parse(url));
-                        startActivity(intent);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
         }
     }
 
