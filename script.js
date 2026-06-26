@@ -449,6 +449,10 @@ function setupExternalLinks() {
 }
 
 function openExternalUrl(url) {
+  if (window.AndroidInterface && window.AndroidInterface.openSystemBrowser) {
+    window.AndroidInterface.openSystemBrowser(url);
+    return;
+  }
   const cap = window.Capacitor;
   if (cap && cap.Plugins && cap.Plugins.Browser) {
     cap.Plugins.Browser.open({ url: url })
@@ -2358,7 +2362,9 @@ function handleUpdateDownload(event) {
   
   if (!url || url === "#") return;
 
-  if (window.Capacitor) {
+  if (window.AndroidInterface && window.AndroidInterface.openSystemBrowser) {
+    window.AndroidInterface.openSystemBrowser(url);
+  } else if (window.Capacitor) {
     // Under Capacitor, we use a dynamic anchor with target="_system" to force external browser
     const link = document.createElement('a');
     link.href = url;

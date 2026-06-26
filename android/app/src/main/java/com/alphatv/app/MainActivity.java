@@ -82,6 +82,19 @@ public class MainActivity extends BridgeActivity {
                     updatePiPParams();
                 }
             }, "AndroidPiP");
+
+            bridge.getWebView().addJavascriptInterface(new Object() {
+                @android.webkit.JavascriptInterface
+                public void openSystemBrowser(String url) {
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url));
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        MainActivity.this.startActivity(intent);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, "AndroidInterface");
         }
     }
 
