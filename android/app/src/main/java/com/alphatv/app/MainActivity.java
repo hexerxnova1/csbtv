@@ -82,6 +82,20 @@ public class MainActivity extends BridgeActivity {
                     updatePiPParams();
                 }
             }, "AndroidPiP");
+
+            // Set Download Listener to open downloads in external system browser
+            bridge.getWebView().setDownloadListener(new android.webkit.DownloadListener() {
+                @Override
+                public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(android.net.Uri.parse(url));
+                        startActivity(intent);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
     }
 

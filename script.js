@@ -2342,9 +2342,9 @@ function handleUpdateDownload(event) {
   if (!url || url === "#") return;
 
   if (window.Capacitor) {
-    // Force open in the default external system browser (e.g. Chrome)
-    // rather than the in-app browser overlay. This prevents download freezes on APKs.
-    window.open(url, "_system");
+    // Navigate WebView to the download URL to trigger native DownloadListener,
+    // which launches the external default browser app (Chrome) and prevents download freeze.
+    window.location.href = url;
   } else {
     window.open(url, "_blank");
   }
