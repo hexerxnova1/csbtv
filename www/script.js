@@ -2337,19 +2337,37 @@ function closeUpdateModal() {
 }
 
 function handleUpdateDownload(event) {
-  event.preventDefault();
-  const url = event.currentTarget.getAttribute("href");
+  if (event && event.preventDefault) {
+    event.preventDefault();
+  }
+  
+  let url = null;
+  if (event) {
+    const anchor = event.currentTarget || (event.target && event.target.closest("a"));
+    if (anchor) {
+      url = anchor.getAttribute("href");
+    }
+  }
+  
+  if (!url || url === "#") {
+    const downloadBtn = document.getElementById("updateDownloadLink");
+    if (downloadBtn) {
+      url = downloadBtn.getAttribute("href");
+    }
+  }
+  
   if (!url || url === "#") return;
 
-  if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
-    // Open directly using the official Capacitor App plugin, which triggers a native Intent
-    // exactly once and bypasses any WebView navigation/download listeners.
-    window.Capacitor.Plugins.App.openUrl({ url: url }).catch(err => {
-      console.error("Failed to open URL via Capacitor App plugin:", err);
-      // Fallback
-      window.open(url, "_system");
-    });
+  if (window.Capacitor) {
+    // Under Capacitor, we use a dynamic anchor with target="_system" to force external browser
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = '_system';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   } else {
+    // Normal browser fallback
     window.open(url, "_blank");
   }
 }
