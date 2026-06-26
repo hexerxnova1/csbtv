@@ -2341,11 +2341,10 @@ function handleUpdateDownload(event) {
   const url = event.currentTarget.getAttribute("href");
   if (!url || url === "#") return;
 
-  if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Browser) {
-    window.Capacitor.Plugins.Browser.open({ url: url }).catch(err => {
-      console.error("Failed to open URL via Capacitor Browser:", err);
-      window.open(url, "_system");
-    });
+  if (window.Capacitor) {
+    // Force open in the default external system browser (e.g. Chrome)
+    // rather than the in-app browser overlay. This prevents download freezes on APKs.
+    window.open(url, "_system");
   } else {
     window.open(url, "_blank");
   }
