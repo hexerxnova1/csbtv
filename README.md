@@ -190,46 +190,24 @@ npx cap open android
 
 ## 📋 Release History & Changelog
 
-### 🚀 v1.1.7 - Build Code `18`
-* **APK Download Fix:**
-  * Bypassed the Capacitor In-App Browser sandbox overlay when downloading updates inside the app.
-  * Forces download links to open in the phone's native external browser (Chrome, etc.), permitting local storage saving and seamless installer execution.
-
-### 🚀 v1.1.6 (Current Release) - Build Code `17`
-* **Android TV Remote Control (D-pad) Compatibility:**
-  * Enabled fully integrated directional keys navigation (ArrowUp, ArrowDown, ArrowLeft, ArrowRight) across categories, channel grids, and player controls.
-  * Added prioritized axis-weighting layout logic to prevent horizontal navigation from jumping vertically into categories or search inputs.
-  * Added active TV modal navigation loops and focus cycling (Settings, Disclaimer).
-* **Autoplay Support & Unmute Overlay:**
-  * Configured automated player autoplay fallback that plays stream muted if the browser/WebView blocks audio autoplay.
-  * Implemented an interactive glassmorphic unmute banner overlay (`#unmuteOverlay`) prompting users to tap to restore audio, fully conforming to modern browser autoplay policies.
-* **Resolution settings menu fixes:**
-  * Automated settings quality list option auto-focus on remote selection.
-  * Resolved click event losses for touch/mouse users on single-quality fallback items by attaching active click events to `Original` quality options.
-  * Dynamically detects remote control vs mouse/touch inputs, ensuring the purple focus borders (`.remote-focused`) are only shown to Android TV/remote control users and hidden for web/mobile users.
-* **Player Fullscreen Back-Button Handling:**
-  * Custom key intercept automatically exits fullscreen player view when pressing the Android TV back button (`Escape`/`Backspace`/`BrowserBack`).
-  * Seamlessly returns remote focus back to the active channel item or grid.
-  * Added window-level keydown listener to auto-display player controls on TV remote button presses.
-
-### 🚀 v1.1.7 - Build Code `18`
-* **ডাউনলোড ক্র্যাশ ও লুপ সমস্যার স্থায়ী সমাধান:**
-  - বাটনের `href` সরাসরি APK লিংকে সেট করার কারণে WebView ব্যাকগ্রাউন্ডে রিডিরেক্ট হয়ে যে লুপ বা রিপিটেড ডাউনলোড প্রম্পট তৈরি করত, তা চিরতরে দূর করা হয়েছে। এপিকে ডাউনলোড বোতামগুলোর `href` ডিফল্ট `#` রেখে `data-download-url` নামক কাস্টম অ্যাট্রিবিউটে লিংক লুকিয়ে রাখা হয়েছে।
-  - জাভাস্ক্রিপ্ট এবং নেটিভ অ্যান্ড্রয়েডের যোগাযোগ সহজ করতে `MainActivity.java`-তে একটি নতুন `AndroidInterface` যুক্ত করা হয়েছে, যা ফোনের ডিফল্ট সিস্টেম ব্রাউজারে (যেমন ক্রোম) সফলভাবে এবং একটি মাত্র নোটিফিকেশনে ডাউনলোড সম্পন্ন করবে।
-* **ক্লিক থ্রটলিং (Safety Throttling):**
-  - ডাবল বা ট্রিপল ক্লিকজনিত ত্রুটি ঠেকাতে ৫ সেকেন্ডের বাটন ক্লিক থ্রটলিং যুক্ত করা হয়েছে।
+### 🚀 v1.1.7 (Current Release) - Build Code `18`
+* **APK Download Loop & Crash Fix:**
+  - Resolved the critical download loop issue where clicking the update button triggered dozens of concurrent duplicate APK downloads in the external browser.
+  - Replaced direct absolute APK links in `href` attributes with dynamic custom data attributes (`data-download-url`) and mapped `href` to `#`. This completely prevents Android WebView from intercepting and retrying the resource load in the background.
+  - Implemented a native Javascript Interface (`AndroidInterface.openSystemBrowser`) in Java `MainActivity.java` to cleanly delegate downloads and external links to the Android default system browser (e.g., Chrome) exactly once.
+  - Added click throttling (5-second cooldown) to the download action to prevent duplicate launches from rapid user clicks.
 
 ### 🚀 v1.1.6 - Build Code `17`
-* **অ্যান্ড্রয়েড টিভি (Android TV) ও D-pad রিমোট কন্ট্রোল সাপোর্ট:**
-  - টিভিতে ইন্সটল করার জন্য Leanback Launcher এবং ব্যানার লোগো ফিচার যুক্ত করা হয়েছে।
-  - রিমোটের অ্যারো কী চেপে ক্যাটাগরি, চ্যানেল এবং প্লেয়ার কন্ট্রোলারের দূরত্ব হিসাব করে ডাইনামিক ফোকাস পরিবর্তনের জন্য ২D স্পেশাল নেভিগেশন ইঞ্জিন তৈরি করা হয়েছে।
-  - রিমোট ফোকাস স্পষ্ট করতে বেগুনী নিওন হাইলাইট ক্লাস সংযুক্ত করা হয়েছে, যা মোবাইল ও সাধারণ টাচস্ক্রিনে কোনো প্রভাব ফেলে না।
-* **কাস্টম প্লেলিস্ট (M3U) ও সরাসরি স্ট্রিম লিঙ্ক যোগ করার সুবিধা:**
-  - ব্যবহারকারীদের নিজস্ব প্লেলিস্ট ফাইল বা লিঙ্ক মার্জ করে ডিফল্ট চ্যানেলের সাথে যুক্ত করার সুবিধা।
-  - ট্র্যাশ-ক্যান বোতামের মাধ্যমে সম্পূর্ণ রিলোড ছাড়া মেমরি ও লোকাল স্টোরেজ থেকে সিঙ্গেল চ্যানেল ডিলিট করার ফিচার।
-  - পুরোনো কাস্টম কনফিগারেশনগুলোর স্বয়ংক্রিয় ফ্ল্যাট ডাটা মাইগ্রেশন লজিক।
-* **ব্রাউজার মিউটেড অটো-প্লে বাইপাস:**
-  - ওয়েব ব্রাউজারের অটো-প্লে ব্লকিং পলিসি এড়াতে প্রথমে সাউন্ড ছাড়া ভিডিও প্লেব্যাক চালু এবং প্লেয়ারের ওপর সুন্দর নিওন আনমিউট ব্যানারের মাধ্যমে সাউন্ড সচল করার ব্যবস্থা।
+* **Android TV D-pad Remote Control Engine:**
+  - Introduced fully integrated D-pad remote navigation (`ArrowUp`/`ArrowDown`/`ArrowLeft`/`ArrowRight`/`Enter`) across category lists, channel cards, and player controls.
+  - Configured leanback support and TV shortcuts (`android.software.leanback` and `android.intent.category.LEANBACK_LAUNCHER`) in `AndroidManifest.xml`.
+  - Added prioritized axis-weighting layout logic to prevent horizontal navigation from jumping vertically.
+* **Custom M3U Playlist & Stream Uploads:**
+  - Enabled support for multiple custom M3U files and live stream URLs (HLS, TS) saved in local flat-array arrays.
+  - Integrated dynamic visitor statistics (Total Visits and Live Watch visitor calculator synchronized in real-time).
+  - Single channel trash-can removal and old config auto-migration.
+* **Autoplay Muted Policy Bypass:**
+  - Automatically falls back to muted playback if audio autoplay is blocked, showing a concentric neon unmute banner to restore volume.
 
 ### 🚀 v1.1.5 - Build Code `16`
 * **PiP Black Screen Bug Fix:**
