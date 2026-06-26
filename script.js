@@ -2341,7 +2341,10 @@ function handleUpdateDownload(event) {
   const url = event.currentTarget.getAttribute("href");
   if (!url || url === "#") return;
 
-  if (window.Capacitor) {
+  if (window.AndroidInterface && typeof window.AndroidInterface.openExternalBrowser === "function") {
+    // Open directly using our native Java interface to launch the system browser once.
+    window.AndroidInterface.openExternalBrowser(url);
+  } else if (window.Capacitor) {
     // Navigate WebView to the download URL to trigger native DownloadListener,
     // which launches the external default browser app (Chrome) and prevents download freeze.
     window.location.href = url;
