@@ -3381,16 +3381,19 @@ function setupKeyboardAdjustments() {
             }, 100);
           }
         } else {
-          // Keyboard was closed
+          // Keyboard was closed - only scroll to top if the chat keyboard was actually visible
+          const wasKeyboardOpen = chatContainer && chatContainer.classList.contains("keyboard-visible");
           if (chatContainer && chatContainer.classList.contains("keyboard-visible")) {
             chatContainer.classList.remove("keyboard-visible");
           }
           if (document.activeElement === chatInput) {
             chatInput.blur();
           }
-          setTimeout(() => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }, 100);
+          if (wasKeyboardOpen) {
+            setTimeout(() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 100);
+          }
         }
       });
     } else {
