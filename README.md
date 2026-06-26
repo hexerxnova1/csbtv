@@ -5,14 +5,14 @@
 # 📺 Alpha TV - Premium Live Streaming Platform
 
 <p align="center">
-  <a href="https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases"><img src="https://img.shields.io/badge/Download-AlphaTV--v1.1.6.apk-brightgreen?style=for-the-badge&logo=android&logoColor=white" alt="Download APK"></a>
+  <a href="https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases"><img src="https://img.shields.io/badge/Download-AlphaTV--v1.1.7.apk-brightgreen?style=for-the-badge&logo=android&logoColor=white" alt="Download APK"></a>
   <a href="https://shariar-ahamed.github.io/online-tv-streaming-platform/"><img src="https://img.shields.io/badge/Live-Web%20Demo-ff007f?style=for-the-badge&logo=livewire&logoColor=white" alt="Live Demo"></a>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Platform-Android%20%7C%20Web-blue?style=flat-square&logo=capacitor&logoColor=white">
   <img src="https://img.shields.io/badge/UI-Neumorphic%20%2F%20Glassmorphism-violet?style=flat-square">
-  <img src="https://img.shields.io/badge/Version-v1.1.6-brightgreen?style=flat-square">
+  <img src="https://img.shields.io/badge/Version-v1.1.7-brightgreen?style=flat-square">
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square">
 </p>
 
@@ -44,9 +44,9 @@ Below are the technical specifications of the native Android application package
 
 | Specification                  | Details                                                                                    |
 | ------------------------------ | ------------------------------------------------------------------------------------------ |
-| 📦 **App Name**                | `AlphaTV-v1.1.6.apk`                                                                       |
+| 📦 **App Name**                | `AlphaTV-v1.1.7.apk`                                                                       |
 | 🆔 **Package Name**            | `com.alphatv.app`                                                                          |
-| 🏷️ **Current Version**         | `1.1.6` (Build Code `17`)                                                                  |
+| 🏷️ **Current Version**         | `1.1.7` (Build Code `18`)                                                                  |
 | 📂 **App Size**                | ~31.1 MB                                                                                   |
 | ⚙️ **Minimum OS Support**      | Android 7.0 (Nougat - API Level 24) or higher                                              |
 | 🎯 **Target SDK**              | Android 15 / 16 (API Level 36)                                                             |
@@ -212,6 +212,25 @@ npx cap open android
   * Seamlessly returns remote focus back to the active channel item or grid.
   * Added window-level keydown listener to auto-display player controls on TV remote button presses.
 
+### 🚀 v1.1.7 - Build Code `18`
+* **ডাউনলোড ক্র্যাশ ও লুপ সমস্যার স্থায়ী সমাধান:**
+  - বাটনের `href` সরাসরি APK লিংকে সেট করার কারণে WebView ব্যাকগ্রাউন্ডে রিডিরেক্ট হয়ে যে লুপ বা রিপিটেড ডাউনলোড প্রম্পট তৈরি করত, তা চিরতরে দূর করা হয়েছে। এপিকে ডাউনলোড বোতামগুলোর `href` ডিফল্ট `#` রেখে `data-download-url` নামক কাস্টম অ্যাট্রিবিউটে লিংক লুকিয়ে রাখা হয়েছে।
+  - জাভাস্ক্রিপ্ট এবং নেটিভ অ্যান্ড্রয়েডের যোগাযোগ সহজ করতে `MainActivity.java`-তে একটি নতুন `AndroidInterface` যুক্ত করা হয়েছে, যা ফোনের ডিফল্ট সিস্টেম ব্রাউজারে (যেমন ক্রোম) সফলভাবে এবং একটি মাত্র নোটিফিকেশনে ডাউনলোড সম্পন্ন করবে।
+* **ক্লিক থ্রটলিং (Safety Throttling):**
+  - ডাবল বা ট্রিপল ক্লিকজনিত ত্রুটি ঠেকাতে ৫ সেকেন্ডের বাটন ক্লিক থ্রটলিং যুক্ত করা হয়েছে।
+
+### 🚀 v1.1.6 - Build Code `17`
+* **অ্যান্ড্রয়েড টিভি (Android TV) ও D-pad রিমোট কন্ট্রোল সাপোর্ট:**
+  - টিভিতে ইন্সটল করার জন্য Leanback Launcher এবং ব্যানার লোগো ফিচার যুক্ত করা হয়েছে।
+  - রিমোটের অ্যারো কী চেপে ক্যাটাগরি, চ্যানেল এবং প্লেয়ার কন্ট্রোলারের দূরত্ব হিসাব করে ডাইনামিক ফোকাস পরিবর্তনের জন্য ২D স্পেশাল নেভিগেশন ইঞ্জিন তৈরি করা হয়েছে।
+  - রিমোট ফোকাস স্পষ্ট করতে বেগুনী নিওন হাইলাইট ক্লাস সংযুক্ত করা হয়েছে, যা মোবাইল ও সাধারণ টাচস্ক্রিনে কোনো প্রভাব ফেলে না।
+* **কাস্টম প্লেলিস্ট (M3U) ও সরাসরি স্ট্রিম লিঙ্ক যোগ করার সুবিধা:**
+  - ব্যবহারকারীদের নিজস্ব প্লেলিস্ট ফাইল বা লিঙ্ক মার্জ করে ডিফল্ট চ্যানেলের সাথে যুক্ত করার সুবিধা।
+  - ট্র্যাশ-ক্যান বোতামের মাধ্যমে সম্পূর্ণ রিলোড ছাড়া মেমরি ও লোকাল স্টোরেজ থেকে সিঙ্গেল চ্যানেল ডিলিট করার ফিচার।
+  - পুরোনো কাস্টম কনফিগারেশনগুলোর স্বয়ংক্রিয় ফ্ল্যাট ডাটা মাইগ্রেশন লজিক।
+* **ব্রাউজার মিউটেড অটো-প্লে বাইপাস:**
+  - ওয়েব ব্রাউজারের অটো-প্লে ব্লকিং পলিসি এড়াতে প্রথমে সাউন্ড ছাড়া ভিডিও প্লেব্যাক চালু এবং প্লেয়ারের ওপর সুন্দর নিওন আনমিউট ব্যানারের মাধ্যমে সাউন্ড সচল করার ব্যবস্থা।
+
 ### 🚀 v1.1.5 - Build Code `16`
 * **PiP Black Screen Bug Fix:**
   * Resolved the Android Picture-in-Picture (PiP) black screen layout issue by correcting the buggy CSS child-combinator selector that was inadvertently hiding the main `.app-container`.
@@ -293,7 +312,7 @@ npx cap open android
 
 ## 🔗 Useful Links
 
-- **Latest APK Release:** [Download AlphaTV-v1.1.6.apk](https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases)
+- **Latest APK Release:** [Download AlphaTV-v1.1.7.apk](https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases)
 - **Live Web App:** [Alpha TV Live Web App](https://shariar-ahamed.github.io/online-tv-streaming-platform/)
 - **Source Code Repository:** [GitHub Repository](https://github.com/Shariar-Ahamed/online-tv-streaming-platform)
 
