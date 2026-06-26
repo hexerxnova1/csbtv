@@ -175,6 +175,9 @@ function setupVolumeControl() {
 
   video.addEventListener("volumechange", () => {
     updateVolumeButtonState(video.muted);
+    if (!video.muted) {
+      hideUnmuteOverlay();
+    }
   });
 }
 
@@ -183,6 +186,9 @@ function toggleMute() {
   if (!video) return;
   video.muted = !video.muted;
   localStorage.setItem("alpha_tv_muted", video.muted);
+  if (!video.muted) {
+    hideUnmuteOverlay();
+  }
 }
 
 function updateVolumeButtonState(isMuted) {
@@ -197,6 +203,57 @@ function updateVolumeButtonState(isMuted) {
       icon.className = "fa-solid fa-volume-high";
       volumeBtn.title = "Mute";
     }
+  }
+}
+
+/* AUTOPLAY PLAYBACK ATTEMPT HANDLER WITH MUTED FALLBACK */
+function handlePlayAttempt(video, loader) {
+  if (!video) return;
+  video.play().catch(err => {
+    console.log("Autoplay blocked, retrying muted:", err);
+    video.muted = true;
+    updateVolumeButtonState(true);
+    
+    video.play().then(() => {
+      console.log("Muted autoplay succeeded");
+      showUnmuteOverlay();
+    }).catch(err2 => {
+      console.error("Autoplay failed even when muted:", err2);
+      if (loader) {
+        loader.querySelector("span").innerHTML = 'Stream paused. Click Play to watch!<br><span class="paused-play-icon" onclick="togglePlay()">▶</span>';
+        const spinner = loader.querySelector(".spinner");
+        if (spinner) spinner.classList.add("hidden");
+      }
+    });
+  });
+}
+
+window.handleUnmuteOverlayClick = function(event) {
+  if (event) event.stopPropagation();
+  const video = document.getElementById("video");
+  if (video) {
+    video.muted = false;
+    localStorage.setItem("alpha_tv_muted", "false");
+    updateVolumeButtonState(false);
+  }
+  hideUnmuteOverlay();
+};
+
+function showUnmuteOverlay() {
+  const overlay = document.getElementById("unmuteOverlay");
+  if (overlay) {
+    overlay.classList.remove("hidden");
+    clearTimeout(window.unmuteOverlayTimeout);
+    window.unmuteOverlayTimeout = setTimeout(() => {
+      hideUnmuteOverlay();
+    }, 7000);
+  }
+}
+
+function hideUnmuteOverlay() {
+  const overlay = document.getElementById("unmuteOverlay");
+  if (overlay) {
+    overlay.classList.add("hidden");
   }
 }
 
@@ -968,6 +1025,7 @@ function renderServerSelector() {
 
 /* PLAY SELECTED MULTI-SERVER STREAM */
 function playServer(serverIndex) {
+  hideUnmuteOverlay();
   if (serverIndex < 0 || serverIndex >= resolvedServers.length) return;
   
   const server = resolvedServers[serverIndex];
@@ -1024,12 +1082,7 @@ function playServer(serverIndex) {
     initializeQualitySelector(currentHls);
 
     currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
-      video.play().catch(err => {
-        console.log("Autoplay blocked:", err);
-        loader.querySelector("span").innerHTML = 'Stream paused. Click Play to watch!<br><span class="paused-play-icon" onclick="togglePlay()">▶</span>';
-        const spinner = loader.querySelector(".spinner");
-        if (spinner) spinner.classList.add("hidden");
-      });
+      handlePlayAttempt(video, loader);
     });
 
     currentHls.on(Hls.Events.ERROR, (event, data) => {
@@ -1060,12 +1113,7 @@ function playServer(serverIndex) {
     };
 
     video.addEventListener("loadedmetadata", () => {
-      video.play().catch(err => {
-        console.log("Autoplay blocked:", err);
-        loader.querySelector("span").innerHTML = 'Stream paused. Click Play to watch!<br><span class="paused-play-icon" onclick="togglePlay()">▶</span>';
-        const spinner = loader.querySelector(".spinner");
-        if (spinner) spinner.classList.add("hidden");
-      });
+      handlePlayAttempt(video, loader);
     });
   }
 
@@ -1096,6 +1144,7 @@ function playServer(serverIndex) {
 
 /* PLAY CHANNEL STREAM */
 function playChannel(index) {
+  hideUnmuteOverlay();
   if (index < 0 || index >= filteredChannels.length) return;
 
   // Clear any pending HLS loading intervals
@@ -1199,12 +1248,7 @@ function playChannel(index) {
     initializeQualitySelector(currentHls);
 
     currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
-      video.play().catch(err => {
-        console.log("Autoplay blocked:", err);
-        loader.querySelector("span").innerHTML = 'Stream paused. Click Play to watch!<br><span class="paused-play-icon" onclick="togglePlay()">▶</span>';
-        const spinner = loader.querySelector(".spinner");
-        if (spinner) spinner.classList.add("hidden");
-      });
+      handlePlayAttempt(video, loader);
     });
 
     currentHls.on(Hls.Events.ERROR, (event, data) => {
@@ -1256,12 +1300,7 @@ function playChannel(index) {
     };
 
     video.addEventListener("loadedmetadata", () => {
-      video.play().catch(err => {
-        console.log("Autoplay blocked:", err);
-        loader.querySelector("span").innerHTML = 'Stream paused. Click Play to watch!<br><span class="paused-play-icon" onclick="togglePlay()">▶</span>';
-        const spinner = loader.querySelector(".spinner");
-        if (spinner) spinner.classList.add("hidden");
-      });
+      handlePlayAttempt(video, loader);
     });
   } else {
     // If HLS library is not loaded yet, wait and retry
