@@ -2281,7 +2281,7 @@ function showHeaderUpdateNotification(updateData) {
     badge.classList.remove("hidden");
   }
   if (link && updateData.downloadUrl) {
-    link.setAttribute("href", updateData.downloadUrl);
+    link.setAttribute("data-download-url", updateData.downloadUrl);
   }
 }
 
@@ -2316,7 +2316,7 @@ function showUpdateModal(updateData) {
   }
 
   if (downloadLink && updateData.downloadUrl) {
-    downloadLink.setAttribute("href", updateData.downloadUrl);
+    downloadLink.setAttribute("data-download-url", updateData.downloadUrl);
   }
 
   modal.classList.remove("hidden");
@@ -2340,27 +2340,41 @@ function closeUpdateModal() {
   }
 }
 
+let isDownloadingUpdate = false;
+
 function handleUpdateDownload(event) {
-  if (event && event.preventDefault) {
-    event.preventDefault();
+  if (event) {
+    if (event.preventDefault) event.preventDefault();
+    if (event.stopPropagation) event.stopPropagation();
+  }
+  
+  if (isDownloadingUpdate) {
+    console.log("Download already initiated, ignoring click.");
+    return;
   }
   
   let url = null;
   if (event) {
     const anchor = event.currentTarget || (event.target && event.target.closest("a"));
     if (anchor) {
-      url = anchor.getAttribute("href");
+      url = anchor.getAttribute("data-download-url");
     }
   }
   
-  if (!url || url === "#") {
+  if (!url) {
     const downloadBtn = document.getElementById("updateDownloadLink");
     if (downloadBtn) {
-      url = downloadBtn.getAttribute("href");
+      url = downloadBtn.getAttribute("data-download-url");
     }
   }
   
-  if (!url || url === "#") return;
+  if (!url) return;
+
+  // Throttle download requests to prevent double/multiple trigger
+  isDownloadingUpdate = true;
+  setTimeout(() => {
+    isDownloadingUpdate = false;
+  }, 5000);
 
   if (window.AndroidInterface && window.AndroidInterface.openSystemBrowser) {
     window.AndroidInterface.openSystemBrowser(url);
