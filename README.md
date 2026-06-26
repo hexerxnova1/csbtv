@@ -5,14 +5,14 @@
 # 📺 Alpha TV - Premium Live Streaming Platform
 
 <p align="center">
-  <a href="https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases"><img src="https://img.shields.io/badge/Download-AlphaTV--v1.1.7.apk-brightgreen?style=for-the-badge&logo=android&logoColor=white" alt="Download APK"></a>
+  <a href="https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases"><img src="https://img.shields.io/badge/Download-AlphaTV--v1.1.6.apk-brightgreen?style=for-the-badge&logo=android&logoColor=white" alt="Download APK"></a>
   <a href="https://shariar-ahamed.github.io/online-tv-streaming-platform/"><img src="https://img.shields.io/badge/Live-Web%20Demo-ff007f?style=for-the-badge&logo=livewire&logoColor=white" alt="Live Demo"></a>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Platform-Android%20%7C%20Web-blue?style=flat-square&logo=capacitor&logoColor=white">
   <img src="https://img.shields.io/badge/UI-Neumorphic%20%2F%20Glassmorphism-violet?style=flat-square">
-  <img src="https://img.shields.io/badge/Version-v1.1.7-brightgreen?style=flat-square">
+  <img src="https://img.shields.io/badge/Version-v1.1.6-brightgreen?style=flat-square">
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square">
 </p>
 
@@ -44,9 +44,9 @@ Below are the technical specifications of the native Android application package
 
 | Specification                  | Details                                                                                    |
 | ------------------------------ | ------------------------------------------------------------------------------------------ |
-| 📦 **App Name**                | `AlphaTV-v1.1.7.apk`                                                                       |
+| 📦 **App Name**                | `AlphaTV-v1.1.6.apk`                                                                       |
 | 🆔 **Package Name**            | `com.alphatv.app`                                                                          |
-| 🏷️ **Current Version**         | `1.1.7` (Build Code `18`)                                                                  |
+| 🏷️ **Current Version**         | `1.1.6` (Build Code `17`)                                                                  |
 | 📂 **App Size**                | ~31.1 MB                                                                                   |
 | ⚙️ **Minimum OS Support**      | Android 7.0 (Nougat - API Level 24) or higher                                              |
 | 🎯 **Target SDK**              | Android 15 / 16 (API Level 36)                                                             |
@@ -190,12 +190,12 @@ npx cap open android
 
 ## 📋 Release History & Changelog
 
-### 🚀 v1.1.7 (Current Release) - Build Code `18`
+### 🚀 v1.1.7 - Build Code `18`
 * **APK Download Fix:**
   * Bypassed the Capacitor In-App Browser sandbox overlay when downloading updates inside the app.
   * Forces download links to open in the phone's native external browser (Chrome, etc.), permitting local storage saving and seamless installer execution.
 
-### 🚀 v1.1.6 - Build Code `17`
+### 🚀 v1.1.6 (Current Release) - Build Code `17`
 * **Android TV Remote Control (D-pad) Compatibility:**
   * Enabled fully integrated directional keys navigation (ArrowUp, ArrowDown, ArrowLeft, ArrowRight) across categories, channel grids, and player controls.
   * Added prioritized axis-weighting layout logic to prevent horizontal navigation from jumping vertically into categories or search inputs.
@@ -293,7 +293,7 @@ npx cap open android
 
 ## 🔗 Useful Links
 
-- **Latest APK Release:** [Download AlphaTV-v1.1.7.apk](https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases)
+- **Latest APK Release:** [Download AlphaTV-v1.1.6.apk](https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases)
 - **Live Web App:** [Alpha TV Live Web App](https://shariar-ahamed.github.io/online-tv-streaming-platform/)
 - **Source Code Repository:** [GitHub Repository](https://github.com/Shariar-Ahamed/online-tv-streaming-platform)
 
