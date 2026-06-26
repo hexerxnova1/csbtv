@@ -242,6 +242,27 @@ function setupRemoteNavigation() {
           e.preventDefault();
           return;
         }
+      } else {
+        // Quality menu is open but focus was lost or set by mouse.
+        // Enter menu navigation only if the user presses directional keys.
+        if (direction === 'up' || direction === 'down') {
+          if (activeFocusedEl) {
+            activeFocusedEl.classList.remove('remote-focused');
+          }
+          activeFocusedEl = (direction === 'up') ? items[items.length - 1] : items[0];
+          activeFocusedEl.classList.add('remote-focused');
+          e.preventDefault();
+          return;
+        } else if (direction === 'left' || direction === 'right') {
+          qualityMenu.classList.add('hidden');
+          if (activeFocusedEl) {
+            activeFocusedEl.classList.remove('remote-focused');
+          }
+          activeFocusedEl = document.getElementById("qualityBtn");
+          if (activeFocusedEl) activeFocusedEl.classList.add('remote-focused');
+          e.preventDefault();
+          return;
+        }
       }
     }
 
@@ -2562,20 +2583,31 @@ function changeQualityLevel(levelIndex, event) {
     }
   });
 
+  // Check if selection was made during active remote navigation session
+  const wasRemoteFocused = activeFocusedEl && activeFocusedEl.classList.contains("remote-focused");
+
   // Hide the menu
   const qualityMenu = document.getElementById("qualityMenu");
   if (qualityMenu) {
     qualityMenu.classList.add("hidden");
   }
 
-  // Return remote focus to the quality gear button
-  if (activeFocusedEl) {
-    activeFocusedEl.classList.remove("remote-focused");
-  }
-  const qualityBtn = document.getElementById("qualityBtn");
-  if (qualityBtn) {
-    activeFocusedEl = qualityBtn;
-    activeFocusedEl.classList.add("remote-focused");
+  // Return remote focus to the quality gear button ONLY if selection was made via remote control
+  if (wasRemoteFocused) {
+    if (activeFocusedEl) {
+      activeFocusedEl.classList.remove("remote-focused");
+    }
+    const qualityBtn = document.getElementById("qualityBtn");
+    if (qualityBtn) {
+      activeFocusedEl = qualityBtn;
+      activeFocusedEl.classList.add("remote-focused");
+    }
+  } else {
+    // For mouse/touch events, clear any remote focused reference entirely
+    if (activeFocusedEl) {
+      activeFocusedEl.classList.remove("remote-focused");
+      activeFocusedEl = null;
+    }
   }
 
   console.log("Quality level changed to index:", levelIndex);
@@ -2590,16 +2622,22 @@ function toggleQualityMenu(event) {
     
     if (wasHidden) {
       // Menu is now open! Auto-focus the active quality item or the first item
-      setTimeout(() => {
-        const activeItem = qualityMenu.querySelector(".quality-menu-item.active") || qualityMenu.querySelector(".quality-menu-item");
-        if (activeItem) {
-          if (activeFocusedEl) {
-            activeFocusedEl.classList.remove("remote-focused");
+      // ONLY if we are in active remote navigation mode (i.e. qualityBtn is remote-focused)
+      const qualityBtn = document.getElementById("qualityBtn");
+      const isRemoteActive = qualityBtn && qualityBtn.classList.contains("remote-focused");
+
+      if (isRemoteActive) {
+        setTimeout(() => {
+          const activeItem = qualityMenu.querySelector(".quality-menu-item.active") || qualityMenu.querySelector(".quality-menu-item");
+          if (activeItem) {
+            if (activeFocusedEl) {
+              activeFocusedEl.classList.remove("remote-focused");
+            }
+            activeFocusedEl = activeItem;
+            activeFocusedEl.classList.add("remote-focused");
           }
-          activeFocusedEl = activeItem;
-          activeFocusedEl.classList.add("remote-focused");
-        }
-      }, 50);
+        }, 50);
+      }
     }
   }
 }
