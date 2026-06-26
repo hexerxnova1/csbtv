@@ -51,6 +51,7 @@ Below are the technical specifications of the native Android application package
 | ⚙️ **Minimum OS Support**      | Android 7.0 (Nougat - API Level 24) or higher                                              |
 | 🎯 **Target SDK**              | Android 15 / 16 (API Level 36)                                                             |
 | 🎮 **Category**                | Entertainment / Live TV Streaming                                                          |
+| 📺 **Android TV Support**      | Fully Compatible (Leanback Launcher & D-pad remote navigation supported)                  |
 | 🌍 **Supported Architectures** | `universal` (arm64-v8a, armeabi-v7a, x86, x86_64)                                          |
 | 🚀 **Releases Directory**      | [GitHub Releases](https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases) |
 
