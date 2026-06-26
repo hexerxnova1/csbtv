@@ -54,6 +54,44 @@ let activeFocusedEl = null;
 function setupRemoteNavigation() {
   const FOCUSABLE_SELECTOR = '.channel, .category-btn, .control-btn, #chatSendBtn, .chat-toggle-collapse-btn, #search';
 
+  function customScrollIntoView(el) {
+    if (!el) return;
+    
+    // If it's part of the sticky search/category header, use standard scrollIntoView
+    if (el.closest('.search-filter-sticky') || el.closest('.categories-wrapper')) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+      return;
+    }
+    
+    // Find the scrollable container
+    const container = document.querySelector('.channels-section');
+    if (!container) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+      return;
+    }
+    
+    const containerRect = container.getBoundingClientRect();
+    const elRect = el.getBoundingClientRect();
+    
+    // Calculate the height of the sticky header
+    const stickyHeader = document.querySelector('.search-filter-sticky');
+    const stickyHeight = stickyHeader ? stickyHeader.offsetHeight : 150;
+    
+    // Spacing/buffer space
+    const BUFFER = 15;
+    
+    // If the element's top is hidden under the sticky header
+    if (elRect.top < containerRect.top + stickyHeight + BUFFER) {
+      const scrollTopDiff = (containerRect.top + stickyHeight + BUFFER) - elRect.top;
+      container.scrollBy({ top: -scrollTopDiff, behavior: 'smooth' });
+    }
+    // If the element's bottom is below the scrollable viewport boundary
+    else if (elRect.bottom > containerRect.bottom - BUFFER) {
+      const scrollBottomDiff = elRect.bottom - (containerRect.bottom - BUFFER);
+      container.scrollBy({ top: scrollBottomDiff, behavior: 'smooth' });
+    }
+  }
+
   function getClosestElement(currentEl, selector, direction) {
     const elements = Array.from(document.querySelectorAll(selector)).filter(el => {
       if (el === currentEl) return false;
@@ -110,7 +148,7 @@ function setupRemoteNavigation() {
         activeFocusedEl = activeChannel || firstCat || document.querySelector(FOCUSABLE_SELECTOR);
         if (activeFocusedEl) {
           activeFocusedEl.classList.add('remote-focused');
-          activeFocusedEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+          customScrollIntoView(activeFocusedEl);
         }
         e.preventDefault();
         return;
@@ -131,7 +169,7 @@ function setupRemoteNavigation() {
           }
         }
         
-        activeFocusedEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+        customScrollIntoView(activeFocusedEl);
       }
       e.preventDefault();
     } else if (e.key === 'Enter') {
