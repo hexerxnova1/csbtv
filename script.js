@@ -485,7 +485,15 @@ function finishLoadingPlaylist() {
 /* HELPER TO PLAY DEFAULT CHANNEL OR FIRST AVAILABLE */
 function playDefaultOrFirstChannel() {
   if (filteredChannels.length > 0) {
-    const defaultIndex = filteredChannels.findIndex(c => c.name.toLowerCase().includes("channel i"));
+    const options = ["tooffee", "channel i"];
+    const shuffled = options.sort(() => Math.random() - 0.5);
+    
+    let defaultIndex = -1;
+    for (const keyword of shuffled) {
+      defaultIndex = filteredChannels.findIndex(c => c.name.toLowerCase().includes(keyword));
+      if (defaultIndex !== -1) break;
+    }
+    
     playChannel(defaultIndex !== -1 ? defaultIndex : 0);
   }
 }
@@ -1702,7 +1710,15 @@ function resetToDefaultApp(event) {
   
   // Play the default channel
   if (channels.length > 0) {
-    const defaultIndex = channels.findIndex(c => c.name.toLowerCase().includes("channel i"));
+    const options = ["tooffee", "channel i"];
+    const shuffled = options.sort(() => Math.random() - 0.5);
+    
+    let defaultIndex = -1;
+    for (const keyword of shuffled) {
+      defaultIndex = channels.findIndex(c => c.name.toLowerCase().includes(keyword));
+      if (defaultIndex !== -1) break;
+    }
+    
     playChannel(defaultIndex !== -1 ? defaultIndex : 0);
   }
   
@@ -2813,7 +2829,17 @@ function loadChatUIState() {
   if (!container) return;
   
   const isHidden = localStorage.getItem("alpha_tv_chat_hidden") === "true";
-  const isCollapsed = localStorage.getItem("alpha_tv_chat_collapsed") === "true";
+  
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768);
+  
+  let isCollapsed = false;
+  const collapsedVal = localStorage.getItem("alpha_tv_chat_collapsed");
+  if (collapsedVal === null) {
+    // New user: default to collapsed (folded) on mobile, expanded on desktop
+    isCollapsed = isMobile;
+  } else {
+    isCollapsed = collapsedVal === "true";
+  }
   
   if (isHidden) {
     container.classList.add("hidden");
