@@ -5,8 +5,7 @@
 # 📺 Alpha TV - Premium Live Streaming Platform
 
 <p align="center">
-  <a href="https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases"><img src="https://img.shields.io/badge/Download-AlphaTV--v1.1.7.apk-brightgreen?style=for-the-badge&logo=android&logoColor=white" alt="Download APK"></a>
-  <a href="https://shariar-ahamed.github.io/online-tv-streaming-platform/"><img src="https://img.shields.io/badge/Live-Web%20Demo-ff007f?style=for-the-badge&logo=livewire&logoColor=white" alt="Live Demo"></a>
+<img src="https://img.shields.io/badge/Live-Web%20Demo-ff007f?style=for-the-badge&logo=livewire&logoColor=white" alt="Live Demo">
 </p>
 
 <p align="center">
@@ -53,7 +52,7 @@ Below are the technical specifications of the native Android application package
 | 🎮 **Category**                | Entertainment / Live TV Streaming                                                          |
 | 📺 **Android TV Support**      | Fully Compatible (Leanback Launcher & D-pad remote navigation supported)                  |
 | 🌍 **Supported Architectures** | `universal` (arm64-v8a, armeabi-v7a, x86, x86_64)                                          |
-| 🚀 **Releases Directory**      | [GitHub Releases](https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases) |
+
 
 ---
 
@@ -95,7 +94,7 @@ Below are the technical specifications of the native Android application package
 
 ### 🗂️ Smart M3U Playlist Parsing & Categories
 
-- Automatically parses [channels.m3u](file:///e:/Git%20All%20Repo/online-tv-streaming-platform/channels.m3u) on startup.
+- Automatically parses `channels.m3u` on startup.
 - Dynamically generates categories and sorts items with an inline swipeable category pill carousel.
 - Rounded picture logo formatting (`border-radius: 10px`) across both 2D and 3D states.
 - Beautiful custom-generated gradient avatars as fallback icons for channels with broken logo links.
@@ -288,11 +287,10 @@ npx cap open android
 
 ---
 
-## 🔗 Useful Links
+## 🔗 Useful items
 
-- **Latest APK Release:** [Download AlphaTV-v1.1.7.apk](https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases)
-- **Live Web App:** [Alpha TV Live Web App](https://shariar-ahamed.github.io/online-tv-streaming-platform/)
-- **Source Code Repository:** [GitHub Repository](https://github.com/Shariar-Ahamed/online-tv-streaming-platform)
+- **Current Version:** AlphaTV v1.1.7
+- **Live Web App:** Available via GitHub Pages
 
 ---
 
