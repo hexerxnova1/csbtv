@@ -1,11 +1,11 @@
 #EXTM3U
 #EXTINF:-1 tvg-name="IScreen" tvg-logo="https://i.postimg.cc/Prx2VvYg/image.png" group-title="FIFA 2026",IScreen
-https://livecdn.rockstreamer.com/videos/02f3d5c6ddda4fdda36005c189e3dc5b/1080p.m3u8
+https://livecdn.rockstreamer.com/videos/02f3d5c6ddda4fdda36005c189e3dc5b/360p.m3u8
 #EXTINF:-1 tvg-name="Caze TV" tvg-logo="https://i.postimg.cc/661Rm2z8/image.png" group-title="FIFA 2026",Caze TV
-https://dfr80qz435crc.cloudfront.net/MNOP/Amagi/Caze/Caze_TV_BR/1080p-vtt/index.m3u8
+https://livecdn.rockstreamer.com/videos/02f3d5c6ddda4fdda36005c189e3dc5b/master.m3u8
 
 #EXTINF:-1 tvg-name="Somoy TV" tvg-logo="https://tstatic.akash-go.com/cms-ui/images/custom-content/1735560559088.png, FIFA 2026, News",Somoy TV 
-https://live.thebosstv.com:30443/dwlive/Somoy-TV/chunks.m3u8
+https://livecdn.rockstreamer.com/videos/02f3d5c6ddda4fdda36005c189e3dc5b/master.m3u8
 
 #EXTINF:-1 tvg-name="GO Live" tvg-logo="https://i.postimg.cc/661Rm2z8/image.png" group-title="FIFA 2026",GO Live
 https://d1211whpimeups.cloudfront.net/smil:rtbgo/chunklist.m3u8
