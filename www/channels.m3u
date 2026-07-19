@@ -4,7 +4,7 @@ https://api.rockstreamer.com/track/api/v1/watchTime
 #EXTINF:-1 tvg-name="Caze TV" tvg-logo="https://i.postimg.cc/661Rm2z8/image.png" group-title="FIFA 2026",Caze TV
 https://dfr80qz435crc.cloudfront.net/MNOP/Amagi/Caze/Caze_TV_BR/1080p-vtt/index.m3u8
 
-#EXTINF:-1 tvg-name="Somoy TV" tvg-logo="https://tstatic.akash-go.com/cms-ui/images/custom-content/1735560559088.png" group-title="Bangla, FIFA 2026, News",Somoy TV 
+#EXTINF:-1 tvg-name="Somoy TV" tvg-logo="https://i.postimg.cc/hjYqzRBQ/images.png" group-title="Bangla, FIFA 2026, News",Somoy TV 
 https://live.thebosstv.com:30443/dwlive/Somoy-TV/chunks.m3u8
 
 #EXTINF:-1 tvg-name="GO Live" tvg-logo="https://i.postimg.cc/661Rm2z8/image.png" group-title="FIFA 2026",GO Live
