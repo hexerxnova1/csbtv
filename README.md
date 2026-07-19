@@ -2,16 +2,17 @@
   <img src="assets/Readme.md-cover.png" alt="Alpha TV Cover Page" width="100%" style="border-radius: 12px; margin-bottom: 20px;">
 </p>
 
-# 📺 Alpha TV - Premium Live Streaming Platform
+# 📺 CSB TV - Premium Live Streaming Platform
 
 <p align="center">
-<img src="https://img.shields.io/badge/Live-Web%20Demo-ff007f?style=for-the-badge&logo=livewire&logoColor=white" alt="Live Demo">
+  <a href="https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases"><img src="https://img.shields.io/badge/Download-AlphaTV--v1.1.3.apk-brightgreen?style=for-the-badge&logo=android&logoColor=white" alt="Download APK"></a>
+  <a href="https://shariar-ahamed.github.io/online-tv-streaming-platform/"><img src="https://img.shields.io/badge/Live-Web%20Demo-ff007f?style=for-the-badge&logo=livewire&logoColor=white" alt="Live Demo"></a>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Platform-Android%20%7C%20Web-blue?style=flat-square&logo=capacitor&logoColor=white">
   <img src="https://img.shields.io/badge/UI-Neumorphic%20%2F%20Glassmorphism-violet?style=flat-square">
-  <img src="https://img.shields.io/badge/Version-v1.1.7-brightgreen?style=flat-square">
+  <img src="https://img.shields.io/badge/Version-v1.1.3-brightgreen?style=flat-square">
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square">
 </p>
 
@@ -43,16 +44,15 @@ Below are the technical specifications of the native Android application package
 
 | Specification                  | Details                                                                                    |
 | ------------------------------ | ------------------------------------------------------------------------------------------ |
-| 📦 **App Name**                | `AlphaTV-v1.1.7.apk`                                                                       |
+| 📦 **App Name**                | `AlphaTV-v1.1.3.apk`                                                                       |
 | 🆔 **Package Name**            | `com.alphatv.app`                                                                          |
-| 🏷️ **Current Version**         | `1.1.7` (Build Code `18`)                                                                  |
+| 🏷️ **Current Version**         | `1.1.3` (Build Code `14`)                                                                  |
 | 📂 **App Size**                | ~31.1 MB                                                                                   |
 | ⚙️ **Minimum OS Support**      | Android 7.0 (Nougat - API Level 24) or higher                                              |
 | 🎯 **Target SDK**              | Android 15 / 16 (API Level 36)                                                             |
 | 🎮 **Category**                | Entertainment / Live TV Streaming                                                          |
-| 📺 **Android TV Support**      | Fully Compatible (Leanback Launcher & D-pad remote navigation supported)                  |
 | 🌍 **Supported Architectures** | `universal` (arm64-v8a, armeabi-v7a, x86, x86_64)                                          |
-
+| 🚀 **Releases Directory**      | [GitHub Releases](https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases) |
 
 ---
 
@@ -94,7 +94,7 @@ Below are the technical specifications of the native Android application package
 
 ### 🗂️ Smart M3U Playlist Parsing & Categories
 
-- Automatically parses `channels.m3u` on startup.
+- Automatically parses [channels.m3u](file:///e:/Git%20All%20Repo/online-tv-streaming-platform/channels.m3u) on startup.
 - Dynamically generates categories and sorts items with an inline swipeable category pill carousel.
 - Rounded picture logo formatting (`border-radius: 10px`) across both 2D and 3D states.
 - Beautiful custom-generated gradient avatars as fallback icons for channels with broken logo links.
@@ -189,57 +189,7 @@ npx cap open android
 
 ## 📋 Release History & Changelog
 
-### 🚀 v1.1.7 (Current Release) - Build Code `18`
-* **APK Download Loop & Crash Fix:**
-  - Resolved the critical download loop issue where clicking the update button triggered dozens of concurrent duplicate APK downloads in the external browser.
-  - Replaced direct absolute APK links in `href` attributes with dynamic custom data attributes (`data-download-url`) and mapped `href` to `#`. This completely prevents Android WebView from intercepting and retrying the resource load in the background.
-  - Implemented a native Javascript Interface (`AndroidInterface.openSystemBrowser`) in Java `MainActivity.java` to cleanly delegate downloads and external links to the Android default system browser (e.g., Chrome) exactly once.
-  - Added click throttling (5-second cooldown) to the download action to prevent duplicate launches from rapid user clicks.
-
-### 🚀 v1.1.6 - Build Code `17`
-* **Android TV D-pad Remote Control Engine:**
-  - Introduced fully integrated D-pad remote navigation (`ArrowUp`/`ArrowDown`/`ArrowLeft`/`ArrowRight`/`Enter`) across category lists, channel cards, and player controls.
-  - Configured leanback support and TV shortcuts (`android.software.leanback` and `android.intent.category.LEANBACK_LAUNCHER`) in `AndroidManifest.xml`.
-  - Added prioritized axis-weighting layout logic to prevent horizontal navigation from jumping vertically.
-* **Custom M3U Playlist & Stream Uploads:**
-  - Enabled support for multiple custom M3U files and live stream URLs (HLS, TS) saved in local flat-array arrays.
-  - Integrated dynamic visitor statistics (Total Visits and Live Watch visitor calculator synchronized in real-time).
-  - Single channel trash-can removal and old config auto-migration.
-* **Autoplay Muted Policy Bypass:**
-  - Automatically falls back to muted playback if audio autoplay is blocked, showing a concentric neon unmute banner to restore volume.
-
-### 🚀 v1.1.5 - Build Code `16`
-* **PiP Black Screen Bug Fix:**
-  * Resolved the Android Picture-in-Picture (PiP) black screen layout issue by correcting the buggy CSS child-combinator selector that was inadvertently hiding the main `.app-container`.
-  * Positioned the `.player-wrapper` as fixed (`top: 0; left: 0; z-index: 99999;`) during PiP mode, ensuring a seamless video playback view.
-* **Keyboard Auto-Dismiss Bug Fix:**
-  * Fixed a bug where focusing the live chat input box on Android immediately blurred the input, causing the virtual keyboard to pop up and bounce closed automatically.
-  * Robustly tracks the layout viewport height against a cached baseline `originalHeight` to reliably distinguish when the keyboard is open in `adjustResize` layout mode.
-* **Dynamic Active Channel in Chat Header:**
-  * Updated the chat header title dynamically to show the active channel name (e.g., `Live Chat with "Channel Name"`), providing context about the current stream's discussion.
-* **Chat Header Flex Layout Refinements:**
-  * Optimised the chat header title and action layout. Allowed long channel names to wrap gracefully to 2 lines, while ensuring the user's nickname badge and edit icon stay neatly on 1 line (`white-space: nowrap`) and align properly.
-* **User Nickname Prefix & Default Channel Updates:**
-  * Replaced the default random nickname prefix from `AlphaFan_xxxx` to the more standard `User_xxxx`.
-  * Set `Channel I HD` as the default channel selected on first load and app resets.
-* **Android WebView Persistence:**
-  * Kept the Capacitor WebView running active in `MainActivity.java`'s `onPause()` to prevent rendering freezes when switching to picture-in-picture mode.
-
-### 🚀 v1.1.4 - Build Code `15`
-* **Disclaimer & Telegram Sequence Modal:**
-  * Implemented a sequential onboarding flow for first-time users: showing a Disclaimer modal, and upon acceptance, instantly showing an official Telegram Community modal.
-  * Persists user agreements in `localStorage` to avoid repeating popups on subsequent visits.
-* **Server 1 browser lock & App-Only Indicator:**
-  * Added dynamic browser-detection logic to indicate that Server 1 (Toffee Live) requires the Android App.
-  * Restricts Server 1 playback in web browsers with a secure popup modal linking to the official Android App release.
-  * Server selector UI dynamically updates server titles, locks, and colors.
-* **Brand Logo Shimmer & Wave Animation:**
-  * Integrated a highly customized, ultra-slow brand text shimmer animation flowing with Neon Pink and Neon Purple.
-  * Added a gentle waving animation (`flagWave`) anchored on the left to make the logo text sway gracefully like a flag in a light breeze.
-* **Buffering Spinner Color Tuning:**
-  * Adjusted the player buffering gyro-spinner color variables to match the Neon Pink (`var(--primary)`) and Neon Cyan (`var(--secondary)`) theme colors.
-
-### 🚀 v1.1.3 - Build Code `14`
+### 🚀 v1.1.3 (Current Release) - Build Code `14`
 * **Mute/Volume Control Button:**
   * Integrated a dedicated Mute/Unmute sound button directly into the custom control bar (re-ordered for optimal UX, placing Fullscreen on the far right).
   * Automatically stores the user's volume state in `localStorage` so it persists between different channels and application restarts.
@@ -287,10 +237,11 @@ npx cap open android
 
 ---
 
-## 🔗 Useful items
+## 🔗 Useful Links
 
-- **Current Version:** AlphaTV v1.1.7
-- **Live Web App:** Available via GitHub Pages
+- **Latest APK Release:** [Download AlphaTV-v1.1.3.apk](https://github.com/Shariar-Ahamed/online-tv-streaming-platform/releases)
+- **Live Web App:** [Alpha TV Live Web App](https://shariar-ahamed.github.io/online-tv-streaming-platform/)
+- **Source Code Repository:** [GitHub Repository](https://github.com/Shariar-Ahamed/online-tv-streaming-platform)
 
 ---
 
